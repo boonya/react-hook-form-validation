@@ -38,8 +38,8 @@ export default function Form(props) {
 		field: 'dob',
 		rules: [
 			{validator: VALIDATORS.required, message: 'The field is required'},
-			{validator: VALIDATORS.custom, func: isAdult, message: 'You are under 18 years old!'},
-			{validator: VALIDATORS.custom, func: isUnderEighty, message: 'No way!'},
+			{validator: VALIDATORS.func, func: isAdult, message: 'You are under 18 years old!'},
+			{validator: VALIDATORS.func, func: isUnderEighty, message: 'No way!'},
 		],
 	}]);
 

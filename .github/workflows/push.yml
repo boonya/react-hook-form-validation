@@ -15,14 +15,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
+        with:
+          node-version: 15
       - run: npm ci
       - run: npm run lint
   test:
-    name: Test node@${{ matrix.node }} / ${{ matrix.os }}
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@master
+        with:
+          node-version: 15
       - run: npm ci
       - run: npm run test
   coverage:
@@ -32,6 +36,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
+        with:
+          node-version: 15
       - run: npm ci
       - uses: paambaati/codeclimate-action@v2.7.5
         env:

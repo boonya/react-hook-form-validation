@@ -9,6 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
+        with:
+          node-version: 15
       - run: npm ci
       - run: npm run lint
   test:
@@ -17,6 +19,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
+        with:
+          node-version: 15
       - run: npm ci
       - run: npm run test
   publish:
@@ -26,6 +30,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
+        with:
+          node-version: 15
       - run: npm ci
       - run: npm run build
       - uses: JS-DevTools/npm-publish@v1
