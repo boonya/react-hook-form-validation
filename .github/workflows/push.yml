@@ -20,7 +20,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
   test:
-    name: Test node@${{ matrix.node }} / ${{ matrix.os }}
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
