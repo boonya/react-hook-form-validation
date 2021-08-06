@@ -12,7 +12,7 @@ import {
 } from './types';
 import isPlainObject from 'lodash/isPlainObject';
 import isString from 'lodash/isString';
-import * as React from 'react';
+import React from 'react';
 
 export default function useValidation(ruleset: ValidationRuleSet): HookResult {
 	validateRuleSet(ruleset);
