@@ -1,0 +1,51 @@
+{
+  "name": "react-hook-form-validation",
+  "version": "1.0.0-beta",
+  "description": "React Hook for Form Validation",
+  "repository": "https://github.com/boonya/react-hook-form-validation",
+  "main": "dist/index.js",
+  "files": [
+    "dist/*"
+  ],
+  "engines": {
+    "npm": "^7",
+    "node": ">=14"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "jest",
+    "build": "tsc"
+  },
+  "keywords": [
+    "react",
+    "hook",
+    "validation",
+    "form",
+    "useValidation"
+  ],
+  "author": "Serhii [boonya] Buinytskyi",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "~16.8 || ^17.0"
+  },
+  "dependencies": {
+    "lodash.isempty": "^4.4.0",
+    "lodash.isfunction": "^3.0.9",
+    "lodash.isplainobject": "^4.0.6",
+    "lodash.isstring": "^4.0.1"
+  },
+  "devDependencies": {
+    "@testing-library/react-hooks": "^7.0.1",
+    "@types/jest": "^26.0.24",
+    "@types/lodash": "^4.14.172",
+    "@types/react": "^17.0.16",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "jest": "^27.0.6",
+    "react-test-renderer": "^17.0.2",
+    "ts-jest": "^27.0.4",
+    "typescript": "^4.3.5"
+  }
+}

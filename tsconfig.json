@@ -1,0 +1,29 @@
+{
+	"compilerOptions": {
+		"moduleResolution": "node",
+		"target": "es6",
+		"module": "commonjs",
+		"lib": ["esnext"],
+		"strict": true,
+		"sourceMap": true,
+		"declaration": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"declarationDir": "./dist",
+		"outDir": "./dist",
+	},
+	"include": [
+		".eslintrc.js",
+		"jest.config.js",
+		"src/.eslintrc.js",
+		"src/**/*.ts",
+	],
+	"exclude": [
+		"coverage",
+		"dist",
+		"node_modules",
+		"src/**/*.test.ts",
+	],
+}
