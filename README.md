@@ -1,5 +1,8 @@
 # React Hook for Form Validation
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/5f8ba99d1a092fc6efb4/maintainability)](https://codeclimate.com/github/boonya/react-hook-form-validation/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/5f8ba99d1a092fc6efb4/test_coverage)](https://codeclimate.com/github/boonya/react-hook-form-validation/test_coverage)
+
 ## The hook currently supports the following validators
 
 - `required` - Required value
