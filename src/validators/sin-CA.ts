@@ -12,7 +12,7 @@ export default function postalCodeCA(input: string, { message }: ValidatorCommon
 		const digitsArray = sanitized.split('');
 		const even = digitsArray
 			.filter((_, idx) => idx % 2)
-			.map((i) => i * 2)
+			.map((i) => Number(i) * 2)
 			.join('')
 			.split('');
 
