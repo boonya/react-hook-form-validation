@@ -14,6 +14,7 @@
   "scripts": {
     "lint": "eslint .",
     "test": "jest",
+    "example": "(cd example && npm start)",
     "build": "tsc"
   },
   "keywords": [
