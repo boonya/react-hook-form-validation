@@ -4,6 +4,20 @@
 import React from 'react';
 import useValidation, {VALIDATORS} from 'react-hook-form-validation';
 
+const isAdult = (value) => {
+ const chosen = new Date(value);
+ const threshold = new Date();
+ threshold.setFullYear(threshold.getFullYear() - 18);
+ return chosen < threshold;
+}
+
+const isUnderEighty = (value) => {
+ const chosen = new Date(value);
+ const threshold = new Date();
+ threshold.setFullYear(threshold.getFullYear() - 80);
+ return chosen >= threshold;
+};
+
 export default function Form(props) {
  const {validity, validateForm, resetForm} = useValidation([{
   field: 'dob',
