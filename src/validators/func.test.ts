@@ -1,4 +1,4 @@
-import validateValue from './custom';
+import validateValue from './func';
 import { createValidationMessage } from '../helpers';
 import { VALIDATION_MESSAGES } from '../types';
 import { mocked } from 'ts-jest/utils';

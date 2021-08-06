@@ -1,19 +1,23 @@
 export enum VALIDATORS {
 	required = 'required',
-	minLength = 'minLength',
-	maxLength = 'maxLength',
+	min = 'min',
+	max = 'max',
 	email = 'email',
 	url = 'url',
+	postalCodeCA = 'postalCodeCA',
+	sinCA = 'sinCA',
 	pattern = 'pattern',
-	custom = 'custom',
+	func = 'func',
 }
 
 export enum VALIDATION_MESSAGES {
 	required = 'required',
-	minLength = 'min-length',
-	maxLength = 'max-length',
+	min = 'min',
+	max = 'max',
 	email = 'email',
 	url = 'url',
+	postalCodeCA = 'postal-code-CA',
+	sinCA = 'SIN-CA',
 	pattern = 'pattern',
 	invalid = 'invalid',
 }

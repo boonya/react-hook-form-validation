@@ -1,4 +1,4 @@
-import validateValue from './maxLength';
+import validateValue from './max';
 import { createValidationMessage } from '../helpers';
 import { VALIDATION_MESSAGES } from '../types';
 import { mocked } from 'ts-jest/utils';
@@ -24,7 +24,7 @@ it('Returns built-in error message if passed a number greater than a limit.', ()
 	const result = validateValue(6, { expected: 5 });
 
 	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.maxLength);
+	expect(result).toEqual(VALIDATION_MESSAGES.max);
 });
 
 it('Returns custom error message if passed a number greater than a limit.', () => {
@@ -54,7 +54,7 @@ it('Returns built-in if passed a string longer than a limit.', () => {
 	const result = validateValue('АБВГДЕ', { expected: 5 });
 
 	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.maxLength);
+	expect(result).toEqual(VALIDATION_MESSAGES.max);
 });
 
 it('Returns custom error message if passed a string longer than a limit.', () => {
@@ -84,7 +84,7 @@ it('Returns built-in error message if passed an array longer than a limit.', () 
 	const result = validateValue([1, 2, 3, 4, 5, 6], { expected: 5 });
 
 	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.maxLength);
+	expect(result).toEqual(VALIDATION_MESSAGES.max);
 });
 it('Returns custom error message if passed an array longer than a limit.', () => {
 	mocked(createValidationMessage).mockName('createValidationMessage').mockReturnValueOnce('An error message');

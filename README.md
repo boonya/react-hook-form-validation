@@ -1,5 +1,25 @@
 # React Hook for Form Validation
 
+## The hook currently supports the following validators
+
+- `required` - Required value
+- `min` - Min value of number or min length of string & array
+- `max` - Max value of number or max length of string & array
+- `email` - Email address
+- `url` - URL
+- `postalCodeCA` - Postal Code in Canada
+- `sinCA` - Social Insurance Number (SIN) in Canada
+- `pattern` - RegEx patter based
+- `func` - function based
+
+You can import enum of them:
+
+```js
+import {VALIDATORS} from 'react-hook-form-validation';
+```
+
+## Example
+
 ```js
 import React from 'react';
 import useValidation, {VALIDATORS} from 'react-hook-form-validation';
@@ -23,8 +43,8 @@ export default function Form(props) {
   field: 'dob',
   rules: [
    {validator: VALIDATORS.required, message: 'The field is required'},
-   {validator: VALIDATORS.custom, func: isAdult, message: 'You are under 18 years old!'},
-   {validator: VALIDATORS.custom, func: isUnderEighty, message: 'No way!'},
+   {validator: VALIDATORS.func, func: isAdult, message: 'You are under 18 years old!'},
+   {validator: VALIDATORS.func, func: isUnderEighty, message: 'No way!'},
   ],
  }]);
 

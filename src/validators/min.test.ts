@@ -1,4 +1,4 @@
-import validateValue from './minLength';
+import validateValue from './min';
 import { createValidationMessage } from '../helpers';
 import { VALIDATION_MESSAGES } from '../types';
 import { mocked } from 'ts-jest/utils';
@@ -24,7 +24,7 @@ it('Returns built-in error message if passed a number less than a limit.', () =>
 	const result = validateValue(4, { expected: 5 });
 
 	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.minLength);
+	expect(result).toEqual(VALIDATION_MESSAGES.min);
 });
 
 it('Returns custom error message if passed a number less than a limit.', () => {
@@ -55,7 +55,7 @@ it('Returns built-in if passed a string shorter than a limit.', () => {
 	const result = validateValue('АБВГ', { expected: 5 });
 
 	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.minLength);
+	expect(result).toEqual(VALIDATION_MESSAGES.min);
 });
 
 it('Returns custom error message if passed a string shorter than a limit.', () => {
@@ -85,7 +85,7 @@ it('Returns built-in error message if passed an array shorter than a limit.', ()
 	const result = validateValue([1, 2, 3, 4], { expected: 5 });
 
 	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.minLength);
+	expect(result).toEqual(VALIDATION_MESSAGES.min);
 });
 it('Returns custom error message if passed an array shorter than a limit.', () => {
 	mocked(createValidationMessage).mockName('createValidationMessage').mockReturnValueOnce('An error message');

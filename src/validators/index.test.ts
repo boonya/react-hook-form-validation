@@ -3,31 +3,37 @@ import { VALIDATORS } from '../types';
 import { mocked } from 'ts-jest/utils';
 
 import required from './required';
-import minLength from './minLength';
-import maxLength from './maxLength';
+import min from './min';
+import max from './max';
 import email from './email';
 import url from './url';
+import postalCodeCA from './postalCode-CA';
+import sinCA from './sin-CA';
 import pattern from './pattern';
-import custom from './custom';
+import func from './func';
 
 jest.mock('./required');
-jest.mock('./minLength');
-jest.mock('./maxLength');
+jest.mock('./min');
+jest.mock('./max');
 jest.mock('./email');
 jest.mock('./url');
+jest.mock('./postalCode-CA');
+jest.mock('./sin-CA');
 jest.mock('./pattern');
-jest.mock('./custom');
+jest.mock('./func');
 
-const validators = { required, minLength, maxLength, email, url, pattern, custom };
+const validators = { required, min, max, email, url, postalCodeCA, sinCA, pattern, func };
 
 beforeEach(() => {
 	mocked(required).mockName('required').mockReturnValue('required');
-	mocked(minLength).mockName('minLength').mockReturnValue('minLength');
-	mocked(maxLength).mockName('maxLength').mockReturnValue('maxLength');
+	mocked(min).mockName('min').mockReturnValue('min');
+	mocked(max).mockName('max').mockReturnValue('max');
 	mocked(email).mockName('email').mockReturnValue('email');
 	mocked(url).mockName('url').mockReturnValue('url');
+	mocked(postalCodeCA).mockName('postalCodeCA').mockReturnValue('postalCodeCA');
+	mocked(sinCA).mockName('sinCA').mockReturnValue('sinCA');
 	mocked(pattern).mockName('pattern').mockReturnValue('pattern');
-	mocked(custom).mockName('custom').mockReturnValue('custom');
+	mocked(func).mockName('func').mockReturnValue('func');
 });
 
 Object.values(VALIDATORS).forEach((name) => {

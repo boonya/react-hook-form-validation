@@ -1,11 +1,13 @@
 import { VALIDATORS } from '../types';
 import required from './required';
-import minLength from './minLength';
-import maxLength from './maxLength';
+import min from './min';
+import max from './max';
 import email from './email';
 import url from './url';
+import postalCodeCA from './postalCode-CA';
+import sinCA from './sin-CA';
 import pattern from './pattern';
-import custom from './custom';
+import func from './func';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 export default function validators(validator: VALIDATORS, ...args: unknown[]): string|null {
@@ -13,24 +15,30 @@ export default function validators(validator: VALIDATORS, ...args: unknown[]): s
 	case VALIDATORS.required:
 		// @ts-ignore
 		return required(...args);
-	case VALIDATORS.minLength:
+	case VALIDATORS.min:
 		// @ts-ignore
-		return minLength(...args);
-	case VALIDATORS.maxLength:
+		return min(...args);
+	case VALIDATORS.max:
 		// @ts-ignore
-		return maxLength(...args);
+		return max(...args);
 	case VALIDATORS.email:
 		// @ts-ignore
 		return email(...args);
 	case VALIDATORS.url:
 		// @ts-ignore
 		return url(...args);
+	case VALIDATORS.postalCodeCA:
+		// @ts-ignore
+		return postalCodeCA(...args);
+	case VALIDATORS.sinCA:
+		// @ts-ignore
+		return sinCA(...args);
 	case VALIDATORS.pattern:
 		// @ts-ignore
 		return pattern(...args);
-	case VALIDATORS.custom:
+	case VALIDATORS.func:
 		// @ts-ignore
-		return custom(...args);
+		return func(...args);
 	default:
 		throw TypeError(`Validator "${validator}" is undefined.`);
 	}
