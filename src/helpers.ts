@@ -1,5 +1,3 @@
-import isFunction from 'lodash/isFunction';
-import isString from 'lodash/isString';
 import {
 	DEFAULT_FIELD_STATE,
 	ValidationRuleSet,
@@ -17,10 +15,10 @@ function validationConditionRule(condition: Condition): void {
 		throw new TypeError('Condition property must be an array.');
 	}
 	const [selector, ...fields] = condition;
-	if (!isFunction(selector)) {
+	if (typeof selector !== 'function') {
 		throw new TypeError('Condition selector must be a function.');
 	}
-	if (fields.some((field) => !isString(field))) {
+	if (fields.some((field) => typeof field !== 'string')) {
 		throw new TypeError('Defining fields in a condition must be a string only.');
 	}
 }
@@ -79,7 +77,7 @@ export function processFieldValidity(processor: Processor, currentValidity: Form
 }
 
 export function createValidationMessage(message: ValidationMessage, props?: { [key: string]: unknown }): string {
-	if (isFunction(message)) {
+	if (typeof message === 'function') {
 		return message(props);
 	}
 	return message;

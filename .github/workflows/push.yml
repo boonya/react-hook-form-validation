@@ -33,6 +33,7 @@ jobs:
       - run: npm run test
   coverage:
     needs: [ test ]
+    if: github.ref == 'refs/heads/main'
     name: Sending test coverage to Code Climate
     runs-on: ubuntu-latest
     steps:
