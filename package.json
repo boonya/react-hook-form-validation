@@ -14,8 +14,9 @@
   "scripts": {
     "lint": "eslint .",
     "test": "jest",
-    "example": "(cd example && npm start)",
-    "build": "tsc"
+    "build": "tsc",
+    "site:run": "(cd example && npm start)",
+    "site:build": "(cd example && npm run build)"
   },
   "keywords": [
     "react",
