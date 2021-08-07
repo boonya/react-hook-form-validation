@@ -56,7 +56,7 @@ export default function Form(props) {
 				The first is to check for the presence of a value. "Required" in other words.
 			</Typography>
 			<Typography paragraph>
-				The second and third validators are "custom". They execute a function against field value.
+				The second and third validators are "func". They execute a function against field value.
 				If this function returns "true" that means a value is valid.
 			</Typography>
 			<Typography paragraph>
