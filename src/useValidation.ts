@@ -11,7 +11,6 @@ import {
 	ResetFormFunction,
 } from './types';
 import isPlainObject from 'lodash/isPlainObject';
-import isString from 'lodash/isString';
 import React from 'react';
 
 export default function useValidation(ruleset: ValidationRuleSet): HookResult {
@@ -35,7 +34,7 @@ export default function useValidation(ruleset: ValidationRuleSet): HookResult {
 		if (!isPlainObject(payload)) {
 			throw new Error('You have to pass a form payload object to validate the field.');
 		}
-		if (!isString(name) || name.trim() === '') {
+		if (typeof name !== 'string' || name.trim() === '') {
 			throw new Error('You have to pass a field name to validate the field.');
 		}
 		const validity = processFieldValidity(processor, currentValidity, payload, name, index);
