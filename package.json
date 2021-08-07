@@ -3,6 +3,7 @@
   "version": "1.0.0-beta.2",
   "description": "React Hook for Form Validation",
   "repository": "https://github.com/boonya/react-hook-form-validation",
+  "homepage": "https://boonya.info/react-hook-form-validation/",
   "main": "dist/index.js",
   "files": [
     "dist/*"

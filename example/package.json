@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Documentation web site for React Hook Form Validation library",
   "repository": "https://github.com/boonya/react-hook-form-validation",
+  "homepage": "https://boonya.info/react-hook-form-validation/",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.12.3",
