@@ -77,7 +77,7 @@ export function processFieldValidity(processor: Processor, currentValidity: Form
 }
 
 export function createValidationMessage(message: ValidationMessage, props?: { [key: string]: unknown }): string {
-	if (isFunction(message)) {
+	if (typeof message === 'function') {
 		return message(props);
 	}
 	return message;
