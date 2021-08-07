@@ -6,10 +6,8 @@ export default function postalCodeCA(input: string, { message }: ValidatorCommon
 		return null;
 	}
 	// https://www.codercrunch.com/challenge/819302488/sin-validator
-	const sanitized = input.replace(/[\s-]/gu, '');
-
-	if ((/^\d{9}$/ui).test(sanitized)) {
-		const digitsArray = sanitized.split('');
+	if ((/^\d{9}$/ui).test(input)) {
+		const digitsArray = input.split('');
 		const even = digitsArray
 			.filter((_, idx) => idx % 2)
 			.map((i) => Number(i) * 2)
