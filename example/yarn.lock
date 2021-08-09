@@ -6208,17 +6208,9 @@ lodash.isempty@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.isempty/-/lodash.isempty-4.4.0.tgz#6f86cbedd8be4ec987be9aaf33c9684db1b31e7e"
 
-lodash.isfunction@^3.0.9:
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/lodash.isfunction/-/lodash.isfunction-3.0.9.tgz#06de25df4db327ac931981d1bdb067e5af68d051"
-
 lodash.isplainobject@^4.0.6:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz#7c526a52d89b45c45cc690b88163be0497f550cb"
-
-lodash.isstring@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/lodash.isstring/-/lodash.isstring-4.0.1.tgz#d527dfb5456eca7cc9bb95d5daeaf88ba54a5451"
 
 lodash.memoize@^4.1.2:
   version "4.1.2"
@@ -8024,14 +8016,12 @@ react-error-overlay@^6.0.9:
   version "6.0.9"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.9.tgz#3c743010c9359608c375ecd6bc76f35d93995b0a"
 
-react-hook-form-validation@^1.0.0-beta.2:
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/react-hook-form-validation/-/react-hook-form-validation-1.0.0-beta.2.tgz#7f2ccba842d660ead3419f64eb04f5c081a20e5f"
+react-hook-form-validation@^1.0.0-beta.3:
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/react-hook-form-validation/-/react-hook-form-validation-1.0.0-beta.3.tgz#aa06102edf3551ffd77c9d6b9976b7b7468ab574"
   dependencies:
     lodash.isempty "^4.4.0"
-    lodash.isfunction "^3.0.9"
     lodash.isplainobject "^4.0.6"
-    lodash.isstring "^4.0.1"
 
 react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"
