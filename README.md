@@ -98,7 +98,7 @@ So if you need validate an input SIN number, you could you this validator.
 
 ### Pattern
 
-In case you need to validate you input based on any random RegEx pattern you interested in, you can do it by `pattern` validator.
+In case you need to validate your input based on any random RegEx pattern you interested in, you can do it by `pattern` validator.
 
 ```js
 const pattern = /^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,})\S$/u;
