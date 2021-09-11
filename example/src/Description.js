@@ -14,7 +14,7 @@ export default function Description(props) {
 
 	return (
 		<Grid container {...props}>
-			<Typography variant="h2">
+			<Typography variant="h2" gutterBottom>
 				{t('The hook currently supports the following validators')}:
 			</Typography>
 			<Typography component="ul">
@@ -59,7 +59,7 @@ export default function Description(props) {
 					</Trans>
 				</Typography>
 			</Typography>
-			<Typography variant="h3">
+			<Typography variant="h3" gutterBottom>
 				<Trans t={t} components={[
 					<Typography key={0} className={classes.inlineCode} />
 				]}>
