@@ -2,7 +2,7 @@ import React from 'react';
 import {Grid, TextField, Button, Typography} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import useValidation, {VALIDATORS} from 'react-hook-form-validation';
-import Result from './Result';
+import Result from '../Result';
 
 const useStyles = makeStyles(({spacing}) => ({
 	root: {},
