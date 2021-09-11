@@ -5,21 +5,63 @@
 
 ## The hook currently supports the following validators
 
-- `required` - Required value
-- `min` - Min value of number or min length of string & array
-- `max` - Max value of number or max length of string & array
-- `email` - Email address
-- `url` - URL
-- `postalCodeCA` - Postal Code in Canada
-- `sinCA` - Social Insurance Number (SIN) in Canada
-- `pattern` - RegEx patter based
-- `func` - function based
+- [`required` - Required value](#required)
+- [`min` - Min value of number or min length of string & array](#min)
+- [`max` - Max value of number or max length of string & array](#max)
+- [`email` - Email address](#email)
+- [`url` - URL](#url)
+- [`postalCodeCA` - Postal Code in Canada](#postalcodeca)
+- [`sinCA` - Social Insurance Number (SIN) in Canada](#sinca)
+- [`pattern` - RegEx pattern based](#pattern)
+- [`func` - function based](#func)
 
 You can import enum of them:
 
 ```js
 import {VALIDATORS} from 'react-hook-form-validation';
 ```
+
+## Required
+
+This validator can be useful if you need to be sure that your input value is defined,
+is not an empty string, array or object, is not a null.
+_Note that_ other validators do not perform their logic if empty value passed to them. So, make sure you use `required` validator if needed.
+
+```js
+{validator: VALIDATORS.required, message: 'The field is required'},
+```
+
+[You can verify test cases here](src/validators/required.test.ts)
+
+## Min
+
+If you need to ensure your input not less than expected. It can compare numbers or length of string or array.
+
+```js
+{validator: VALIDATORS.min, expected: 5, message: 'The value is less than 5'},
+```
+
+[You can verify test cases here](src/validators/min.test.ts)
+
+## Max
+
+If you need to ensure your input not more than expected. It can compare numbers or length of string or array.
+
+```js
+{validator: VALIDATORS.max, expected: 5, message: 'The value is more than 5'},
+```
+
+[You can verify test cases here](src/validators/max.test.ts)
+
+## Postal Code CA
+
+The validator could be useful when you need to validate your input as a canadian postal code https://en.wikipedia.org/wiki/Postal_codes_in_Canada
+
+```js
+{validator: VALIDATORS.postalCodeCA, message: 'It doesn\'t seem to be a Canadian postal code'},
+```
+
+[You can verify test cases here](src/validators/postalCode-CA.test.ts)
 
 ## Example
 
