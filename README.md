@@ -21,7 +21,7 @@ You can import enum of them:
 import {VALIDATORS} from 'react-hook-form-validation';
 ```
 
-## Required
+### Required
 
 This validator can be useful if you need to be sure that your input value is defined,
 is not an empty string, array or object, is not a null.
@@ -33,7 +33,7 @@ _Note that_ other validators do not perform their logic if empty value passed to
 
 [You can verify test cases here](src/validators/required.test.ts)
 
-## Min
+### Min
 
 If you need to ensure your input not less than expected. It can compare numbers or length of string or array.
 
@@ -43,7 +43,7 @@ If you need to ensure your input not less than expected. It can compare numbers 
 
 [You can verify test cases here](src/validators/min.test.ts)
 
-## Max
+### Max
 
 If you need to ensure your input not more than expected. It can compare numbers or length of string or array.
 
@@ -53,7 +53,23 @@ If you need to ensure your input not more than expected. It can compare numbers 
 
 [You can verify test cases here](src/validators/max.test.ts)
 
-## Postal Code in Canada
+### Email
+
+```js
+{validator: VALIDATORS.email, message: 'The value is not an email address'},
+```
+
+[You can verify test cases here](src/validators/email.test.ts)
+
+### URL
+
+```js
+{validator: VALIDATORS.url, message: 'The value is not a URL'},
+```
+
+[You can verify test cases here](src/validators/url.test.ts)
+
+### Postal Code in Canada
 
 The validator could be useful when you need to validate your input as a Canadian postal code
 
@@ -65,11 +81,11 @@ The validator could be useful when you need to validate your input as a Canadian
 
 [You can verify test cases here](src/validators/postalCode-CA.test.ts)
 
-## Social Insurance Number (SIN) in Canada
+### Social Insurance Number (SIN) in Canada
 
 > A social insurance number (SIN) is a number issued to every Canadian citizen in Canada. The SIN number is a unique number that helps various government programs like tax reporting, pensions plan, employment verification, etc. A Canadian software development company is building an employee payroll application for which they are looking for a SIN validator library.
 
-So if you need validate an input a SIN number, you could you this validator.
+So if you need validate an input SIN number, you could you this validator.
 
 - [Social Insurance Number – Overview](https://www.canada.ca/en/employment-social-development/services/sin.html)
 - [SIN Validator challenge at the CodeCrunch](https://www.codercrunch.com/challenge/819302488/sin-validator)
@@ -79,6 +95,36 @@ So if you need validate an input a SIN number, you could you this validator.
 ```
 
 [You can verify test cases here](src/validators/sin-CA.test.ts)
+
+### Pattern
+
+In case you need to validate you input based on any random RegEx pattern you interested in, you can do it by `pattern` validator.
+
+```js
+const pattern = /^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,})\S$/u;
+
+{validator: VALIDATORS.pattern, pattern, message: 'Password must contain minimum of 6 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number with no spaces.'},
+
+```
+
+[You can verify test cases here](src/validators/pattern.test.ts)
+
+### Func
+
+In case you need to implement much more complex validation you can use `func` validator. It allows you to implement any validation logic you need.
+
+```js
+function isAdult(value) {
+ const chosen = new Date(value);
+ const threshold = new Date();
+ threshold.setFullYear(threshold.getFullYear() - 18);
+ return chosen < threshold;
+}
+
+{validator: VALIDATORS.func, func: isAdult, message: 'You are under 18 years old!'},
+```
+
+[You can verify test cases here](src/validators/func.test.ts)
 
 ## Example
 
