@@ -22,6 +22,8 @@ it('Should skip a falsy value.', () => {
 	'325268597',
 	'336475660',
 	'744797853',
+	'130692544',
+	'046454286',
 ].forEach((value) => {
 	it(`Returns falsy if "${value}" passed.`, () => {
 		const result = validateValue(value);
@@ -47,6 +49,10 @@ it('Should skip a falsy value.', () => {
 	'70597312',
 	'7058973122',
 	'069437151',
+	'046454281',
+	'146452286',
+	'30x92544',
+	'30692544',
 ].forEach((value) => {
 	it(`Returns built-in error message if "${value}" passed.`, () => {
 		const result = validateValue(value);

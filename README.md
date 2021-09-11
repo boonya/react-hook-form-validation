@@ -10,8 +10,8 @@
 - [`max` - Max value of number or max length of string & array](#max)
 - [`email` - Email address](#email)
 - [`url` - URL](#url)
-- [`postalCodeCA` - Postal Code in Canada](#postalcodeca)
-- [`sinCA` - Social Insurance Number (SIN) in Canada](#sinca)
+- [`postalCodeCA` - Postal Code in Canada](#postal-code-in-canada)
+- [`sinCA` - Social Insurance Number (SIN) in Canada](#social-insurance-number-sin-in-canada)
 - [`pattern` - RegEx pattern based](#pattern)
 - [`func` - function based](#func)
 
@@ -53,15 +53,32 @@ If you need to ensure your input not more than expected. It can compare numbers 
 
 [You can verify test cases here](src/validators/max.test.ts)
 
-## Postal Code CA
+## Postal Code in Canada
 
-The validator could be useful when you need to validate your input as a canadian postal code https://en.wikipedia.org/wiki/Postal_codes_in_Canada
+The validator could be useful when you need to validate your input as a Canadian postal code
+
+[A bit details about Postal Codes in Canada](https://en.wikipedia.org/wiki/Postal_codes_in_Canada)
 
 ```js
-{validator: VALIDATORS.postalCodeCA, message: 'It doesn\'t seem to be a Canadian postal code'},
+{validator: VALIDATORS.postalCodeCA, message: 'It doesn\'t seem to be a Canadian Postal Code'},
 ```
 
 [You can verify test cases here](src/validators/postalCode-CA.test.ts)
+
+## Social Insurance Number (SIN) in Canada
+
+> A social insurance number (SIN) is a number issued to every Canadian citizen in Canada. The SIN number is a unique number that helps various government programs like tax reporting, pensions plan, employment verification, etc. A Canadian software development company is building an employee payroll application for which they are looking for a SIN validator library.
+
+So if you need validate an input a SIN number, you could you this validator.
+
+- [Social Insurance Number – Overview](https://www.canada.ca/en/employment-social-development/services/sin.html)
+- [SIN Validator challenge at the CodeCrunch](https://www.codercrunch.com/challenge/819302488/sin-validator)
+
+```js
+{validator: VALIDATORS.sinCA, message: 'It doesn\'t seem to be a Canadian Social Insurance Number'},
+```
+
+[You can verify test cases here](src/validators/sin-CA.test.ts)
 
 ## Example
 
