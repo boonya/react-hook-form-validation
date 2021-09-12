@@ -14,6 +14,7 @@
 - [`sinCA` - Social Insurance Number (SIN) in Canada](#social-insurance-number-sin-in-canada)
 - [`pattern` - RegEx pattern based](#pattern)
 - [`func` - function based](#func)
+- [`async` - function based](#async)
 
 You can import enum of them:
 
@@ -31,7 +32,7 @@ _Note that_ other validators do not perform their logic if empty value passed to
 {validator: VALIDATORS.required, message: 'The field is required'},
 ```
 
-[You can verify test cases here](src/validators/required.test.ts)
+[verify test cases](src/validators/required.test.ts)
 
 ### Min
 
@@ -41,7 +42,7 @@ If you need to ensure your input not less than expected. It can compare numbers 
 {validator: VALIDATORS.min, expected: 5, message: 'The value is less than 5'},
 ```
 
-[You can verify test cases here](src/validators/min.test.ts)
+[verify test cases](src/validators/min.test.ts)
 
 ### Max
 
@@ -51,7 +52,7 @@ If you need to ensure your input not more than expected. It can compare numbers 
 {validator: VALIDATORS.max, expected: 5, message: 'The value is more than 5'},
 ```
 
-[You can verify test cases here](src/validators/max.test.ts)
+[verify test cases](src/validators/max.test.ts)
 
 ### Email
 
@@ -59,7 +60,7 @@ If you need to ensure your input not more than expected. It can compare numbers 
 {validator: VALIDATORS.email, message: 'The value is not an email address'},
 ```
 
-[You can verify test cases here](src/validators/email.test.ts)
+[verify test cases](src/validators/email.test.ts)
 
 ### URL
 
@@ -67,7 +68,7 @@ If you need to ensure your input not more than expected. It can compare numbers 
 {validator: VALIDATORS.url, message: 'The value is not a URL'},
 ```
 
-[You can verify test cases here](src/validators/url.test.ts)
+[verify test cases](src/validators/url.test.ts)
 
 ### Postal Code in Canada
 
@@ -79,7 +80,7 @@ The validator could be useful when you need to validate your input as a Canadian
 {validator: VALIDATORS.postalCodeCA, message: 'It doesn\'t seem to be a Canadian Postal Code'},
 ```
 
-[You can verify test cases here](src/validators/postalCode-CA.test.ts)
+[verify test cases](src/validators/postalCode-CA.test.ts)
 
 ### Social Insurance Number (SIN) in Canada
 
@@ -94,7 +95,7 @@ So if you need validate an input SIN number, you could you this validator.
 {validator: VALIDATORS.sinCA, message: 'It doesn\'t seem to be a Canadian Social Insurance Number'},
 ```
 
-[You can verify test cases here](src/validators/sin-CA.test.ts)
+[verify test cases](src/validators/sin-CA.test.ts)
 
 ### Pattern
 
@@ -107,7 +108,7 @@ const pattern = /^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,})\S$/u;
 
 ```
 
-[You can verify test cases here](src/validators/pattern.test.ts)
+[verify test cases](src/validators/pattern.test.ts)
 
 ### Func
 
@@ -124,7 +125,21 @@ function isAdult(value) {
 {validator: VALIDATORS.func, func: isAdult, message: 'You are under 18 years old!'},
 ```
 
-[You can verify test cases here](src/validators/func.test.ts)
+[verify test cases](src/validators/func.test.ts)
+
+### Async
+
+This validator can be useful if you need to compare your value with result of asynchronous query.
+
+```js
+function func(value) {
+ return new Promise(() => setTimeout(() => false, 1000));
+}
+
+{validator: VALIDATORS.async, func, message: 'You waited for an error message'},
+```
+
+[verify test cases](src/validators/async.test.ts)
 
 ## Example
 
