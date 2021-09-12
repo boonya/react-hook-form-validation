@@ -8,7 +8,6 @@ export enum VALIDATORS {
 	sinCA = 'sinCA',
 	pattern = 'pattern',
 	func = 'func',
-	async = 'async',
 }
 
 export enum VALIDATION_MESSAGES {

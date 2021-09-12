@@ -8,7 +8,6 @@ import postalCodeCA from './postalCode-CA';
 import sinCA from './sin-CA';
 import pattern from './pattern';
 import func from './func';
-import async from './async';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 function getValidator(name: string): (...args: unknown[]) => ValidatorResult | AsyncValidatorResult {
@@ -40,9 +39,6 @@ function getValidator(name: string): (...args: unknown[]) => ValidatorResult | A
 	case VALIDATORS.func:
 		// @ts-ignore
 		return func;
-	case VALIDATORS.async:
-		// @ts-ignore
-		return async;
 	default:
 		return () => {
 			throw TypeError(`Validator "${name}" is undefined.`);
@@ -52,8 +48,9 @@ function getValidator(name: string): (...args: unknown[]) => ValidatorResult | A
 
 export default async function validators(name: VALIDATORS, ...args: unknown[]): AsyncValidatorResult {
 	const validator = getValidator(name);
-	if (name !== VALIDATORS.async) {
-		return await validator(...args);
+	if (name !== VALIDATORS.func) {
+		const result = validator(...args);
+		return Promise.resolve(result);
 	}
 	return validator(...args);
 }

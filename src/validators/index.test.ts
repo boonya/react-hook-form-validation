@@ -11,7 +11,6 @@ import postalCodeCA from './postalCode-CA';
 import sinCA from './sin-CA';
 import pattern from './pattern';
 import func from './func';
-import async from './async';
 
 jest.mock('./required');
 jest.mock('./min');
@@ -22,9 +21,8 @@ jest.mock('./postalCode-CA');
 jest.mock('./sin-CA');
 jest.mock('./pattern');
 jest.mock('./func');
-jest.mock('./async');
 
-const validators = { required, min, max, email, url, postalCodeCA, sinCA, pattern, func, async };
+const validators = { required, min, max, email, url, postalCodeCA, sinCA, pattern, func };
 
 beforeEach(() => {
 	mocked(required).mockName(VALIDATORS.required).mockReturnValue(VALIDATORS.required);
@@ -35,8 +33,7 @@ beforeEach(() => {
 	mocked(postalCodeCA).mockName(VALIDATORS.postalCodeCA).mockReturnValue(VALIDATORS.postalCodeCA);
 	mocked(sinCA).mockName(VALIDATORS.sinCA).mockReturnValue(VALIDATORS.sinCA);
 	mocked(pattern).mockName(VALIDATORS.pattern).mockReturnValue(VALIDATORS.pattern);
-	mocked(func).mockName(VALIDATORS.func).mockReturnValue(VALIDATORS.func);
-	mocked(async).mockName(VALIDATORS.async).mockResolvedValue(VALIDATORS.async);
+	mocked(func).mockName(VALIDATORS.func).mockResolvedValue(VALIDATORS.func);
 });
 
 Object.values(VALIDATORS).forEach((name) => {

@@ -1,8 +1,8 @@
-import {VALIDATION_MESSAGES, ValidatorCustomParams, ValidatorResult} from '../types';
+import {VALIDATION_MESSAGES, ValidatorCustomParams, ValidatorAsyncCustomParams, AsyncValidatorResult} from '../types';
 import {createValidationMessage} from '../helpers';
 
-export default function custom(input: unknown, {func, message}: ValidatorCustomParams): ValidatorResult {
-	if (func(input)) {
+export default async function custom(input: unknown, {func, message}: ValidatorAsyncCustomParams | ValidatorCustomParams): AsyncValidatorResult {
+	if (await func(input)) {
 		return null;
 	}
 	return message

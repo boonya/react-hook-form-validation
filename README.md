@@ -14,7 +14,6 @@
 - [`sinCA` - Social Insurance Number (SIN) in Canada](#social-insurance-number-sin-in-canada)
 - [`pattern` - RegEx pattern based](#pattern)
 - [`func` - function based](#func)
-- [`async` - function based](#async)
 
 You can import enum of them:
 
@@ -112,7 +111,8 @@ const pattern = /^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,})\S$/u;
 
 ### Func
 
-In case you need to implement much more complex validation you can use `func` validator. It allows you to implement any validation logic you need.
+In case you need to implement much more complex validation you can use `func` validator.
+It allows you to implement any validation logic you need.
 
 ```js
 function isAdult(value) {
@@ -125,21 +125,17 @@ function isAdult(value) {
 {validator: VALIDATORS.func, func: isAdult, message: 'You are under 18 years old!'},
 ```
 
-[verify test cases](src/validators/func.test.ts)
-
-### Async
-
-This validator can be useful if you need to compare your value with result of asynchronous query.
+It can be useful if you need to compare your value with result of asynchronous query:
 
 ```js
-function func(value) {
+function asyncFunction(value) {
  return new Promise(() => setTimeout(() => false, 1000));
 }
 
-{validator: VALIDATORS.async, func, message: 'You waited for an error message'},
+{validator: VALIDATORS.func, func: asyncFunction, message: 'You waited for an error message'},
 ```
 
-[verify test cases](src/validators/async.test.ts)
+[verify test cases](src/validators/func.test.ts)
 
 ## Example
 
