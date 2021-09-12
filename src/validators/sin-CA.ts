@@ -1,7 +1,7 @@
-import { VALIDATION_MESSAGES, ValidatorCommonParams } from '../types';
+import { VALIDATION_MESSAGES, ValidatorCommonParams, ValidatorResult } from '../types';
 import { createValidationMessage } from '../helpers';
 
-export default function postalCodeCA(input: string, { message }: ValidatorCommonParams = {}): string | null {
+export default function postalCodeCA(input: string, { message }: ValidatorCommonParams = {}): ValidatorResult {
 	if (!input) {
 		return null;
 	}

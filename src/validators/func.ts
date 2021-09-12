@@ -1,7 +1,7 @@
-import {VALIDATION_MESSAGES, ValidatorCustomParams} from '../types';
+import {VALIDATION_MESSAGES, ValidatorCustomParams, ValidatorResult} from '../types';
 import {createValidationMessage} from '../helpers';
 
-export default function custom(input: unknown, {func, message}: ValidatorCustomParams): string | null {
+export default function custom(input: unknown, {func, message}: ValidatorCustomParams): ValidatorResult {
 	if (func(input)) {
 		return null;
 	}

@@ -11,6 +11,7 @@ import postalCodeCA from './postalCode-CA';
 import sinCA from './sin-CA';
 import pattern from './pattern';
 import func from './func';
+import async from './async';
 
 jest.mock('./required');
 jest.mock('./min');
@@ -21,24 +22,26 @@ jest.mock('./postalCode-CA');
 jest.mock('./sin-CA');
 jest.mock('./pattern');
 jest.mock('./func');
+jest.mock('./async');
 
-const validators = { required, min, max, email, url, postalCodeCA, sinCA, pattern, func };
+const validators = { required, min, max, email, url, postalCodeCA, sinCA, pattern, func, async };
 
 beforeEach(() => {
-	mocked(required).mockName('required').mockReturnValue('required');
-	mocked(min).mockName('min').mockReturnValue('min');
-	mocked(max).mockName('max').mockReturnValue('max');
-	mocked(email).mockName('email').mockReturnValue('email');
-	mocked(url).mockName('url').mockReturnValue('url');
-	mocked(postalCodeCA).mockName('postalCodeCA').mockReturnValue('postalCodeCA');
-	mocked(sinCA).mockName('sinCA').mockReturnValue('sinCA');
-	mocked(pattern).mockName('pattern').mockReturnValue('pattern');
-	mocked(func).mockName('func').mockReturnValue('func');
+	mocked(required).mockName(VALIDATORS.required).mockReturnValue(VALIDATORS.required);
+	mocked(min).mockName(VALIDATORS.min).mockReturnValue(VALIDATORS.min);
+	mocked(max).mockName(VALIDATORS.max).mockReturnValue(VALIDATORS.max);
+	mocked(email).mockName(VALIDATORS.email).mockReturnValue(VALIDATORS.email);
+	mocked(url).mockName(VALIDATORS.url).mockReturnValue(VALIDATORS.url);
+	mocked(postalCodeCA).mockName(VALIDATORS.postalCodeCA).mockReturnValue(VALIDATORS.postalCodeCA);
+	mocked(sinCA).mockName(VALIDATORS.sinCA).mockReturnValue(VALIDATORS.sinCA);
+	mocked(pattern).mockName(VALIDATORS.pattern).mockReturnValue(VALIDATORS.pattern);
+	mocked(func).mockName(VALIDATORS.func).mockReturnValue(VALIDATORS.func);
+	mocked(async).mockName(VALIDATORS.async).mockResolvedValue(VALIDATORS.async);
 });
 
 Object.values(VALIDATORS).forEach((name) => {
-	it(`Existent validator "${name}" called`, () => {
-		const result = aggregator(name, 'arg1', 'arg2');
+	it(`Existent validator "${name}" returns promise`, async () => {
+		const result = await aggregator(name, 'arg1', 'arg2');
 
 		expect(validators[name]).toBeCalledTimes(1);
 		expect(validators[name]).toBeCalledWith('arg1', 'arg2');
@@ -46,8 +49,9 @@ Object.values(VALIDATORS).forEach((name) => {
 	});
 });
 
-it('Unknown validator called', () => {
-	expect(() => aggregator('unknown', 'arg1', 'arg2')).toThrow(new TypeError('Validator "unknown" is undefined.'));
+it('In case unknown validator return rejected promise', async () => {
+	await expect(aggregator('unknown', 'arg1', 'arg2')).rejects.toThrow(new TypeError('Validator "unknown" is undefined.'));
+
 	Object.values(validators).forEach((validator) => {
 		expect(validator).toBeCalledTimes(0);
 	});

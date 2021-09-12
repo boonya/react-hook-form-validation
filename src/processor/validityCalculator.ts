@@ -2,7 +2,7 @@ import {DEFAULT_FIELD_STATE, FormPayload, FieldRuleSet, FieldState} from '../typ
 import createValidityReducer from './validityReducerCreator';
 import {extractFieldValue} from '../helpers';
 
-export default function validityCalculator(ruleset: FieldRuleSet, payload: FormPayload, name: string, index: number): FieldState {
+export default async function validityCalculator(ruleset: FieldRuleSet, payload: FormPayload, name: string, index: number): Promise<FieldState> {
 	const value = extractFieldValue(payload, name, index);
 
 	const defaultResult = {
@@ -17,6 +17,6 @@ export default function validityCalculator(ruleset: FieldRuleSet, payload: FormP
 	}
 
 	const validityReducer = createValidityReducer(payload, name, value, index);
-	const reducedResult = ruleset.reduce(validityReducer, null);
+	const reducedResult = await ruleset.reduce(validityReducer, Promise.resolve(null));
 	return reducedResult || defaultResult;
 }

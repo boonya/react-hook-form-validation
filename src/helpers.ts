@@ -57,22 +57,23 @@ export function extractFieldValue(payload: FormPayload, name: string, index: num
 	return payload[name][index];
 }
 
-export function processFormValidity(processor: Processor, currentValidity: FormValidity, payload: FormPayload): FormValidity {
-	const validity = currentValidity
+export async function processFormValidity(processor: Processor, currentValidity: FormValidity, payload: FormPayload): Promise<FormValidity> {
+	const promises = currentValidity
 		.values()
-		.reduce((acc: FieldState[], fieldState: FieldState) => {
-			const { name, index } = fieldState;
+		.reduce((acc: Promise<FieldState>[], fieldState: FieldState) => {
+			const {name, index} = fieldState;
 			const result = processor(payload, name, index);
 			return [...acc, result];
 		}, []);
+	const validity = await Promise.all(promises);
 	return new Validity(validity);
 }
 
-export function processFieldValidity(processor: Processor, currentValidity: FormValidity, payload: FormPayload, name: string, index: number): FormValidity {
+export async function processFieldValidity(processor: Processor, currentValidity: FormValidity, payload: FormPayload, name: string, index: number): Promise<FormValidity> {
 	const filtered = currentValidity
 		.values()
 		.filter((stackItem) => stackItem.name !== name || stackItem.index !== index);
-	const result = processor(payload, name, index);
+	const result = await processor(payload, name, index);
 	return new Validity([...filtered, result]);
 }
 

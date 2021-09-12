@@ -1,7 +1,7 @@
-import { VALIDATION_MESSAGES, ValidatorLengthParams, LengthValue } from '../types';
+import { VALIDATION_MESSAGES, ValidatorLengthParams, LengthValue, ValidatorResult } from '../types';
 import { createValidationMessage } from '../helpers';
 
-export default function max(input: LengthValue, { expected, message }: ValidatorLengthParams): string | null {
+export default function max(input: LengthValue, { expected, message }: ValidatorLengthParams): ValidatorResult {
 	const length = typeof input === 'number' ? input : input.length;
 	if (length <= expected) {
 		return null;

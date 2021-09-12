@@ -38,8 +38,8 @@ const processor = jest.fn().mockName('processor');
 beforeEach(() => {
 	mocked(createProcessor).mockName('createProcessor').mockReturnValue(processor);
 	mocked(createDefaultValidity).mockName('createDefaultValidity').mockReturnValue(defaultValidity);
-	mocked(processFormValidity).mockName('processFormValidity').mockReturnValue(newValidity);
-	mocked(processFieldValidity).mockName('processFieldValidity').mockReturnValue(newValidity);
+	mocked(processFormValidity).mockName('processFormValidity').mockResolvedValue(newValidity);
+	mocked(processFieldValidity).mockName('processFieldValidity').mockResolvedValue(newValidity);
 	mocked(validateRuleSet).mockName('validateRuleSet').mockReturnValue();
 });
 
@@ -70,11 +70,11 @@ test('Keeps default validity initially as a state', () => {
 });
 
 describe('validateForm', () => {
-	test('Throws an exception if no payload', () => {
+	test('Throws an exception if no payload', async () => {
 		const hook = runHook();
 
-		act(() => {
-			expect(() => hook.current.validateForm()).toThrow(
+		await act(async () => {
+			await expect(hook.current.validateForm()).rejects.toThrow(
 				new Error('You have to pass a form payload object to validate the form.')
 			);
 		});
@@ -85,11 +85,11 @@ describe('validateForm', () => {
 		expect(createDefaultValidity).toBeCalledWith(validRuleSet);
 	});
 
-	test('Returns new validity and changes state', () => {
+	test('Returns new validity and changes state', async () => {
 		const hook = runHook();
 
-		act(() => {
-			const result = hook.current.validateForm({});
+		await act(async () => {
+			const result = await hook.current.validateForm({});
 			expect(result).toBe(newValidity);
 		});
 
@@ -105,11 +105,11 @@ describe('validateForm', () => {
 });
 
 describe('validateField', () => {
-	test('Throws an exception if no payload', () => {
+	test('Throws an exception if no payload', async () => {
 		const hook = runHook();
 
-		act(() => {
-			expect(() => hook.current.validateField()).toThrow(
+		await act(async () => {
+			await expect(hook.current.validateField()).rejects.toThrow(
 				new Error('You have to pass a form payload object to validate the field.')
 			);
 		});
@@ -120,11 +120,11 @@ describe('validateField', () => {
 		expect(createDefaultValidity).toBeCalledWith(validRuleSet);
 	});
 
-	test('Throws an exception if no field name', () => {
+	test('Throws an exception if no field name', async () => {
 		const hook = runHook();
 
-		act(() => {
-			expect(() => hook.current.validateField({})).toThrow(
+		await act(async () => {
+			await expect(hook.current.validateField({})).rejects.toThrow(
 				new Error('You have to pass a field name to validate the field.')
 			);
 		});
@@ -135,11 +135,11 @@ describe('validateField', () => {
 		expect(createDefaultValidity).toBeCalledWith(validRuleSet);
 	});
 
-	test('Throws an exception if field name is not a string', () => {
+	test('Throws an exception if field name is not a string', async () => {
 		const hook = runHook();
 
-		act(() => {
-			expect(() => hook.current.validateField({}, [])).toThrow(
+		await act(async () => {
+			await expect(hook.current.validateField({}, [])).rejects.toThrow(
 				new Error('You have to pass a field name to validate the field.')
 			);
 		});
@@ -150,11 +150,11 @@ describe('validateField', () => {
 		expect(createDefaultValidity).toBeCalledWith(validRuleSet);
 	});
 
-	test('Throws an exception if field name is an empty string', () => {
+	test('Throws an exception if field name is an empty string', async () => {
 		const hook = runHook();
 
-		act(() => {
-			expect(() => hook.current.validateField({}, '  ')).toThrow(
+		await act(async () => {
+			await expect(hook.current.validateField({}, '  ')).rejects.toThrow(
 				new Error('You have to pass a field name to validate the field.')
 			);
 		});
@@ -165,11 +165,11 @@ describe('validateField', () => {
 		expect(createDefaultValidity).toBeCalledWith(validRuleSet);
 	});
 
-	test('Returns new validity and changes state', () => {
+	test('Returns new validity and changes state', async () => {
 		const hook = runHook();
 
-		act(() => {
-			const result = hook.current.validateField({}, 'field');
+		await act(async () => {
+			const result = await hook.current.validateField({}, 'field');
 			expect(result).toBe(newValidity);
 		});
 
@@ -184,11 +184,11 @@ describe('validateField', () => {
 	});
 });
 
-test('resetForm', () => {
+test('resetForm', async () => {
 	const hook = runHook();
 
-	act(() => {
-		const validity = hook.current.validateForm({ fieldname: [''] });
+	await act(async () => {
+		const validity = await hook.current.validateForm({ fieldname: [''] });
 		expect(validity).toBe(newValidity);
 	});
 

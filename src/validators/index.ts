@@ -1,4 +1,4 @@
-import { VALIDATORS } from '../types';
+import { VALIDATORS, ValidatorResult, AsyncValidatorResult } from '../types';
 import required from './required';
 import min from './min';
 import max from './max';
@@ -8,39 +8,53 @@ import postalCodeCA from './postalCode-CA';
 import sinCA from './sin-CA';
 import pattern from './pattern';
 import func from './func';
+import async from './async';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-export default function validators(validator: VALIDATORS, ...args: unknown[]): string|null {
-	switch (validator) {
+function getValidator(name: string): (...args: unknown[]) => ValidatorResult | AsyncValidatorResult {
+	switch (name) {
 	case VALIDATORS.required:
 		// @ts-ignore
-		return required(...args);
+		return required;
 	case VALIDATORS.min:
 		// @ts-ignore
-		return min(...args);
+		return min;
 	case VALIDATORS.max:
 		// @ts-ignore
-		return max(...args);
+		return max;
 	case VALIDATORS.email:
 		// @ts-ignore
-		return email(...args);
+		return email;
 	case VALIDATORS.url:
 		// @ts-ignore
-		return url(...args);
+		return url;
 	case VALIDATORS.postalCodeCA:
 		// @ts-ignore
-		return postalCodeCA(...args);
+		return postalCodeCA;
 	case VALIDATORS.sinCA:
 		// @ts-ignore
-		return sinCA(...args);
+		return sinCA;
 	case VALIDATORS.pattern:
 		// @ts-ignore
-		return pattern(...args);
+		return pattern;
 	case VALIDATORS.func:
 		// @ts-ignore
-		return func(...args);
+		return func;
+	case VALIDATORS.async:
+		// @ts-ignore
+		return async;
 	default:
-		throw TypeError(`Validator "${validator}" is undefined.`);
+		return () => {
+			throw TypeError(`Validator "${name}" is undefined.`);
+		};
 	}
+}
+
+export default async function validators(name: VALIDATORS, ...args: unknown[]): AsyncValidatorResult {
+	const validator = getValidator(name);
+	if (name !== VALIDATORS.async) {
+		return await validator(...args);
+	}
+	return validator(...args);
 }
 /* eslint-enable @typescript-eslint/ban-ts-comment */

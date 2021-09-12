@@ -1,7 +1,7 @@
-import {VALIDATION_MESSAGES, ValidatorPatternParams} from '../types';
+import {VALIDATION_MESSAGES, ValidatorPatternParams, ValidatorResult} from '../types';
 import {createValidationMessage} from '../helpers';
 
-export default function pattern(input: string, {pattern, message}: ValidatorPatternParams): string | null {
+export default function pattern(input: string, {pattern, message}: ValidatorPatternParams): ValidatorResult {
 	if (!input) {
 		return null;
 	}

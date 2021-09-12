@@ -1,8 +1,8 @@
-import {VALIDATION_MESSAGES, ValidatorCommonParams} from '../types';
+import {VALIDATION_MESSAGES, ValidatorCommonParams, ValidatorResult} from '../types';
 import {createValidationMessage} from '../helpers';
 import isEmpty from 'lodash/isEmpty';
 
-export default function required(input: unknown, {message}: ValidatorCommonParams = {}): string | null {
+export default function required(input: unknown, {message}: ValidatorCommonParams = {}): ValidatorResult {
 	if (typeof input === 'number') {
 		return null;
 	}

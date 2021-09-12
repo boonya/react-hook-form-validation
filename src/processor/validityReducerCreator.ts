@@ -8,11 +8,11 @@ function isConditionMet(condition: Condition, payload: FormPayload, index: numbe
 	return selector(...values);
 }
 
-type ReducerAccumulator = FieldState | null;
+type ReducerResult = Promise<FieldState | null>;
 
 export default function validityReducerCreator(payload: FormPayload, name: string, value: unknown, index: number) {
-	return (acc: ReducerAccumulator, rule: FieldRule): ReducerAccumulator => {
-		if (acc) {
+	return async (acc: ReducerResult, rule: FieldRule): ReducerResult => {
+		if (await acc) {
 			return acc;
 		}
 
@@ -22,7 +22,7 @@ export default function validityReducerCreator(payload: FormPayload, name: strin
 			return null;
 		}
 
-		const message = validateValue(validator, value, props);
+		const message = await validateValue(validator, value, props);
 		if (!message) {
 			return null;
 		}

@@ -28,6 +28,14 @@ it('Returns built-in error message if custom function returns falsy.', () => {
 	expect(result).toBe(VALIDATION_MESSAGES.invalid);
 });
 
+it('Returns built-in error message if custom function throws an error.', () => {
+	const func = jest.fn(() => {
+		throw new Error('An error');
+	}).mockName('func');
+
+	expect(() => validateValue('A value', { func })).toThrowError(new Error('An error'));
+});
+
 it('Returns custom error message if custom function returns falsy.', () => {
 	mocked(createValidationMessage).mockName('createValidationMessage').mockReturnValueOnce('An error message');
 
