@@ -1,8 +1,8 @@
-import {FieldRule, FormPayload, FieldState, VALIDATORS} from '../types';
+import { FieldRule, FormPayload, FieldState, VALIDATORS } from '../types';
 import validateValue from '../validators';
-import {extractFieldValue} from '../helpers';
+import { extractFieldValue } from '../helpers';
 import validityReducerCreator from './validityReducerCreator';
-import {mocked} from 'ts-jest/utils';
+import { mocked } from 'ts-jest/utils';
 
 jest.mock('../validators');
 jest.mock('../helpers');
@@ -13,7 +13,7 @@ const FIELDS = {
 };
 
 beforeEach(() => {
-	mocked(validateValue).mockName('validateValue').mockResolvedValue(null);
+	mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: false, fail: 'fail', success: 'success' });
 	mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue(undefined);
 });
 
@@ -23,12 +23,11 @@ describe('Check condition if passed', () => {
 	const PAYLOAD: FormPayload = {};
 	const FIELD = FIELDS._1;
 	const VALUE = 'a value';
-	const ERROR_MESSAGE = 'An error message';
 
 	test('Returns null if the condition is not met. Condition selector receives no args.', async () => {
 		const conditionSelector = jest.fn(() => false).mockName('conditionSelector');
-		const FIELD_RULE: FieldRule = {validator: VALIDATORS.required, condition: [conditionSelector]};
-		mocked(validateValue).mockName('validateValue').mockResolvedValue(ERROR_MESSAGE);
+		const FIELD_RULE: FieldRule = { validator: VALIDATORS.required, condition: [conditionSelector] };
+		mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, fail: 'fail', success: 'success' });
 
 		const reducer = validityReducerCreator(PAYLOAD, FIELD, VALUE, INDEX);
 		const result = await reducer(Promise.resolve(null), FIELD_RULE);
@@ -44,11 +43,11 @@ describe('Check condition if passed', () => {
 	test('Returns null if the condition is not met. Condition selector receives some args.', async () => {
 		const conditionSelector = jest.fn(() => false).mockName('conditionSelector');
 		const FIELD_NAMES = [FIELDS._1, FIELDS._1];
-		const FIELD_RULE: FieldRule = {validator: VALIDATORS.required, condition: [conditionSelector, ...FIELD_NAMES]};
+		const FIELD_RULE: FieldRule = { validator: VALIDATORS.required, condition: [conditionSelector, ...FIELD_NAMES] };
 		mocked(extractFieldValue).mockName('extractFieldValue')
 			.mockReturnValueOnce(`${FIELDS._1} value`)
 			.mockReturnValueOnce(`${FIELDS._2} value`);
-		mocked(validateValue).mockName('validateValue').mockResolvedValue(ERROR_MESSAGE);
+		mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, fail: 'fail', success: 'success' });
 
 		const reducer = validityReducerCreator(PAYLOAD, FIELD, VALUE, INDEX);
 		const result = await reducer(Promise.resolve(null), FIELD_RULE);
@@ -66,7 +65,7 @@ describe('Check condition if passed', () => {
 	test('Executes the subordinate code if the condition is met.', async () => {
 		const conditionSelector = jest.fn(() => true).mockName('conditionSelector');
 		const FIELD_NAMES = [FIELDS._1, FIELDS._1];
-		const FIELD_RULE: FieldRule = {validator: VALIDATORS.required, condition: [conditionSelector, ...FIELD_NAMES]};
+		const FIELD_RULE: FieldRule = { validator: VALIDATORS.required, condition: [conditionSelector, ...FIELD_NAMES] };
 		mocked(extractFieldValue).mockName('extractFieldValue')
 			.mockReturnValueOnce(`${FIELDS._1} value`)
 			.mockReturnValueOnce(`${FIELDS._2} value`);
@@ -81,7 +80,7 @@ describe('Check condition if passed', () => {
 		expect(extractFieldValue).toBeCalledWith(PAYLOAD, FIELD_NAMES[1], INDEX);
 		expect(validateValue).toBeCalledTimes(1);
 
-		expect(result).toBeNull();
+		expect(result).toEqual({ name: FIELDS._1, index: 0, pristine: false, error: false, message: 'success' });
 	});
 });
 
@@ -89,7 +88,7 @@ test('Returns null if validation does not produce an error.', async () => {
 	const PAYLOAD: FormPayload = {};
 	const FIELD = FIELDS._1;
 	const VALUE = 'a value';
-	const FIELD_RULE: FieldRule = {validator: VALIDATORS.required};
+	const FIELD_RULE: FieldRule = { validator: VALIDATORS.required };
 
 	const reducer = validityReducerCreator(PAYLOAD, FIELD, VALUE, INDEX);
 	const result = await reducer(Promise.resolve(null), FIELD_RULE);
@@ -98,17 +97,16 @@ test('Returns null if validation does not produce an error.', async () => {
 	expect(validateValue).toBeCalledTimes(1);
 	expect(validateValue).toBeCalledWith(VALIDATORS.required, VALUE, {});
 
-	expect(result).toBeNull();
+	expect(result).toEqual({ name: FIELDS._1, index: 0, pristine: false, error: false, message: 'success' });
 });
 
 describe('Returns FieldState object if validation produces any error.', () => {
 	const PAYLOAD: FormPayload = {};
 	const FIELD = FIELDS._1;
-	const ERROR_MESSAGE = 'An error message';
 
 	async function executeTest(value: unknown) {
-		const FIELD_RULE: FieldRule = {validator: VALIDATORS.required};
-		mocked(validateValue).mockName('validateValue').mockResolvedValue(ERROR_MESSAGE);
+		const FIELD_RULE: FieldRule = { validator: VALIDATORS.required };
+		mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, fail: 'fail', success: 'success' });
 
 		const reducer = validityReducerCreator(PAYLOAD, FIELD, value, INDEX);
 		const result = await reducer(Promise.resolve(null), FIELD_RULE);
@@ -128,7 +126,7 @@ describe('Returns FieldState object if validation produces any error.', () => {
 			index: INDEX,
 			pristine: true,
 			error: true,
-			message: ERROR_MESSAGE,
+			message: 'fail',
 		});
 	});
 
@@ -140,7 +138,7 @@ describe('Returns FieldState object if validation produces any error.', () => {
 			index: INDEX,
 			pristine: false,
 			error: true,
-			message: ERROR_MESSAGE,
+			message: 'fail',
 		});
 	});
 
@@ -152,7 +150,7 @@ describe('Returns FieldState object if validation produces any error.', () => {
 			index: INDEX,
 			pristine: false,
 			error: true,
-			message: ERROR_MESSAGE,
+			message: 'fail',
 		});
 	});
 
@@ -164,7 +162,7 @@ describe('Returns FieldState object if validation produces any error.', () => {
 			index: INDEX,
 			pristine: false,
 			error: true,
-			message: ERROR_MESSAGE,
+			message: 'fail',
 		});
 	});
 
@@ -176,7 +174,7 @@ describe('Returns FieldState object if validation produces any error.', () => {
 			index: INDEX,
 			pristine: false,
 			error: true,
-			message: ERROR_MESSAGE,
+			message: 'fail',
 		});
 	});
 });
@@ -185,14 +183,13 @@ test('Returns the same FieldState object if it is in an accumulator.', async () 
 	const PAYLOAD: FormPayload = {};
 	const FIELD = FIELDS._1;
 	const VALUE = 'a value';
-	const FIELD_RULE: FieldRule = {validator: VALIDATORS.required};
-	const ERROR_MESSAGE = 'An error message';
+	const FIELD_RULE: FieldRule = { validator: VALIDATORS.required };
 	const FIELD_STATE: FieldState = {
 		name: FIELD,
 		index: INDEX,
 		pristine: true,
 		error: true,
-		message: ERROR_MESSAGE,
+		message: 'fail',
 	};
 
 	const reducer = validityReducerCreator(PAYLOAD, FIELD, VALUE, INDEX);

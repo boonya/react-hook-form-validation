@@ -1,11 +1,20 @@
-import {VALIDATION_MESSAGES, ValidatorCustomParams, ValidatorAsyncCustomParams, AsyncValidatorResult} from '../types';
-import {createValidationMessage} from '../helpers';
+import { ValidatorFuncParams, ValidatorAsyncFuncParams, AsyncValidatorResult } from '../types';
+import { createValidatorResult } from '../helpers';
 
-export default async function custom(input: unknown, {func, message}: ValidatorAsyncCustomParams | ValidatorCustomParams): AsyncValidatorResult {
-	if (await func(input)) {
-		return null;
+export default async function func(input: unknown, { func, ...messages }: ValidatorAsyncFuncParams | ValidatorFuncParams): AsyncValidatorResult {
+	const result = await func(input);
+
+	let valid;
+	let payload: unknown[] = [];
+	if (result === true || result === false) {
+		valid = result;
 	}
-	return message
-		? createValidationMessage(message)
-		: VALIDATION_MESSAGES.invalid;
+	else if (Array.isArray(result) && result.length > 0) {
+		[valid, ...payload] = result;
+	}
+	else {
+		throw new TypeError('Your function returned unexpected value');
+	}
+
+	return createValidatorResult(!valid, messages, payload);
 }

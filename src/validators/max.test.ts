@@ -1,97 +1,108 @@
 import validateValue from './max';
-import { createValidationMessage } from '../helpers';
+import { createValidationMessage, createValidatorResult } from '../helpers';
 import { VALIDATION_MESSAGES } from '../types';
 import { mocked } from 'ts-jest/utils';
 
 jest.mock('../helpers');
-mocked(createValidationMessage).mockName('createValidationMessage');
 
-it('Returns falsy if passed a number less than a limit.', () => {
-	const result = validateValue(0, { expected: 5 });
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
+beforeEach(() => {
+	mocked(createValidationMessage).mockName('createValidationMessage')
+		.mockImplementation((message) => message);
+	mocked(createValidatorResult).mockName('createValidatorResult')
+		.mockImplementation((error) => ({ error, message: 'message' }));
 });
 
-it('Returns falsy if passed a number equal to limit.', () => {
-	const result = validateValue(5, { expected: 5 });
+describe('Error', () => {
+	it('number > expected', () => {
+		const result = validateValue(6, { expected: 5 });
 
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
+		expect(createValidationMessage).toBeCalledTimes(0);
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(true, { fail: VALIDATION_MESSAGES.max });
+		expect(result).toEqual({ error: true, message: 'message' });
+	});
+
+	it('string.length > expected', () => {
+		const result = validateValue('АБВГДЕ', { expected: 5 });
+
+		expect(createValidationMessage).toBeCalledTimes(0);
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(true, { fail: VALIDATION_MESSAGES.max });
+		expect(result).toEqual({ error: true, message: 'message' });
+	});
+
+	it('array.length > expected', () => {
+		const result = validateValue([1, 2, 3, 4, 5, 6], { expected: 5 });
+
+		expect(createValidationMessage).toBeCalledTimes(0);
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(true, { fail: VALIDATION_MESSAGES.max });
+		expect(result).toEqual({ error: true, message: 'message' });
+	});
+
+	it('custom error message', () => {
+		const result = validateValue(5, { expected: -10, fail: 'Custom error' });
+
+		expect(createValidationMessage).toBeCalledTimes(1);
+		expect(createValidationMessage).toBeCalledWith('Custom error', { expected: -10, actual: 5 });
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(true, { fail: 'Custom error' });
+		expect(result).toEqual({ error: true, message: 'message' });
+	});
 });
 
-it('Returns built-in error message if passed a number greater than a limit.', () => {
-	const result = validateValue(6, { expected: 5 });
+describe('Valid', () => {
+	it('number < expected', () => {
+		const result = validateValue(0, { expected: 5 });
 
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.max);
-});
+		expect(createValidationMessage).toBeCalledTimes(0);
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
+		expect(result).toEqual({ error: false, message: 'message' });
+	});
 
-it('Returns custom error message if passed a number greater than a limit.', () => {
-	mocked(createValidationMessage).mockName('createValidationMessage').mockReturnValueOnce('An error message');
-	const result = validateValue(6, { expected: 5, message: 'An error message pattern' });
+	it('number = expected', () => {
+		const result = validateValue(5, { expected: 5 });
 
-	expect(createValidationMessage).toBeCalledTimes(1);
-	expect(createValidationMessage).toBeCalledWith('An error message pattern', { actual: 6, expected: 5 });
-	expect(result).toEqual('An error message');
-});
+		expect(createValidationMessage).toBeCalledTimes(0);
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
+		expect(result).toEqual({ error: false, message: 'message' });
+	});
 
-it('Returns falsy if passed a string shorter than a limit.', () => {
-	const result = validateValue('A', { expected: 5 });
+	it('string.length < expected', () => {
+		const result = validateValue('A', { expected: 5 });
 
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
-});
+		expect(createValidationMessage).toBeCalledTimes(0);
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
+		expect(result).toEqual({ error: false, message: 'message' });
+	});
 
-it('Returns falsy if passed a string which length is equal to a limit.', () => {
-	const result = validateValue('АБВГД', { expected: 5 });
+	it('string.length = expected', () => {
+		const result = validateValue('АБВГД', { expected: 5 });
 
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
-});
+		expect(createValidationMessage).toBeCalledTimes(0);
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
+		expect(result).toEqual({ error: false, message: 'message' });
+	});
 
-it('Returns built-in if passed a string longer than a limit.', () => {
-	const result = validateValue('АБВГДЕ', { expected: 5 });
+	it('array.length < expected', () => {
+		const result = validateValue([1], { expected: 5 });
 
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.max);
-});
+		expect(createValidationMessage).toBeCalledTimes(0);
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
+		expect(result).toEqual({ error: false, message: 'message' });
+	});
 
-it('Returns custom error message if passed a string longer than a limit.', () => {
-	mocked(createValidationMessage).mockName('createValidationMessage').mockReturnValueOnce('An error message');
-	const result = validateValue('АБВГДЕ', { expected: 5, message: 'An error message pattern' });
+	it('array.length = expected', () => {
+		const result = validateValue([1, 2, 3, 4, 5], { expected: 5 });
 
-	expect(createValidationMessage).toBeCalledTimes(1);
-	expect(createValidationMessage).toBeCalledWith('An error message pattern', { actual: 6, expected: 5 });
-	expect(result).toEqual('An error message');
-});
-
-it('Returns falsy if passed an array smaller than a limit.', () => {
-	const result = validateValue([1], { expected: 5 });
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
-});
-
-it('Returns falsy if passed an array which length is equal to a limit.', () => {
-	const result = validateValue([1, 2, 3, 4, 5], { expected: 5 });
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
-});
-
-it('Returns built-in error message if passed an array longer than a limit.', () => {
-	const result = validateValue([1, 2, 3, 4, 5, 6], { expected: 5 });
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.max);
-});
-it('Returns custom error message if passed an array longer than a limit.', () => {
-	mocked(createValidationMessage).mockName('createValidationMessage').mockReturnValueOnce('An error message');
-
-	const result = validateValue([1, 2, 3, 4, 5, 6], { expected: 5, message: 'An error message pattern' });
-
-	expect(createValidationMessage).toBeCalledTimes(1);
-	expect(createValidationMessage).toBeCalledWith('An error message pattern', { actual: 6, expected: 5 });
-	expect(result).toEqual('An error message');
+		expect(createValidationMessage).toBeCalledTimes(0);
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
+		expect(result).toEqual({ error: false, message: 'message' });
+	});
 });

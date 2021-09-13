@@ -1,14 +1,14 @@
 import { VALIDATION_MESSAGES, ValidatorCommonParams, ValidatorResult } from '../types';
-import { createValidationMessage } from '../helpers';
+import { createValidationMessage, createValidatorResult } from '../helpers';
 
-export default function url(input: string, { message }: ValidatorCommonParams = {}): ValidatorResult {
-	if (!input) {
-		return null;
+const PATTERN = (/^(?!\/).+?\.[a-z]{2,}(?:\/.*)?$/ui);
+
+export default function url(input: string, messages: ValidatorCommonParams = {}): ValidatorResult {
+	let fail;
+	if (input && !PATTERN.test(input)) {
+		fail = messages.fail
+			? createValidationMessage(messages.fail)
+			: VALIDATION_MESSAGES.url;
 	}
-	if ((/^(?!\/).+?\.[a-z]{2,}(?:\/.*)?$/ui).test(input)) {
-		return null;
-	}
-	return message
-		? createValidationMessage(message)
-		: VALIDATION_MESSAGES.url;
+	return createValidatorResult(Boolean(fail), { ...messages, fail });
 }

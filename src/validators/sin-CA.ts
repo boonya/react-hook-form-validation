@@ -1,10 +1,7 @@
 import { VALIDATION_MESSAGES, ValidatorCommonParams, ValidatorResult } from '../types';
-import { createValidationMessage } from '../helpers';
+import { createValidationMessage, createValidatorResult } from '../helpers';
 
-export default function postalCodeCA(input: string, { message }: ValidatorCommonParams = {}): ValidatorResult {
-	if (!input) {
-		return null;
-	}
+function isValid(input: string) {
 	// https://www.codercrunch.com/challenge/819302488/sin-validator
 	if ((/^\d{9}$/ui).test(input)) {
 		const digitsArray = input.split('');
@@ -21,11 +18,18 @@ export default function postalCodeCA(input: string, { message }: ValidatorCommon
 			.reduce((acc, cur) => acc + cur);
 
 		if (total % 10 === 0) {
-			return null;
+			return true;
 		}
 	}
+	return false;
+}
 
-	return message
-		? createValidationMessage(message)
-		: VALIDATION_MESSAGES.sinCA;
+export default function postalCodeCA(input: string, messages: ValidatorCommonParams = {}): ValidatorResult {
+	let fail;
+	if (input && !isValid(input)) {
+		fail = messages.fail
+			? createValidationMessage(messages.fail)
+			: VALIDATION_MESSAGES.sinCA;
+	}
+	return createValidatorResult(Boolean(fail), { ...messages, fail });
 }

@@ -1,14 +1,12 @@
-import {VALIDATION_MESSAGES, ValidatorPatternParams, ValidatorResult} from '../types';
-import {createValidationMessage} from '../helpers';
+import { VALIDATION_MESSAGES, ValidatorPatternParams, ValidatorResult } from '../types';
+import { createValidationMessage, createValidatorResult } from '../helpers';
 
-export default function pattern(input: string, {pattern, message}: ValidatorPatternParams): ValidatorResult {
-	if (!input) {
-		return null;
+export default function pattern(input: string, { pattern, ...messages }: ValidatorPatternParams): ValidatorResult {
+	let fail;
+	if (input && !pattern.test(input)) {
+		fail = messages.fail
+			? createValidationMessage(messages.fail)
+			: VALIDATION_MESSAGES.pattern;
 	}
-	if (pattern.test(input)) {
-		return null;
-	}
-	return message
-		? createValidationMessage(message)
-		: VALIDATION_MESSAGES.pattern;
+	return createValidatorResult(Boolean(fail), { ...messages, fail });
 }

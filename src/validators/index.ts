@@ -48,10 +48,6 @@ function getValidator(name: string): (...args: unknown[]) => ValidatorResult | A
 
 export default async function validators(name: VALIDATORS, ...args: unknown[]): AsyncValidatorResult {
 	const validator = getValidator(name);
-	if (name !== VALIDATORS.func) {
-		const result = validator(...args);
-		return Promise.resolve(result);
-	}
-	return validator(...args);
+	return await validator(...args);
 }
 /* eslint-enable @typescript-eslint/ban-ts-comment */

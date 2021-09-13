@@ -19,17 +19,22 @@ export enum VALIDATION_MESSAGES {
 	postalCodeCA = 'postal-code-CA',
 	sinCA = 'SIN-CA',
 	pattern = 'pattern',
-	invalid = 'invalid',
+	fail = 'fail',
+	success = 'success',
 }
 
 export type ValidationMessage = string | ((...args: unknown[]) => string);
-export type ValidatorResult = string | null;
+
+export type ValidatorResult = {error: boolean, success: string, fail: string};
 export type AsyncValidatorResult = Promise<ValidatorResult>;
-export type ValidatorCommonParams = { message?: ValidationMessage };
+
+export type ValidatorCommonParams = {fail?: ValidationMessage, success?: ValidationMessage};
 export type ValidatorLengthParams = ValidatorCommonParams & { expected: number };
 export type ValidatorPatternParams = ValidatorCommonParams & { pattern: RegExp };
-export type ValidatorCustomParams = ValidatorCommonParams & { func: (...args: unknown[]) => boolean };
-export type ValidatorAsyncCustomParams = ValidatorCommonParams & { func: (...args: unknown[]) => Promise<boolean> };
+
+type ValidatorFuncResult = boolean | [boolean, ...unknown[]];
+export type ValidatorFuncParams = ValidatorCommonParams & { func: (...args: unknown[]) => ValidatorFuncResult };
+export type ValidatorAsyncFuncParams = ValidatorCommonParams & { func: (...args: unknown[]) => Promise<ValidatorFuncResult> };
 
 export type LengthValue = string | number | Array<unknown>;
 
@@ -40,7 +45,7 @@ export type FieldState = {
 	index: number;
 	pristine: boolean;
 	error: boolean;
-	message?: string;
+	message: string;
 };
 
 export const DEFAULT_FIELD_STATE: Omit<FieldState, 'name'> = {

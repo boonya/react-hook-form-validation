@@ -143,34 +143,38 @@ function asyncFunction(value) {
 import React from 'react';
 import useValidation, {VALIDATORS} from 'react-hook-form-validation';
 
-const isAdult = (value) => {
- const chosen = new Date(value);
- const threshold = new Date();
- threshold.setFullYear(threshold.getFullYear() - 18);
- return chosen < threshold;
+function yearsAgo(value) {
+  const threshold = new Date();
+  return threshold.setFullYear(threshold.getFullYear() - value);
 }
 
-const isUnderEighty = (value) => {
- const chosen = new Date(value);
- const threshold = new Date();
- threshold.setFullYear(threshold.getFullYear() - 80);
- return chosen >= threshold;
+function isMore18(input) {
+  return yearsAgo(18) > new Date(input);
+}
+
+function isLess80(input) {
+  return yearsAgo(80) <= new Date(input);
 };
 
 export default function Form(props) {
  const {validity, validateForm, resetForm} = useValidation([{
   field: 'dob',
   rules: [
-   {validator: VALIDATORS.required, message: 'The field is required'},
-   {validator: VALIDATORS.func, func: isAdult, message: 'You are under 18 years old!'},
-   {validator: VALIDATORS.func, func: isUnderEighty, message: 'No way!'},
+   {validator: VALIDATORS.required, fail: 'The field is required'},
+   {validator: VALIDATORS.func, func: isMore18, fail: 'You are under 18 years old!'},
+   {validator: VALIDATORS.func, func: isLess80, fail: 'No way!'},
   ],
  }]);
 
- const onSubmit = React.useCallback((event) => {
+ const onSubmit = React.useCallback(async (event) => {
   event.preventDefault();
-  const dob = event.target.dob.value;
-  validateForm({dob: [dob]});
+  try {
+    const dob = event.target.dob.value;
+    await validateForm({dob: [dob]});
+  } catch (err) {
+      console.error(err);
+      alert('Something went wrong');
+  }
  }, [validateForm]);
 
  return (

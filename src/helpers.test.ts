@@ -1,4 +1,4 @@
-import { FormPayload, FormValidity } from './types';
+import { FormPayload } from './types';
 import Validity from './validity';
 import {
 	createDefaultValidity,

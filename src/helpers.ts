@@ -6,7 +6,10 @@ import {
 	Processor,
 	FieldState,
 	ValidationMessage,
-	Condition
+	Condition,
+	ValidatorCommonParams,
+	VALIDATION_MESSAGES,
+	ValidatorResult
 } from './types';
 import Validity from './validity';
 
@@ -77,9 +80,26 @@ export async function processFieldValidity(processor: Processor, currentValidity
 	return new Validity([...filtered, result]);
 }
 
-export function createValidationMessage(message: ValidationMessage, props?: { [key: string]: unknown }): string {
+export function createValidationMessage(message: ValidationMessage, ...props: unknown[]): string {
 	if (typeof message === 'function') {
-		return message(props);
+		return message(...props);
 	}
 	return message;
+}
+
+export function createValidatorResult(error: boolean, messages: ValidatorCommonParams = {}, payload: unknown[] = []): ValidatorResult {
+	let message = null;
+
+	if (error) {
+		message = messages.fail
+			? createValidationMessage(messages.fail, ...payload)
+			: VALIDATION_MESSAGES.fail;
+	}
+	else {
+		message = messages.success
+			? createValidationMessage(messages.success, ...payload)
+			: VALIDATION_MESSAGES.success;
+	}
+
+	return {error, message};
 }
