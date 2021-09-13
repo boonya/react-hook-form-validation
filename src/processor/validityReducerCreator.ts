@@ -1,6 +1,6 @@
-import {FieldRule, Condition, FormPayload, FieldState} from '../types';
+import { FieldRule, Condition, FormPayload, FieldState } from '../types';
 import validateValue from '../validators';
-import {extractFieldValue} from '../helpers';
+import { extractFieldValue } from '../helpers';
 
 function isConditionMet(condition: Condition, payload: FormPayload, index: number): boolean {
 	const [selector, ...fields] = condition;
@@ -12,17 +12,19 @@ type ReducerResult = Promise<FieldState | null>;
 
 export default function validityReducerCreator(payload: FormPayload, name: string, value: unknown, index: number) {
 	return async (acc: ReducerResult, rule: FieldRule): ReducerResult => {
-		if (await acc) {
+		const state = await acc;
+
+		if (state && state.error) {
 			return acc;
 		}
 
-		const {validator, condition, ...props} = rule;
+		const { validator, condition, ...props } = rule;
 
 		if (condition && isConditionMet(condition, payload, index) === false) {
 			return null;
 		}
 
-		const {error, message} = await validateValue(validator, value, props);
+		const { error, message } = await validateValue(validator, value, props);
 
 		return {
 			name,

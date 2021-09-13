@@ -15,7 +15,7 @@ const useStyles = makeStyles(({spacing}) => ({
 	},
 }));
 
-const BaseForm = React.forwardRef(function BaseForm({className, onSubmit, dirty, valid, children, ...props}, ref) {
+const BaseForm = React.forwardRef(function BaseForm({className, onSubmit, dirty, valid, disabled, children, ...props}, ref) {
 	const classes = useStyles(props);
 	const {t} = useTranslation();
 
@@ -30,13 +30,14 @@ const BaseForm = React.forwardRef(function BaseForm({className, onSubmit, dirty,
 			noValidate
 			onSubmit={handleSubmit}
 			className={clsx(classes.root, className)}
+			disabled={disabled}
 			{...props}
 			classes={undefined}
 		>
 			{children}
 			<Grid container justifyContent="flex-end">
-				<Button type="submit" className={classes.submit}>{t('validate')}</Button>
-				<Button type="reset">{t('reset')}</Button>
+				<Button type="submit" className={classes.submit} disabled={disabled}>{t('validate')}</Button>
+				<Button type="reset" disabled={disabled}>{t('reset')}</Button>
 			</Grid>
 			{dirty && <FormResult valid={valid} className={classes.result} />}
 		</form>

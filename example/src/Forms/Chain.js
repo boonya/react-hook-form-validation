@@ -10,11 +10,11 @@ function yearsAgo(value) {
 }
 
 function isMore18(input) {
-	return yearsAgo(18) > new Date(input);
+	return new Date(input) < yearsAgo(18);
 }
 
 function isLess80(input) {
-	return yearsAgo(80) <= new Date(input);
+	return new Date(input) >= yearsAgo(80);
 };
 
 export default function Form(props) {
@@ -23,9 +23,9 @@ export default function Form(props) {
 	const {validity, validateForm, resetForm} = useValidation([{
 		field: 'dob',
 		rules: [
-			{validator: VALIDATORS.required, message: t('error-field-required')},
-			{validator: VALIDATORS.func, func: isMore18, message: t('error-under-18-years-old')},
-			{validator: VALIDATORS.func, func: isLess80, message: t('error-old-timer')},
+			{validator: VALIDATORS.required, fail: t('error-field-required')},
+			{validator: VALIDATORS.func, func: isMore18, fail: t('error-under-18-years-old')},
+			{validator: VALIDATORS.func, func: isLess80, fail: t('error-old-timer')},
 		],
 	}]);
 
@@ -61,7 +61,7 @@ export default function Form(props) {
 				name="dob"
 				type="date"
 				error={validity.isError('dob')}
-				helperText={validity.getMessage('dob')}
+				helperText={validity.isError('dob') && validity.getMessage('dob')}
 				required
 				fullWidth
 				margin="normal"

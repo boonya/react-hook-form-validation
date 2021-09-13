@@ -28,7 +28,7 @@ is not an empty string, array or object, is not a null.
 _Note that_ other validators do not perform their logic if empty value passed to them. So, make sure you use `required` validator if needed.
 
 ```js
-{validator: VALIDATORS.required, message: 'The field is required'},
+{validator: VALIDATORS.required, fail: 'The field is required'},
 ```
 
 [verify test cases](src/validators/required.test.ts)
@@ -38,7 +38,7 @@ _Note that_ other validators do not perform their logic if empty value passed to
 If you need to ensure your input not less than expected. It can compare numbers or length of string or array.
 
 ```js
-{validator: VALIDATORS.min, expected: 5, message: 'The value is less than 5'},
+{validator: VALIDATORS.min, expected: 5, fail: 'The value is less than 5'},
 ```
 
 [verify test cases](src/validators/min.test.ts)
@@ -48,7 +48,7 @@ If you need to ensure your input not less than expected. It can compare numbers 
 If you need to ensure your input not more than expected. It can compare numbers or length of string or array.
 
 ```js
-{validator: VALIDATORS.max, expected: 5, message: 'The value is more than 5'},
+{validator: VALIDATORS.max, expected: 5, fail: 'The value is more than 5'},
 ```
 
 [verify test cases](src/validators/max.test.ts)
@@ -56,7 +56,7 @@ If you need to ensure your input not more than expected. It can compare numbers 
 ### Email
 
 ```js
-{validator: VALIDATORS.email, message: 'The value is not an email address'},
+{validator: VALIDATORS.email, fail: 'The value is not an email address'},
 ```
 
 [verify test cases](src/validators/email.test.ts)
@@ -64,7 +64,7 @@ If you need to ensure your input not more than expected. It can compare numbers 
 ### URL
 
 ```js
-{validator: VALIDATORS.url, message: 'The value is not a URL'},
+{validator: VALIDATORS.url, fail: 'The value is not a URL'},
 ```
 
 [verify test cases](src/validators/url.test.ts)
@@ -76,7 +76,7 @@ The validator could be useful when you need to validate your input as a Canadian
 [A bit details about Postal Codes in Canada](https://en.wikipedia.org/wiki/Postal_codes_in_Canada)
 
 ```js
-{validator: VALIDATORS.postalCodeCA, message: 'It doesn\'t seem to be a Canadian Postal Code'},
+{validator: VALIDATORS.postalCodeCA, fail: 'It doesn\'t seem to be a Canadian Postal Code'},
 ```
 
 [verify test cases](src/validators/postalCode-CA.test.ts)
@@ -91,7 +91,7 @@ So if you need validate an input SIN number, you could you this validator.
 - [SIN Validator challenge at the CodeCrunch](https://www.codercrunch.com/challenge/819302488/sin-validator)
 
 ```js
-{validator: VALIDATORS.sinCA, message: 'It doesn\'t seem to be a Canadian Social Insurance Number'},
+{validator: VALIDATORS.sinCA, fail: 'It doesn\'t seem to be a Canadian Social Insurance Number'},
 ```
 
 [verify test cases](src/validators/sin-CA.test.ts)
@@ -103,7 +103,7 @@ In case you need to validate your input based on any random RegEx pattern you in
 ```js
 const pattern = /^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,})\S$/u;
 
-{validator: VALIDATORS.pattern, pattern, message: 'Password must contain minimum of 6 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number with no spaces.'},
+{validator: VALIDATORS.pattern, pattern, fail: 'Password must contain minimum of 6 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number with no spaces.'},
 
 ```
 
@@ -116,23 +116,23 @@ It allows you to implement any validation logic you need.
 
 ```js
 function isAdult(value) {
- const chosen = new Date(value);
- const threshold = new Date();
- threshold.setFullYear(threshold.getFullYear() - 18);
- return chosen < threshold;
+    const chosen = new Date(value);
+    const threshold = new Date();
+    threshold.setFullYear(threshold.getFullYear() - 18);
+    return chosen < threshold;
 }
 
-{validator: VALIDATORS.func, func: isAdult, message: 'You are under 18 years old!'},
+{validator: VALIDATORS.func, func: isAdult, fail: 'You are under 18 years old!'},
 ```
 
 It can be useful if you need to compare your value with result of asynchronous query:
 
 ```js
 function asyncFunction(value) {
- return new Promise(() => setTimeout(() => false, 1000));
+    return new Promise(() => setTimeout(() => false, 1000));
 }
 
-{validator: VALIDATORS.func, func: asyncFunction, message: 'You waited for an error message'},
+{validator: VALIDATORS.func, func: asyncFunction, fail: 'You waited for an error message'},
 ```
 
 [verify test cases](src/validators/func.test.ts)
@@ -144,55 +144,55 @@ import React from 'react';
 import useValidation, {VALIDATORS} from 'react-hook-form-validation';
 
 function yearsAgo(value) {
-  const threshold = new Date();
-  return threshold.setFullYear(threshold.getFullYear() - value);
+    const threshold = new Date();
+    return threshold.setFullYear(threshold.getFullYear() - value);
 }
 
 function isMore18(input) {
-  return yearsAgo(18) > new Date(input);
+    return new Date(input) < yearsAgo(18);
 }
 
 function isLess80(input) {
-  return yearsAgo(80) <= new Date(input);
+    return new Date(input) >= yearsAgo(80);
 };
 
 export default function Form(props) {
- const {validity, validateForm, resetForm} = useValidation([{
-  field: 'dob',
-  rules: [
-   {validator: VALIDATORS.required, fail: 'The field is required'},
-   {validator: VALIDATORS.func, func: isMore18, fail: 'You are under 18 years old!'},
-   {validator: VALIDATORS.func, func: isLess80, fail: 'No way!'},
-  ],
- }]);
+    const {validity, validateForm, resetForm} = useValidation([{
+        field: 'dob',
+        rules: [
+            {validator: VALIDATORS.required, fail: 'The field is required'},
+            {validator: VALIDATORS.func, func: isMore18, fail: 'You are under 18 years old!'},
+            {validator: VALIDATORS.func, func: isLess80, fail: 'No way!'},
+        ],
+    }]);
 
- const onSubmit = React.useCallback(async (event) => {
-  event.preventDefault();
-  try {
-    const dob = event.target.dob.value;
-    await validateForm({dob: [dob]});
-  } catch (err) {
-      console.error(err);
-      alert('Something went wrong');
-  }
- }, [validateForm]);
+    const onSubmit = React.useCallback(async (event) => {
+        event.preventDefault();
+        const dob = event.target.dob.value;
+        try {
+            await validateForm({dob: [dob]});
+        } catch (err) {
+            console.error(err);
+            alert('Something went wrong');
+        }
+    }, [validateForm]);
 
- return (
-  <form noValidate onSubmit={onSubmit} onReset={resetForm}>
-    <label for="dob">Date of Birth *</label>
-    <input
-      id="dob"
-      name="dob"
-      type="date"
-      aria-describedby="helper-text"
-      aria-invalid={validity.isError('dob')}
-      required
-    />
-    <p id="helper-text">{validity.getMessage('dob')}</p>
-    <button type="submit">Validate</button>
-    <button type="reset">Reset</button>
-   {validity.isDirty() && (validity.isValid() ? "The form is Form is valid" : "The form is invalid")}
-  </form>
- )
+    return (
+        <form noValidate onSubmit={onSubmit} onReset={resetForm}>
+            <label for="dob">Date of Birth *</label>
+            <input
+                id="dob"
+                name="dob"
+                type="date"
+                aria-describedby="helper-text"
+                aria-invalid={validity.isError('dob')}
+                required
+            />
+            <p id="helper-text">{validity.getMessage('dob')}</p>
+            <button type="submit">Validate</button>
+            <button type="reset">Reset</button>
+            {validity.isDirty() && (validity.isValid() ? "The form is Form is valid" : "The form is invalid")}
+        </form>
+    );
 }
 ```

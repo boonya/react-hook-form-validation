@@ -24,18 +24,19 @@ const guessRandomNumber = async (input) => {
 	});
 	const json = await response.json();
 	const number = json.result.random.data[0];
-	return [input !== number, number];
+	return [input === number, number];
  };
 
 export default function Form(props) {
+	const [loading, setLoading] = React.useState(false);
 	const {t} = useTranslation('async-form');
 
 	const {validity, validateForm, resetForm} = useValidation([{
 		field: 'number',
 		rules: [
-			{validator: VALIDATORS.required, message: t('error-field-required')},
-			{validator: VALIDATORS.min, expected: 0, message: t('error-field-min-0')},
-			{validator: VALIDATORS.max, expected: 10, message: t('error-field-max-10')},
+			{validator: VALIDATORS.required, fail: t('error-field-required')},
+			{validator: VALIDATORS.min, expected: 0, fail: t('error-field-min-0')},
+			{validator: VALIDATORS.max, expected: 10, fail: t('error-field-max-10')},
 			{
 				validator: VALIDATORS.func,
 				func: guessRandomNumber,
@@ -46,12 +47,15 @@ export default function Form(props) {
 	}]);
 
 	const onSubmit = React.useCallback(async (event) => {
+		setLoading(true);
 		const value = Number(event.target.number.value);
 		try {
 			await validateForm({number: [value]});
 		} catch (err) {
 			console.error('Validation failed: ', err);
+			alert('Something went wrong');
 		}
+		setLoading(false);
 	}, [validateForm]);
 
 	return (
@@ -60,6 +64,7 @@ export default function Form(props) {
 			onReset={resetForm}
 			dirty={validity.isDirty()}
 			valid={validity.isValid()}
+			disabled={loading}
 			{...props}
 		>
 			<Typography variant="h4" gutterBottom>{t('async-validator-form-title')}</Typography>
@@ -71,6 +76,7 @@ export default function Form(props) {
 				helperText={validity.getMessage('number')}
 				required
 				inputProps={{min: 0, max: 10}}
+				disabled={loading}
 				fullWidth
 				margin="normal"
 			/>
