@@ -9,7 +9,7 @@ import {
 	Condition,
 	ValidatorCommonParams,
 	VALIDATION_MESSAGES,
-	ValidatorResult
+	ValidatorResult,
 } from './types';
 import Validity from './validity';
 

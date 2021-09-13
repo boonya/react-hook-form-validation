@@ -22,8 +22,7 @@ export default function validityReducerCreator(payload: FormPayload, name: strin
 			return null;
 		}
 
-		const {error, success, fail} = await validateValue(validator, value, props);
-		const message = error ? fail : success;
+		const {error, message} = await validateValue(validator, value, props);
 
 		return {
 			name,

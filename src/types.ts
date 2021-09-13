@@ -25,7 +25,7 @@ export enum VALIDATION_MESSAGES {
 
 export type ValidationMessage = string | ((...args: unknown[]) => string);
 
-export type ValidatorResult = {error: boolean, success: string, fail: string};
+export type ValidatorResult = {error: boolean, message: string};
 export type AsyncValidatorResult = Promise<ValidatorResult>;
 
 export type ValidatorCommonParams = {fail?: ValidationMessage, success?: ValidationMessage};
@@ -45,7 +45,7 @@ export type FieldState = {
 	index: number;
 	pristine: boolean;
 	error: boolean;
-	message: string;
+	message?: string;
 };
 
 export const DEFAULT_FIELD_STATE: Omit<FieldState, 'name'> = {

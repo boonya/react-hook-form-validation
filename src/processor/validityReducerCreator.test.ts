@@ -13,7 +13,7 @@ const FIELDS = {
 };
 
 beforeEach(() => {
-	mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: false, fail: 'fail', success: 'success' });
+	mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: false, message: 'success' });
 	mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue(undefined);
 });
 
@@ -27,7 +27,7 @@ describe('Check condition if passed', () => {
 	test('Returns null if the condition is not met. Condition selector receives no args.', async () => {
 		const conditionSelector = jest.fn(() => false).mockName('conditionSelector');
 		const FIELD_RULE: FieldRule = { validator: VALIDATORS.required, condition: [conditionSelector] };
-		mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, fail: 'fail', success: 'success' });
+		mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, message: 'fail' });
 
 		const reducer = validityReducerCreator(PAYLOAD, FIELD, VALUE, INDEX);
 		const result = await reducer(Promise.resolve(null), FIELD_RULE);
@@ -47,7 +47,7 @@ describe('Check condition if passed', () => {
 		mocked(extractFieldValue).mockName('extractFieldValue')
 			.mockReturnValueOnce(`${FIELDS._1} value`)
 			.mockReturnValueOnce(`${FIELDS._2} value`);
-		mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, fail: 'fail', success: 'success' });
+		mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, message: 'fail' });
 
 		const reducer = validityReducerCreator(PAYLOAD, FIELD, VALUE, INDEX);
 		const result = await reducer(Promise.resolve(null), FIELD_RULE);
@@ -106,7 +106,7 @@ describe('Returns FieldState object if validation produces any error.', () => {
 
 	async function executeTest(value: unknown) {
 		const FIELD_RULE: FieldRule = { validator: VALIDATORS.required };
-		mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, fail: 'fail', success: 'success' });
+		mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, message: 'fail' });
 
 		const reducer = validityReducerCreator(PAYLOAD, FIELD, value, INDEX);
 		const result = await reducer(Promise.resolve(null), FIELD_RULE);
