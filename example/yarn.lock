@@ -8083,9 +8083,10 @@ react-helmet-async@^1.1.2:
     react-fast-compare "^3.2.0"
     shallowequal "^1.1.0"
 
-react-hook-form-validation@^1.0.0-beta.3:
-  version "1.0.0-beta.3"
-  resolved "https://registry.yarnpkg.com/react-hook-form-validation/-/react-hook-form-validation-1.0.0-beta.3.tgz#aa06102edf3551ffd77c9d6b9976b7b7468ab574"
+react-hook-form-validation@^1.0.0-beta.4:
+  version "1.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/react-hook-form-validation/-/react-hook-form-validation-1.0.0-beta.4.tgz#c5d53624e90f32cf5ccda9105a3ec96d43642b5e"
+  integrity sha512-VTYW15ofY/vwYPKg3njhehdXRdAVW08SVsa2aLvgF7BUW5/eTRwXNZOx16nCtsa23ZaABYMLcqhzoQ2j/ep9Lg==
   dependencies:
     lodash.isempty "^4.4.0"
     lodash.isplainobject "^4.0.6"
@@ -9403,8 +9404,9 @@ tiny-warning@^1.0.2:
   resolved "https://registry.yarnpkg.com/tiny-warning/-/tiny-warning-1.0.3.tgz#94a30db453df4c643d0fd566060d60a875d84754"
 
 tmpl@1.0.x:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/tmpl/-/tmpl-1.0.4.tgz#23640dd7b42d00433911140820e5cf440e521dd1"
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/tmpl/-/tmpl-1.0.5.tgz#8683e0b902bb9c20c4f726e3c0b69f36518c07cc"
+  integrity sha512-3f0uOEAQwIqGuWW2MVzYg8fV/QNnc/IpuJNG837rLuczAaLVHslWHZQj4IGiEl5Hs3kkbhwL9Ab7Hrsmuj+Smw==
 
 to-arraybuffer@^1.0.0:
   version "1.0.1"
