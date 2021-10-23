@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: 15
+          node-version: 16
       - run: npm ci
       - run: npm run lint
   test:
@@ -20,9 +20,9 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: 15
+          node-version: 16
       - run: npm ci
-      - run: npm run test
+      - run: npm run test:ci
   publish:
     needs: [ lint, test ]
     name: Build & publish
@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: 15
+          node-version: 16
       - run: npm ci
       - run: npm run build
       - uses: JS-DevTools/npm-publish@v1
