@@ -6,6 +6,7 @@ import {Helmet} from 'react-helmet-async';
 import Section from './Section';
 import Description from './Description';
 import ChainForm from './Forms/Chain';
+import AsyncForm from './Forms/AsyncFunction';
 import LanguageSwitcher from './LanguageSwitcher';
 
 const useStyles = makeStyles(({spacing}) => ({
@@ -42,6 +43,9 @@ export default function App() {
 			<Grid component="main" className={classes.main}>
 				<Section>
 					<Description />
+				</Section>
+				<Section>
+					<AsyncForm />
 				</Section>
 				<Section>
 					<ChainForm />

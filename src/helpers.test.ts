@@ -1,4 +1,4 @@
-import { FormPayload, FormValidity } from './types';
+import { FormPayload } from './types';
 import Validity from './validity';
 import {
 	createDefaultValidity,
@@ -119,18 +119,19 @@ describe('processFormValidity', () => {
 		error: false,
 	};
 
-	test('Returns an empty validity and does not execute processor if initial validity is empty', () => {
+	test('Returns an empty validity and does not execute processor if initial validity is empty', async () => {
 		const processor = jest.fn().mockName('processor');
-		const initialValidity: FormValidity = new Validity([]);
-		const result = processFormValidity(processor, initialValidity, PAYLOAD);
+		const initialValidity = new Validity([]);
+
+		const result = await processFormValidity(processor, initialValidity, PAYLOAD);
 
 		expect(processor).toBeCalledTimes(0);
 		expect(result).toEqual(new Validity([]));
 	});
 
-	test('The more initial validity we have the more processor executed times.', () => {
-		const processor = jest.fn().mockName('processor').mockReturnValue(PROCESSED);
-		const initialValidity: FormValidity = new Validity([{
+	test('The more initial validity we have the more processor executed times.', async () => {
+		const processor = jest.fn().mockName('processor').mockReturnValue(Promise.resolve(PROCESSED));
+		const initialValidity = new Validity([{
 			name: 'field-1',
 			index: 0,
 			pristine: true,
@@ -146,7 +147,8 @@ describe('processFormValidity', () => {
 			pristine: true,
 			error: false,
 		}]);
-		const result = processFormValidity(processor, initialValidity, PAYLOAD);
+
+		const result = await processFormValidity(processor, initialValidity, PAYLOAD);
 
 		expect(processor).toBeCalledTimes(3);
 		expect(processor).toBeCalledWith(PAYLOAD, 'field-1', 0);
@@ -154,6 +156,8 @@ describe('processFormValidity', () => {
 		expect(processor).toBeCalledWith(PAYLOAD, 'field-2', 0);
 		expect(result).toEqual(new Validity([PROCESSED, PROCESSED, PROCESSED]));
 	});
+
+	// TODO: Cover the case if Promise rejected
 });
 
 describe('processFieldValidity', () => {
@@ -181,17 +185,20 @@ describe('processFieldValidity', () => {
 		error: false,
 	}];
 
-	test('Processed field/index entity replaces a similar from the initial validity array.', () => {
-		const processor = jest.fn().mockName('processor').mockReturnValue(PROCESSED);
-		const initialValidity: FormValidity = new Validity(INITIAL_VALIDITY);
+	test('Processed field/index entity replaces a similar from the initial validity array.', async () => {
+		const processor = jest.fn().mockName('processor').mockReturnValue(Promise.resolve(PROCESSED));
+		const initialValidity = new Validity(INITIAL_VALIDITY);
 		const NAME = INITIAL_VALIDITY[1].name;
 		const INDEX = INITIAL_VALIDITY[1].index;
-		const result = processFieldValidity(processor, initialValidity, PAYLOAD, NAME, INDEX);
+
+		const result = await processFieldValidity(processor, initialValidity, PAYLOAD, NAME, INDEX);
 
 		expect(processor).toBeCalledTimes(1);
 		expect(processor).toBeCalledWith(PAYLOAD, NAME, INDEX);
 		expect(result).toEqual(new Validity([INITIAL_VALIDITY[0], INITIAL_VALIDITY[2], PROCESSED]));
 	});
+
+	// TODO: Cover the case if Promise rejected
 });
 
 describe('createValidationMessage', () => {

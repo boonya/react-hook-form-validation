@@ -1,56 +1,47 @@
 import React from 'react';
-import {Grid, TextField, Button, Typography} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import {TextField, Typography} from '@material-ui/core';
 import useValidation, {VALIDATORS} from 'react-hook-form-validation';
-import Result from '../Result';
+import BaseForm from './BaseForm';
+import { useTranslation } from 'react-i18next';
 
-const useStyles = makeStyles(({spacing}) => ({
-	root: {},
-	paper: {
-		padding: spacing(1),
-	},
-	marginRight: {
-		marginRight: spacing(2),
-	},
-	result: {
-		marginTop: spacing(2),
-	},
-}));
-
-const isAdult = (value) => {
-	const chosen = new Date(value);
+function yearsAgo(value) {
 	const threshold = new Date();
-	threshold.setFullYear(threshold.getFullYear() - 18);
-	return chosen < threshold;
+	return threshold.setFullYear(threshold.getFullYear() - value);
 }
 
-const isUnderEighty = (value) => {
-	const chosen = new Date(value);
-	const threshold = new Date();
-	threshold.setFullYear(threshold.getFullYear() - 80);
-	return chosen >= threshold;
+function isMore18(input) {
+	return new Date(input) < yearsAgo(18);
+}
+
+function isLess80(input) {
+	return new Date(input) >= yearsAgo(80);
 };
 
 export default function Form(props) {
-	const classes = useStyles(props);
+	const {t} = useTranslation('chain-form');
 
 	const {validity, validateForm, resetForm} = useValidation([{
 		field: 'dob',
 		rules: [
-			{validator: VALIDATORS.required, message: 'The field is required'},
-			{validator: VALIDATORS.func, func: isAdult, message: 'You are under 18 years old!'},
-			{validator: VALIDATORS.func, func: isUnderEighty, message: 'No way!'},
+			{validator: VALIDATORS.required, fail: t('error-field-required')},
+			{validator: VALIDATORS.func, func: isMore18, fail: t('error-under-18-years-old')},
+			{validator: VALIDATORS.func, func: isLess80, fail: t('error-old-timer')},
 		],
 	}]);
 
-	const onSubmit = React.useCallback((event) => {
-		event.preventDefault();
+	const onSubmit = React.useCallback(async (event) => {
 		const {dob} = event.target;
-		validateForm({dob: [dob.value]});
+		await validateForm({dob: [dob.value]});
 	}, [validateForm]);
 
 	return (
-		<form noValidate onSubmit={onSubmit} onReset={resetForm} className={classes.root} {...props}>
+		<BaseForm
+			onSubmit={onSubmit}
+			onReset={resetForm}
+			dirty={validity.isDirty()}
+			valid={validity.isValid()}
+			{...props}
+		>
 			<Typography variant="h4" gutterBottom>Here you can check how validators chain works.</Typography>
 			<Typography paragraph>
 				The first is to check for the presence of a value. "Required" in other words.
@@ -66,20 +57,15 @@ export default function Form(props) {
 				The third one checks whether you are older than 80.
 			</Typography>
 			<TextField
-				label="Date of Birth"
+				label={t('date-of-birth')}
 				name="dob"
 				type="date"
 				error={validity.isError('dob')}
-				helperText={validity.getMessage('dob')}
+				helperText={validity.isError('dob') && validity.getMessage('dob')}
 				required
 				fullWidth
 				margin="normal"
 			/>
-			<Grid container justifyContent="flex-end">
-				<Button type="submit" className={classes.marginRight}>Validate</Button>
-				<Button type="reset">Reset</Button>
-			</Grid>
-			{validity.isDirty() && <Result valid={validity.isValid()} className={classes.result} />}
-		</form>
+		</BaseForm>
 	)
 }

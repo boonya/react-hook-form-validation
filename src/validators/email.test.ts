@@ -1,46 +1,72 @@
 import validateValue from './email';
-import {createValidationMessage} from '../helpers';
-import {VALIDATION_MESSAGES} from '../types';
-import {mocked} from 'ts-jest/utils';
+import { createValidationMessage, createValidatorResult } from '../helpers';
+import { VALIDATION_MESSAGES } from '../types';
+import { mocked } from 'ts-jest/utils';
 
 jest.mock('../helpers');
-mocked(createValidationMessage).mockName('createValidationMessage');
 
-it('Returns falsy in case of undefined value.', () => {
-	const result = validateValue();
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
+beforeEach(() => {
+	mocked(createValidationMessage).mockName('createValidationMessage')
+		.mockImplementation((message) => message);
+	mocked(createValidatorResult).mockName('createValidatorResult')
+		.mockImplementation((error) => ({ error, message: 'message' }));
 });
 
-it('Returns falsy in case of empty value.', () => {
-	const result = validateValue('');
+describe('Error', () => {
+	it('email is spaces', () => {
+		const result = validateValue('   ');
 
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
+		expect(createValidationMessage).toBeCalledTimes(0);
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(true, { fail: VALIDATION_MESSAGES.email });
+		expect(result).toEqual({ error: true, message: 'message' });
+	});
+
+	it('invalid email', () => {
+		const result = validateValue('invalid');
+
+		expect(createValidationMessage).toBeCalledTimes(0);
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(true, { fail: VALIDATION_MESSAGES.email });
+		expect(result).toEqual({ error: true, message: 'message' });
+	});
+
+	it('Custom message', () => {
+		const result = validateValue('invalid', { fail: 'Custom error' });
+
+		expect(createValidationMessage).toBeCalledTimes(1);
+		expect(createValidationMessage).toBeCalledWith('Custom error');
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(true, { fail: 'Custom error' });
+		expect(result).toEqual({ error: true, message: 'message' });
+	});
 });
 
-it('Returns falsy in case of valid value.', () => {
-	const result = validateValue('anyone@gmail.com');
+describe('Valid', () => {
+	it('email is undefined', () => {
+		const result = validateValue(undefined);
 
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
-});
+		expect(createValidationMessage).toBeCalledTimes(0);
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
+		expect(result).toEqual({ error: false, message: 'message' });
+	});
 
-it('Returns an error in case of invalid email.', () => {
-	const result = validateValue('invalid');
+	it('email is empty', () => {
+		const result = validateValue('');
 
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.email);
-});
+		expect(createValidationMessage).toBeCalledTimes(0);
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
+		expect(result).toEqual({ error: false, message: 'message' });
+	});
 
-it('Returns custom error message in case invalid value and custom message passed as a function.', () => {
-	const MESSAGE = 'custom validation message';
-	mocked(createValidationMessage).mockName('createValidationMessage').mockReturnValue(MESSAGE);
+	it('valid email', () => {
+		const result = validateValue('anyone@gmail.com');
 
-	const result = validateValue('invalid', {message: 'custom'});
-
-	expect(createValidationMessage).toBeCalledTimes(1);
-	expect(createValidationMessage).toBeCalledWith('custom');
-	expect(result).toEqual(MESSAGE);
+		expect(createValidationMessage).toBeCalledTimes(0);
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
+		expect(result).toEqual({ error: false, message: 'message' });
+	});
 });

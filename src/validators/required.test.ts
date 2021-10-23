@@ -1,102 +1,68 @@
 import validateValue from './required';
-import {createValidationMessage} from '../helpers';
-import {VALIDATION_MESSAGES} from '../types';
+import { createValidationMessage, createValidatorResult } from '../helpers';
+import { VALIDATION_MESSAGES } from '../types';
 import { mocked } from 'ts-jest/utils';
 
 jest.mock('../helpers');
-mocked(createValidationMessage).mockName('createValidationMessage');
 
-it('Returns an error in case of undefined value.', () => {
-	const result = validateValue(undefined);
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.required);
+beforeEach(() => {
+	mocked(createValidationMessage).mockName('createValidationMessage')
+		.mockImplementation((message) => message);
+	mocked(createValidatorResult).mockName('createValidatorResult')
+		.mockImplementation((error) => ({ error, message: 'message' }));
 });
 
-it('Returns an error in case of empty string.', () => {
-	const result = validateValue('');
+describe('Error', () => {
+	[
+		undefined,
+		'',
+		'   ',
+		{},
+		[],
+		null,
+	].forEach((value) => {
+		const label = `${typeof value} -> ${JSON.stringify(value)}`;
+		it(label, () => {
+			const result = validateValue(value);
 
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.required);
+			expect(createValidationMessage).toBeCalledTimes(0);
+			expect(createValidatorResult).toBeCalledTimes(1);
+			expect(createValidatorResult).toBeCalledWith(true, { fail: VALIDATION_MESSAGES.required });
+			expect(result).toEqual({ error: true, message: 'message' });
+		});
+	});
+
+	it('custom error message', () => {
+		const result = validateValue('', { fail: 'Custom error' });
+
+		expect(createValidationMessage).toBeCalledTimes(1);
+		expect(createValidationMessage).toBeCalledWith('Custom error');
+		expect(createValidatorResult).toBeCalledTimes(1);
+		expect(createValidatorResult).toBeCalledWith(true, { fail: 'Custom error' });
+		expect(result).toEqual({ error: true, message: 'message' });
+	});
 });
 
-it('Returns an error in case of bunch of spaces.', () => {
-	const result = validateValue('   ');
+describe('Valid', () => {
+	[
+		0,
+		23,
+		23.23,
+		-41,
+		'valid',
+		{ error: false },
+		['valid'],
+		[false],
+		[null],
+	].forEach((value) => {
+		const label = `${typeof value} -> ${JSON.stringify(value)}`;
+		it(label, () => {
+			const result = validateValue(value);
 
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.required);
-});
-
-it('Returns falsy in case of zero integer.', () => {
-	const result = validateValue(0);
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
-});
-
-it('Returns falsy in case of any other integer.', () => {
-	const result = validateValue(23);
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
-});
-
-it('Returns falsy in case of any float.', () => {
-	const result = validateValue(23.23);
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
-});
-
-it('Returns an error in case of empty object.', () => {
-	const result = validateValue({});
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.required);
-});
-
-it('Returns an error in case of empty array.', () => {
-	const result = validateValue([]);
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.required);
-});
-
-it('Returns an error in case of null.', () => {
-	const result = validateValue(null);
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toEqual(VALIDATION_MESSAGES.required);
-});
-
-it('Returns falsy in case not empty string.', () => {
-	const result = validateValue('valid');
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
-});
-
-it('Returns falsy in case not empty object.', () => {
-	const result = validateValue({invalid: false});
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
-});
-
-it('Returns falsy in case not empty array.', () => {
-	const result = validateValue(['valid']);
-
-	expect(createValidationMessage).toHaveBeenCalledTimes(0);
-	expect(result).toBeFalsy();
-});
-
-it('Returns custom error message in case invalid value and custom message passed.', () => {
-	const MESSAGE = 'custom validation message';
-	mocked(createValidationMessage).mockName('createValidationMessage').mockReturnValue(MESSAGE);
-
-	const result = validateValue('', {message: 'custom'});
-
-	expect(createValidationMessage).toBeCalledTimes(1);
-	expect(createValidationMessage).toBeCalledWith('custom');
-	expect(result).toEqual(MESSAGE);
+			expect(createValidationMessage).toBeCalledTimes(0);
+			expect(createValidatorResult).toBeCalledTimes(1);
+			expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
+			expect(result).toEqual({ error: false, message: 'message' });
+		});
+	});
 });

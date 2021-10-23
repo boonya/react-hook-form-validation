@@ -21,23 +21,23 @@ export default function useValidation(ruleset: ValidationRuleSet): HookResult {
 
 	const [currentValidity, setValidity] = React.useState<FormValidity>(defaultValidity);
 
-	const validateForm = React.useCallback<ValidateFormFunction>((payload: FormPayload) => {
+	const validateForm = React.useCallback<ValidateFormFunction>(async (payload: FormPayload) => {
 		if (!isPlainObject(payload)) {
 			throw new Error('You have to pass a form payload object to validate the form.');
 		}
-		const validity = processFormValidity(processor, currentValidity, payload);
+		const validity = await processFormValidity(processor, currentValidity, payload);
 		setValidity(validity);
 		return validity;
 	}, [currentValidity, processor]);
 
-	const validateField = React.useCallback<ValidateFieldFunction>((payload: FormPayload, name: string, index = 0) => {
+	const validateField = React.useCallback<ValidateFieldFunction>(async (payload: FormPayload, name: string, index = 0) => {
 		if (!isPlainObject(payload)) {
 			throw new Error('You have to pass a form payload object to validate the field.');
 		}
 		if (typeof name !== 'string' || name.trim() === '') {
 			throw new Error('You have to pass a field name to validate the field.');
 		}
-		const validity = processFieldValidity(processor, currentValidity, payload, name, index);
+		const validity = await processFieldValidity(processor, currentValidity, payload, name, index);
 		setValidity(validity);
 		return validity;
 	}, [currentValidity, processor]);

@@ -1,14 +1,15 @@
-import {VALIDATION_MESSAGES, ValidatorCommonParams} from '../types';
-import {createValidationMessage} from '../helpers';
+import { VALIDATION_MESSAGES, ValidatorCommonParams, ValidatorResult } from '../types';
+import { createValidationMessage, createValidatorResult } from '../helpers';
 
-export default function email(input: string, {message}: ValidatorCommonParams = {}): string | null {
-	if (!input) {
-		return null;
+const PATTERN = /^.+@.+\..+$/ui;
+
+export default function email(input: string, messages: ValidatorCommonParams = {}): ValidatorResult {
+	let fail;
+	if (input && !PATTERN.test(input)) {
+		fail = messages.fail
+			? createValidationMessage(messages.fail)
+			: VALIDATION_MESSAGES.email;
 	}
-	if ((/^.+@.+\..+$/ui).test(input)) {
-		return null;
-	}
-	return message
-		? createValidationMessage(message)
-		: VALIDATION_MESSAGES.email;
+
+	return createValidatorResult(Boolean(fail), { ...messages, fail });
 }

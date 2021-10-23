@@ -19,15 +19,22 @@ export enum VALIDATION_MESSAGES {
 	postalCodeCA = 'postal-code-CA',
 	sinCA = 'SIN-CA',
 	pattern = 'pattern',
-	invalid = 'invalid',
+	fail = 'fail',
+	success = 'success',
 }
 
 export type ValidationMessage = string | ((...args: unknown[]) => string);
 
-export type ValidatorCommonParams = { message?: ValidationMessage };
+export type ValidatorResult = {error: boolean, message: string};
+export type AsyncValidatorResult = Promise<ValidatorResult>;
+
+export type ValidatorCommonParams = {fail?: ValidationMessage, success?: ValidationMessage};
 export type ValidatorLengthParams = ValidatorCommonParams & { expected: number };
 export type ValidatorPatternParams = ValidatorCommonParams & { pattern: RegExp };
-export type ValidatorCustomParams = ValidatorCommonParams & { func: (...args: unknown[]) => boolean };
+
+type ValidatorFuncResult = boolean | [boolean, ...unknown[]];
+export type ValidatorFuncParams = ValidatorCommonParams & { func: (...args: unknown[]) => ValidatorFuncResult };
+export type ValidatorAsyncFuncParams = ValidatorCommonParams & { func: (...args: unknown[]) => Promise<ValidatorFuncResult> };
 
 export type LengthValue = string | number | Array<unknown>;
 
@@ -62,7 +69,7 @@ export type ValidationRule = {
 	rules?: FieldRuleSet;
 };
 
-export type Processor = (payload: FormPayload, field: string, index: number) => FieldState;
+export type Processor = (payload: FormPayload, field: string, index: number) => Promise<FieldState>;
 
 export type ValidationRuleSet = ValidationRule[];
 
@@ -78,9 +85,9 @@ export interface FormValidity {
 	getFormMessages: () => string[];
 }
 
-export type ValidateFormFunction = (payload: FormPayload) => FormValidity;
+export type ValidateFormFunction = (payload: FormPayload) => Promise<FormValidity>;
 
-export type ValidateFieldFunction = (payload: FormPayload, name: string, index?: number) => FormValidity;
+export type ValidateFieldFunction = (payload: FormPayload, name: string, index?: number) => Promise<FormValidity>;
 
 export type ResetFormFunction = () => FormValidity;
 

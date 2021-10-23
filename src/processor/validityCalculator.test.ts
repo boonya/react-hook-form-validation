@@ -9,18 +9,17 @@ jest.mock('./validityReducerCreator');
 
 const FIELD = {_1: 'test-field-1', _2: 'test-field-2'};
 const payload: FormPayload = {[FIELD._1]: [`${FIELD._1} value`], [FIELD._2]: [`${FIELD._2} value`]};
-const validityReducer = jest.fn()
-	.mockName('validityReducer')
-	.mockReturnValue(null);
+const validityReducer = jest.fn().mockName('validityReducer');
 
 beforeEach(() => {
+	validityReducer.mockResolvedValue(null);
 	mocked(validityReducerCreator).mockName('validityReducerCreator').mockReturnValue(validityReducer);
 });
 
-test('If no ruleset and no value (value=undefined) the function returns default field validity state.', () => {
+test('If no ruleset and no value (value=undefined) the function returns default field validity state.', async () => {
 	mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue(undefined);
 
-	const result = calculateValidity([], payload, FIELD._1, 0);
+	const result = await calculateValidity([], payload, FIELD._1, 0);
 
 	expect(result).toEqual({
 		name: FIELD._1,
@@ -37,8 +36,8 @@ test('If no ruleset and no value (value=undefined) the function returns default 
 });
 
 describe('If there is a value but no ruleset the function returns default field validity state but pristine=false.', () => {
-	function executeTest() {
-		const result = calculateValidity([], payload, FIELD._1, 0);
+	async function executeTest() {
+		const result = await calculateValidity([], payload, FIELD._1, 0);
 
 		expect(result).toEqual({
 			name: FIELD._1,
@@ -54,54 +53,54 @@ describe('If there is a value but no ruleset the function returns default field 
 		expect(validityReducer).toBeCalledTimes(0);
 	}
 
-	test('If value is 0', () => {
+	test('If value is 0', async () => {
 		mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue(0);
-		executeTest();
+		await executeTest();
 	});
 
-	test('If value is "0"', () => {
+	test('If value is "0"', async () => {
 		mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue('0');
-		executeTest();
+		await executeTest();
 	});
 
-	test('If value is null', () => {
+	test('If value is null', async () => {
 		mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue(null);
-		executeTest();
+		await executeTest();
 	});
 
-	test('If value is ""', () => {
+	test('If value is ""', async () => {
 		mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue('');
-		executeTest();
+		await executeTest();
 	});
 
-	test('If value is " "', () => {
+	test('If value is " "', async () => {
 		mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue(' ');
-		executeTest();
+		await executeTest();
 	});
 
-	test('If value is "\\n"', () => {
+	test('If value is "\\n"', async () => {
 		mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue('\n');
-		executeTest();
+		await executeTest();
 	});
 
-	test('If value is an empty array', () => {
+	test('If value is an empty array', async () => {
 		mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue([]);
-		executeTest();
+		await executeTest();
 	});
 
-	test('If value is an empty onject', () => {
+	test('If value is an empty object', async () => {
 		mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue({});
-		executeTest();
+		await executeTest();
 	});
 });
 
-test('If there is a single rule specified but a value and index are undefined.', () => {
+test('If there is a single rule specified but a value and index are undefined.', async () => {
 	const RULESET = [{validator: VALIDATORS.required}];
 	const VALUE = undefined;
 	const INDEX = 0;
 	mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue(VALUE);
 
-	const result = calculateValidity(RULESET, payload, FIELD._1, INDEX);
+	const result = await calculateValidity(RULESET, payload, FIELD._1, INDEX);
 
 	expect(result).toEqual({
 		name: FIELD._1,
@@ -116,16 +115,16 @@ test('If there is a single rule specified but a value and index are undefined.',
 	expect(validityReducerCreator).toBeCalledTimes(1);
 	expect(validityReducerCreator).toBeCalledWith(payload, FIELD._1, VALUE, INDEX);
 	expect(validityReducer).toBeCalledTimes(1);
-	expect(validityReducer).toBeCalledWith(null, RULESET[0], 0, RULESET);
+	expect(validityReducer).toBeCalledWith(Promise.resolve(null), RULESET[0], 0, RULESET);
 });
 
-test('If there is a single rule specified + a value and index are defined.', () => {
+test('If there is a single rule specified + a value and index are defined.', async () => {
 	const RULESET = [{validator: VALIDATORS.required}];
 	const VALUE = 'a value';
 	const INDEX = 2;
 	mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue(VALUE);
 
-	const result = calculateValidity(RULESET, payload, FIELD._1, INDEX);
+	const result = await calculateValidity(RULESET, payload, FIELD._1, INDEX);
 
 	expect(result).toEqual({
 		name: FIELD._1,
@@ -140,17 +139,16 @@ test('If there is a single rule specified + a value and index are defined.', () 
 	expect(validityReducerCreator).toBeCalledTimes(1);
 	expect(validityReducerCreator).toBeCalledWith(payload, FIELD._1, VALUE, INDEX);
 	expect(validityReducer).toBeCalledTimes(1);
-	expect(validityReducer).toBeCalledWith(null, RULESET[0], 0, RULESET);
+	expect(validityReducer).toBeCalledWith(Promise.resolve(null), RULESET[0], 0, RULESET);
 });
 
-test('If there is a several rules specified + a value and index are defined.', () => {
-	const RULESET = [{validator: VALIDATORS.required}, {validator: VALIDATORS.minLength}, {validator: VALIDATORS.email}];
+test('If there is a several rules specified + a value and index are defined.', async () => {
+	const RULESET = [{validator: VALIDATORS.required}, {validator: VALIDATORS.min}, {validator: VALIDATORS.email}];
 	const VALUE = 'a value';
 	const INDEX = 2;
 	mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue(VALUE);
-	validityReducer.mockReturnValue(null);
 
-	const result = calculateValidity(RULESET, payload, FIELD._1, INDEX);
+	const result = await calculateValidity(RULESET, payload, FIELD._1, INDEX);
 
 	expect(result).toEqual({
 		name: FIELD._1,
@@ -165,12 +163,12 @@ test('If there is a several rules specified + a value and index are defined.', (
 	expect(validityReducerCreator).toBeCalledTimes(1);
 	expect(validityReducerCreator).toBeCalledWith(payload, FIELD._1, VALUE, INDEX);
 	expect(validityReducer).toBeCalledTimes(3);
-	expect(validityReducer).toBeCalledWith(null, RULESET[0], 0, RULESET);
-	expect(validityReducer).toBeCalledWith(null, RULESET[1], 1, RULESET);
-	expect(validityReducer).toBeCalledWith(null, RULESET[2], 2, RULESET);
+	expect(validityReducer).toBeCalledWith(Promise.resolve(null), RULESET[0], 0, RULESET);
+	expect(validityReducer).toBeCalledWith(Promise.resolve(null), RULESET[1], 1, RULESET);
+	expect(validityReducer).toBeCalledWith(Promise.resolve(null), RULESET[2], 2, RULESET);
 });
 
-test('If validityReducer returns new state.', () => {
+test('If validityReducer returns new state.', async () => {
 	const RULESET = [{validator: VALIDATORS.required}, {validator: VALIDATORS.email}];
 	const VALUE = 'a value';
 	const INDEX = 2;
@@ -182,9 +180,9 @@ test('If validityReducer returns new state.', () => {
 		message: 'an error',
 	};
 	mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue(VALUE);
-	validityReducer.mockReturnValue(NEW_STATE);
+	validityReducer.mockResolvedValue(NEW_STATE);
 
-	const result = calculateValidity(RULESET, payload, FIELD._1, INDEX);
+	const result = await calculateValidity(RULESET, payload, FIELD._1, INDEX);
 
 	expect(result).toEqual(NEW_STATE);
 
@@ -193,6 +191,6 @@ test('If validityReducer returns new state.', () => {
 	expect(validityReducerCreator).toBeCalledTimes(1);
 	expect(validityReducerCreator).toBeCalledWith(payload, FIELD._1, VALUE, INDEX);
 	expect(validityReducer).toBeCalledTimes(2);
-	expect(validityReducer).toBeCalledWith(null, RULESET[0], 0, RULESET);
-	expect(validityReducer).toBeCalledWith(NEW_STATE, RULESET[1], 1, RULESET);
+	expect(validityReducer).toBeCalledWith(Promise.resolve(null), RULESET[0], 0, RULESET);
+	expect(validityReducer).toBeCalledWith(Promise.resolve(NEW_STATE), RULESET[1], 1, RULESET);
 });
