@@ -1,8 +1,0 @@
-{
-	"async-validator-form-title": "Async validator",
-	"error-field-min-0": "Must be from 0 to 10",
-	"error-field-max-10": "Must be from 0 to 10",
-	"try-guess-from-0-to-10": "Try to guess a number from 0 to 10",
-	"error-guessed-wrong": "Guessed wrong. It's {{number}}.",
-	"bingo": "Bingo"
-}

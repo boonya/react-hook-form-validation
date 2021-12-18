@@ -16,9 +16,7 @@
     "lint": "eslint .",
     "test": "jest",
     "test:ci": "jest --coverage --coverageReporters=text --verbose",
-    "build": "tsc",
-    "site:run": "(cd example && npm start)",
-    "site:build": "(cd example && npm run build)"
+    "build": "tsc"
   },
   "keywords": [
     "react",
