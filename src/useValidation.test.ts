@@ -8,14 +8,13 @@ import {
 	processFieldValidity,
 	validateRuleSet,
 } from './helpers';
-import { mocked } from 'ts-jest/utils';
 import { renderHook, act } from '@testing-library/react-hooks';
 
 jest.mock('./processor');
 jest.mock('./helpers');
 
 const validRuleSet: ValidationRuleSet = [{
-	field: 'fieldname',
+	field: 'field_name',
 	rules: [{ validator: VALIDATORS.required }],
 }];
 
@@ -36,11 +35,11 @@ const newValidity = new Validity([{
 const processor = jest.fn().mockName('processor');
 
 beforeEach(() => {
-	mocked(createProcessor).mockName('createProcessor').mockReturnValue(processor);
-	mocked(createDefaultValidity).mockName('createDefaultValidity').mockReturnValue(defaultValidity);
-	mocked(processFormValidity).mockName('processFormValidity').mockResolvedValue(newValidity);
-	mocked(processFieldValidity).mockName('processFieldValidity').mockResolvedValue(newValidity);
-	mocked(validateRuleSet).mockName('validateRuleSet').mockReturnValue();
+	jest.mocked(createProcessor).mockName('createProcessor').mockReturnValue(processor);
+	jest.mocked(createDefaultValidity).mockName('createDefaultValidity').mockReturnValue(defaultValidity);
+	jest.mocked(processFormValidity).mockName('processFormValidity').mockResolvedValue(newValidity);
+	jest.mocked(processFieldValidity).mockName('processFieldValidity').mockResolvedValue(newValidity);
+	jest.mocked(validateRuleSet).mockName('validateRuleSet').mockReturnValue();
 });
 
 function runHook() {
@@ -51,7 +50,7 @@ function runHook() {
 
 describe('Hook throws an error', () => {
 	test('no ruleset', () => {
-		mocked(validateRuleSet).mockName('validateRuleSet').mockImplementation(() => {
+		jest.mocked(validateRuleSet).mockName('validateRuleSet').mockImplementation(() => {
 			throw new Error('RuleSet checker throws an error');
 		});
 		expect(() => useValidation([])).toThrow(new Error('RuleSet checker throws an error'));

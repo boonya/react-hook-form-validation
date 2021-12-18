@@ -1,14 +1,14 @@
 import validateValue from './min';
 import { createValidationMessage, createValidatorResult } from '../helpers';
 import { VALIDATION_MESSAGES } from '../types';
-import { mocked } from 'ts-jest/utils';
+
 
 jest.mock('../helpers');
 
 beforeEach(() => {
-	mocked(createValidationMessage).mockName('createValidationMessage')
+	jest.mocked(createValidationMessage).mockName('createValidationMessage')
 		.mockImplementation((message) => message);
-	mocked(createValidatorResult).mockName('createValidatorResult')
+	jest.mocked(createValidatorResult).mockName('createValidatorResult')
 		.mockImplementation((error) => ({ error, message: 'message' }));
 });
 

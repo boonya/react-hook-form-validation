@@ -1,11 +1,11 @@
 import validateValue from './func';
 import { createValidatorResult } from '../helpers';
-import { mocked } from 'ts-jest/utils';
+
 
 jest.mock('../helpers');
 
 beforeEach(() => {
-	mocked(createValidatorResult).mockName('createValidatorResult')
+	jest.mocked(createValidatorResult).mockName('createValidatorResult')
 		.mockImplementation((error) => ({ error, message: 'message' }));
 });
 

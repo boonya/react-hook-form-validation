@@ -1,7 +1,6 @@
 import {ValidationRuleSet, FormPayload, FieldState} from '../types';
 import processorCreator from './processorCreator';
 import calculateValidity from './validityCalculator';
-import {mocked} from 'ts-jest/utils';
 
 jest.mock('./validityCalculator');
 
@@ -13,7 +12,7 @@ const validity: FieldState = {
 };
 
 beforeEach(() => {
-	mocked(calculateValidity).mockName('calculateValidity').mockResolvedValue(validity);
+	jest.mocked(calculateValidity).mockName('calculateValidity').mockResolvedValue(validity);
 });
 
 describe('Creates a processor function which retrieves a field rules and calculate validity of its payload.', () => {
