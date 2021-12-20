@@ -16,6 +16,8 @@
     "lint": "eslint .",
     "test": "jest",
     "test:ci": "jest --coverage --coverageReporters=text --verbose",
+    "start": "styleguidist server",
+    "docs:build": "styleguidist build",
     "build": "tsc"
   },
   "keywords": [
@@ -44,8 +46,10 @@
     "eslint": "^7.32.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^27.4.5",
+    "react-styleguidist": "^11.1.7",
     "react-test-renderer": "^17.0.2",
     "ts-jest": "^27.1.2",
+    "ts-loader": "^9.2.6",
     "typescript": "^4.5.4"
   }
 }

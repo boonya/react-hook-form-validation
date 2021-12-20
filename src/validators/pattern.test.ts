@@ -29,6 +29,12 @@ describe('Error', () => {
 		'3rd-password',
 		'Pass1',
 		'12345678',
+		undefined,
+		false,
+		true,
+		NaN,
+		0,
+		1,
 	].forEach((value) => {
 		it(`"${value}"`, () => {
 			const result = validateValue(value, { pattern });
@@ -52,24 +58,6 @@ describe('Error', () => {
 });
 
 describe('Valid', () => {
-	it('undefined', () => {
-		const result = validateValue(undefined, { pattern });
-
-		expect(createValidationMessage).toBeCalledTimes(0);
-		expect(createValidatorResult).toBeCalledTimes(1);
-		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
-		expect(result).toEqual({ error: false, message: 'message' });
-	});
-
-	it('empty string', () => {
-		const result = validateValue('', { pattern });
-
-		expect(createValidationMessage).toBeCalledTimes(0);
-		expect(createValidatorResult).toBeCalledTimes(1);
-		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
-		expect(result).toEqual({ error: false, message: 'message' });
-	});
-
 	[
 		'1stPassword',
 		'2ndPassword',
