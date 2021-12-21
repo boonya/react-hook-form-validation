@@ -39,11 +39,19 @@ module.exports = {
 			sidebarBackground: '#f3f6fc',
 		},
 	},
-	// assetsDir: path.resolve(__dirname, './docs'),
 	sections: [
 		{
-			name: 'Chain',
-			content: 'docs/chain.md',
+			name: 'About',
+			content: 'README.md',
+		},
+		{
+			name: 'More examples',
+			sections: [
+				{
+					name: 'Chain',
+					content: 'docs/chain.md',
+				},
+			],
 		},
 	],
 	moduleAliases: {
