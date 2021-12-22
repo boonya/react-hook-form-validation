@@ -1,0 +1,26 @@
+name: Publish documentation
+
+on:
+  workflow_call:
+    inputs:
+      targetFolder:
+        required: true
+        type: string
+
+jobs:
+  docs:
+    name: Build & publish documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: npm run build:docs
+      - uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: docs
+          folder: styleguide
+          target-folder: ${{ inputs.targetFolder }}
+          git-config-name: github-pages-deploy-action
