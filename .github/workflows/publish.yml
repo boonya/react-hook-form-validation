@@ -44,6 +44,7 @@ jobs:
 
   docs:
     needs: [ publish ]
-    uses: ./.github/workflows/docs.yml
-    with:
-      targetFolder: docs
+    steps:
+      - uses: ./.github/workflows/docs.yml
+        with:
+          targetFolder: docs
