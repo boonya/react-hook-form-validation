@@ -14,6 +14,7 @@ This is done to be able to check number passed from form directly. Html forms pa
 - All dependencies are up to date
 - `jest.mocked` instead of `ts-jest/mocked` due to https://github.com/facebook/jest/pull/12089
 - Package contains src directory since now
+- pattern validator accepts falthy values
 
 ### Removed
 
