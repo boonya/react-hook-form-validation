@@ -4,8 +4,6 @@ export enum VALIDATORS {
 	max = 'max',
 	email = 'email',
 	url = 'url',
-	postalCodeCA = 'postalCodeCA',
-	sinCA = 'sinCA',
 	pattern = 'pattern',
 	func = 'func',
 }
@@ -16,8 +14,6 @@ export enum VALIDATION_MESSAGES {
 	max = 'max',
 	email = 'email',
 	url = 'url',
-	postalCodeCA = 'postal-code-CA',
-	sinCA = 'SIN-CA',
 	pattern = 'pattern',
 	fail = 'fail',
 	success = 'success',
@@ -28,15 +24,16 @@ export type ValidationMessage = string | ((...args: unknown[]) => string);
 export type ValidatorResult = {error: boolean, message: string};
 export type AsyncValidatorResult = Promise<ValidatorResult>;
 
+export type LengthValue = string | number | Array<unknown>;
+
 export type ValidatorCommonParams = {fail?: ValidationMessage, success?: ValidationMessage};
-export type ValidatorLengthParams = ValidatorCommonParams & { expected: number };
+type castTypeFunction = (value: LengthValue) => LengthValue;
+export type ValidatorLengthParams = ValidatorCommonParams & { expected: number, castType?: castTypeFunction };
 export type ValidatorPatternParams = ValidatorCommonParams & { pattern: RegExp };
 
 type ValidatorFuncResult = boolean | [boolean, ...unknown[]];
 export type ValidatorFuncParams = ValidatorCommonParams & { func: (...args: unknown[]) => ValidatorFuncResult };
 export type ValidatorAsyncFuncParams = ValidatorCommonParams & { func: (...args: unknown[]) => Promise<ValidatorFuncResult> };
-
-export type LengthValue = string | number | Array<unknown>;
 
 export type FormPayload = { [key: string]: unknown[] };
 

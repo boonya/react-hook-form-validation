@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const {name: packageName, version} = require('./package.json');
-const fs = require('fs');
+const styles = require('./.styleguidist/styles');
+const theme = require('./.styleguidist/theme');
 const path = require('path');
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 module.exports = {
 	title: packageName,
@@ -24,28 +27,32 @@ module.exports = {
 			],
 		},
 	},
-	theme: {
-		fontFamily: {
-			base: '"IBM Plex Sans", sans-serif',
-			monospace: '"IBM Plex Mono", monospace',
-		},
-		color: {
-			base: '#47494b',
-			light: '#757575',
-			link: '#244992',
-			linkHover: '#218146',
-			baseBackground: '#ffffff',
-			codeBackground: '#fafafa',
-			sidebarBackground: '#f3f6fc',
-		},
+	theme,
+	styles,
+	ribbon: {
+		text: 'Follow on Github',
+		url: 'https://github.com/boonya/react-hook-form-validation',
 	},
+	contextDependencies: [
+		path.resolve(__dirname, 'docs'),
+	],
 	sections: [
 		{
-			name: 'About',
+			name: 'README',
 			content: 'README.md',
+			sections: [
+				{
+					name: 'Installation',
+					href: '#installation',
+				},
+				{
+					name: 'Validators',
+					href: '#the-hook-currently-supports-the-following-validators',
+				},
+			],
 		},
 		{
-			name: 'More examples',
+			name: 'Examples',
 			sections: [
 				{
 					name: 'Chain',
@@ -61,9 +68,9 @@ module.exports = {
 		module: {
 			rules: [
 				{
-					test: /\.ts?$/u,
+					test: /\.ts$/u,
 					exclude: /node_modules/u,
-					use: 'ts-loader',
+					loader: 'ts-loader',
 				},
 			],
 		},

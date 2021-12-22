@@ -4,8 +4,6 @@ import min from './min';
 import max from './max';
 import email from './email';
 import url from './url';
-import postalCodeCA from './postalCode-CA';
-import sinCA from './sin-CA';
 import pattern from './pattern';
 import func from './func';
 
@@ -27,12 +25,6 @@ function getValidator(name: string): (...args: unknown[]) => ValidatorResult | A
 	case VALIDATORS.url:
 		// @ts-ignore
 		return url;
-	case VALIDATORS.postalCodeCA:
-		// @ts-ignore
-		return postalCodeCA;
-	case VALIDATORS.sinCA:
-		// @ts-ignore
-		return sinCA;
 	case VALIDATORS.pattern:
 		// @ts-ignore
 		return pattern;

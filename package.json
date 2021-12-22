@@ -1,30 +1,31 @@
 {
   "name": "react-hook-form-validation",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "React Hook for Form Validation",
   "repository": "https://github.com/boonya/react-hook-form-validation",
   "homepage": "https://boonya.info/react-hook-form-validation/",
   "main": "dist/index.js",
-  "files": [
-    "dist/*"
-  ],
   "engines": {
     "npm": ">=7",
     "node": ">=14"
   },
   "scripts": {
+    "start": "styleguidist server",
     "lint": "eslint .",
     "test": "jest",
     "test:ci": "jest --coverage --coverageReporters=text --verbose",
-    "start": "styleguidist server",
-    "docs:build": "styleguidist build",
-    "build": "tsc"
+    "build": "tsc",
+    "build:docs": "styleguidist build"
   },
   "keywords": [
     "react",
     "hook",
     "validation",
+    "validator",
     "form",
+    "forms",
+    "form-validation",
+    "validity",
     "useValidation"
   ],
   "author": "Serhii [boonya] Buinytskyi",
@@ -49,7 +50,8 @@
     "react-styleguidist": "^11.1.7",
     "react-test-renderer": "^17.0.2",
     "ts-jest": "^27.1.2",
-    "ts-loader": "^9.2.6",
-    "typescript": "^4.5.4"
+    "ts-loader": "^8.3.0",
+    "typescript": "^4.5.4",
+    "webpack": "^4.46.0"
   }
 }

@@ -7,10 +7,7 @@ function isValid(input: unknown) {
 		return true;
 	}
 	const value = typeof input === 'string' ? input.trim() : input;
-	if (!isEmpty(value)) {
-		return true;
-	}
-	return false;
+	return !isEmpty(value);
 }
 
 export default function required(input: unknown, messages: ValidatorCommonParams = {}): ValidatorResult {

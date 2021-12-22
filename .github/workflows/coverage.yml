@@ -1,4 +1,4 @@
-name: Lint and test
+name: Coverage
 
 on:
   push:
@@ -8,37 +8,14 @@ on:
       - '**.md'
     branches:
       - main
-  pull_request:
 
 jobs:
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 16
-      - run: npm ci
-      - run: npm run lint
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@master
-        with:
-          node-version: 16
-      - run: npm ci
-      - run: npm run test:ci
   coverage:
-    needs: [ test ]
-    if: github.ref == 'refs/heads/main'
     name: Sending test coverage to Code Climate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: 16
       - run: npm ci

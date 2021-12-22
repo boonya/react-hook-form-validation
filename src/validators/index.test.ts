@@ -1,14 +1,10 @@
 import aggregator from './index';
 import { VALIDATORS } from '../types';
-
-
 import required from './required';
 import min from './min';
 import max from './max';
 import email from './email';
 import url from './url';
-import postalCodeCA from './postalCode-CA';
-import sinCA from './sin-CA';
 import pattern from './pattern';
 import func from './func';
 
@@ -17,12 +13,10 @@ jest.mock('./min');
 jest.mock('./max');
 jest.mock('./email');
 jest.mock('./url');
-jest.mock('./postalCode-CA');
-jest.mock('./sin-CA');
 jest.mock('./pattern');
 jest.mock('./func');
 
-const validators = { required, min, max, email, url, postalCodeCA, sinCA, pattern, func };
+const validators = { required, min, max, email, url, pattern, func };
 
 beforeEach(() => {
 	jest.mocked(required).mockName(VALIDATORS.required).mockReturnValue(VALIDATORS.required);
@@ -30,8 +24,6 @@ beforeEach(() => {
 	jest.mocked(max).mockName(VALIDATORS.max).mockReturnValue(VALIDATORS.max);
 	jest.mocked(email).mockName(VALIDATORS.email).mockReturnValue(VALIDATORS.email);
 	jest.mocked(url).mockName(VALIDATORS.url).mockReturnValue(VALIDATORS.url);
-	jest.mocked(postalCodeCA).mockName(VALIDATORS.postalCodeCA).mockReturnValue(VALIDATORS.postalCodeCA);
-	jest.mocked(sinCA).mockName(VALIDATORS.sinCA).mockReturnValue(VALIDATORS.sinCA);
 	jest.mocked(pattern).mockName(VALIDATORS.pattern).mockReturnValue(VALIDATORS.pattern);
 	jest.mocked(func).mockName(VALIDATORS.func).mockResolvedValue(VALIDATORS.func);
 });

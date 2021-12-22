@@ -1,0 +1,45 @@
+# What's changed
+
+## [2.1.0] - 2021-12-22
+
+### Added
+
+- [styleguidist](https://react-styleguidist.js.org/) based documentation
+- `castType` function as an argument added to `min` & `max`
+
+This is done to be able to check number passed from form directly. Html forms pass values as strings. So, to cast type of these values to numbers we can use castType function.
+
+### Changed
+
+- All dependencies are up to date
+- `jest.mocked` instead of `ts-jest/mocked` due to https://github.com/facebook/jest/pull/12089
+- Package contains src directory since now
+
+### Removed
+
+- `postalCodeCA` & `sinCA` validators
+
+I don't want to keep special logic within this library.
+If you need something like that you may integrate it with any other projects
+e.g. [validator.js](https://github.com/validatorjs/validator.js) trough the `func` validator.
+
+- sources of example application removed
+
+**Full Changelog**: [2.0.0...2.1.0](https://github.com/boonya/react-hook-form-validation/compare/2.0.0...2.1.0)
+
+## [2.0.0] - 2021-10-23
+
+- Asynchronous interface v2.0 [#34]
+- Update dependencies [#65]
+
+**Full Changelog**: [1.0.0-beta.4...2.0.0](https://github.com/boonya/react-hook-form-validation/compare/1.0.0-beta.4...2.0.0)
+
+## [1.0.0-beta.4] - 2021-09-11
+
+**Full Changelog**: [1.0.0-beta.3...1.0.0-beta.4](https://github.com/boonya/react-hook-form-validation/compare/1.0.0-beta.3...1.0.0-beta.4)
+
+## [1.0.0-beta.3] - 2021-08-07
+
+**Full Changelog**: [1.0.0-beta.2...1.0.0-beta.3](https://github.com/boonya/react-hook-form-validation/compare/1.0.0-beta.2...1.0.0-beta.3)
+
+## [1.0.0-beta.2] - 2021-08-07
