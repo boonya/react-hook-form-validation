@@ -3,6 +3,8 @@ import { VALIDATORS } from '../types';
 import required from './required';
 import min from './min';
 import max from './max';
+import minLength from './minLength';
+import maxLength from './maxLength';
 import email from './email';
 import url from './url';
 import pattern from './pattern';
@@ -11,17 +13,21 @@ import func from './func';
 jest.mock('./required');
 jest.mock('./min');
 jest.mock('./max');
+jest.mock('./minLength');
+jest.mock('./maxLength');
 jest.mock('./email');
 jest.mock('./url');
 jest.mock('./pattern');
 jest.mock('./func');
 
-const validators = { required, min, max, email, url, pattern, func };
+const validators = { required, min, max, minLength, maxLength, email, url, pattern, func };
 
 beforeEach(() => {
 	jest.mocked(required).mockName(VALIDATORS.required).mockReturnValue(VALIDATORS.required);
 	jest.mocked(min).mockName(VALIDATORS.min).mockReturnValue(VALIDATORS.min);
 	jest.mocked(max).mockName(VALIDATORS.max).mockReturnValue(VALIDATORS.max);
+	jest.mocked(minLength).mockName(VALIDATORS.minLength).mockReturnValue(VALIDATORS.minLength);
+	jest.mocked(maxLength).mockName(VALIDATORS.maxLength).mockReturnValue(VALIDATORS.maxLength);
 	jest.mocked(email).mockName(VALIDATORS.email).mockReturnValue(VALIDATORS.email);
 	jest.mocked(url).mockName(VALIDATORS.url).mockReturnValue(VALIDATORS.url);
 	jest.mocked(pattern).mockName(VALIDATORS.pattern).mockReturnValue(VALIDATORS.pattern);

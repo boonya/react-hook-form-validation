@@ -55,6 +55,43 @@ module.exports = {
 			name: 'Examples',
 			sections: [
 				{
+					name: 'Required',
+					content: 'docs/required.md',
+				},
+				{
+					name: 'Min',
+					content: 'docs/min.md',
+				},
+				{
+					name: 'Max',
+					content: 'docs/max.md',
+				},
+				// TODO: Describe minLength and maxLength validators
+				// {
+				// 	name: 'Min Length',
+				// 	content: 'docs/minLength.md',
+				// },
+				// {
+				// 	name: 'Max Length',
+				// 	content: 'docs/maxLength.md',
+				// },
+				{
+					name: 'Email',
+					content: 'docs/email.md',
+				},
+				{
+					name: 'URL',
+					content: 'docs/url.md',
+				},
+				{
+					name: 'Pattern',
+					content: 'docs/pattern.md',
+				},
+				{
+					name: 'Function',
+					content: 'docs/func.md',
+				},
+				{
 					name: 'Chain',
 					content: 'docs/chain.md',
 				},

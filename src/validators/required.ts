@@ -1,5 +1,5 @@
 import { VALIDATION_MESSAGES, ValidatorCommonParams, ValidatorResult } from '../types';
-import { createValidationMessage, createValidatorResult } from '../helpers';
+import { createValidatorResult } from '../helpers';
 import isEmpty from 'lodash/isEmpty';
 
 function isValid(input: unknown) {
@@ -11,11 +11,9 @@ function isValid(input: unknown) {
 }
 
 export default function required(input: unknown, messages: ValidatorCommonParams = {}): ValidatorResult {
-	let fail;
-	if (!isValid(input)) {
-		fail = messages.fail
-			? createValidationMessage(messages.fail)
-			: VALIDATION_MESSAGES.required;
-	}
-	return createValidatorResult(Boolean(fail), { ...messages, fail });
+	return createValidatorResult(
+		!isValid(input),
+		{ fail: VALIDATION_MESSAGES.required, ...messages },
+		[{ input }],
+	);
 }

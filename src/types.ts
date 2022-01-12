@@ -2,6 +2,8 @@ export enum VALIDATORS {
 	required = 'required',
 	min = 'min',
 	max = 'max',
+	minLength = 'minLength',
+	maxLength = 'maxLength',
 	email = 'email',
 	url = 'url',
 	pattern = 'pattern',
@@ -12,6 +14,8 @@ export enum VALIDATION_MESSAGES {
 	required = 'required',
 	min = 'min',
 	max = 'max',
+	minLength = 'minLength',
+	maxLength = 'maxLength',
 	email = 'email',
 	url = 'url',
 	pattern = 'pattern',
@@ -24,11 +28,11 @@ export type ValidationMessage = string | ((...args: unknown[]) => string);
 export type ValidatorResult = {error: boolean, message: string};
 export type AsyncValidatorResult = Promise<ValidatorResult>;
 
-export type LengthValue = string | number | Array<unknown>;
+export type NumberValue = number | string;
+export type LengthValue = string | Array<unknown>;
 
 export type ValidatorCommonParams = {fail?: ValidationMessage, success?: ValidationMessage};
-type castTypeFunction = (value: LengthValue) => LengthValue;
-export type ValidatorLengthParams = ValidatorCommonParams & { expected: number, castType?: castTypeFunction };
+export type ValidatorLengthParams = ValidatorCommonParams & { expected: number};
 export type ValidatorPatternParams = ValidatorCommonParams & { pattern: RegExp };
 
 type ValidatorFuncResult = boolean | [boolean, ...unknown[]];

@@ -16,5 +16,5 @@ export default async function func(input: unknown, { func, ...messages }: Valida
 		throw new TypeError('Your function returned unexpected value');
 	}
 
-	return createValidatorResult(!valid, messages, payload);
+	return createValidatorResult(!valid, messages, [{input, payload}]);
 }

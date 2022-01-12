@@ -1,75 +1,84 @@
 import validateValue from './url';
-import { createValidationMessage, createValidatorResult } from '../helpers';
+import { createValidatorResult } from '../helpers';
 import { VALIDATION_MESSAGES } from '../types';
-
 
 jest.mock('../helpers');
 
 beforeEach(() => {
-	jest.mocked(createValidationMessage).mockName('createValidationMessage')
-		.mockImplementation((message) => message);
-	jest.mocked(createValidatorResult).mockName('createValidatorResult')
-		.mockImplementation((error) => ({ error, message: 'message' }));
+	jest.mocked(createValidatorResult)
+		.mockName('createValidatorResult')
+		.mockImplementation((error) => error);
 });
 
 describe('Error', () => {
 	[
 		'    ',
 		'any value',
-		'//www.boonya.info',
-		'/www.boonya.info',
+		'//www.example.com',
+		'/www.example.com',
 		// TODO: Decide why do this value fails here
-		// '\\www.boonya.info',
+		// '\\www.example.com',
 	].forEach((value) => {
-		it(`"${value}"`, () => {
+		it(`should reject "${value}".`, () => {
 			const result = validateValue(value);
 
-			expect(createValidationMessage).toBeCalledTimes(0);
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(true, { fail: VALIDATION_MESSAGES.url });
-			expect(result).toEqual({ error: true, message: 'message' });
+			expect(result).toBe(true);
+			expect(createValidatorResult).toBeCalledWith(
+				true,
+				{ fail: VALIDATION_MESSAGES.url },
+				[{ input: value }],
+			);
 		});
 	});
 
-	it('custom error message', () => {
-		const result = validateValue('invalid value', { fail: 'Custom error' });
+	it('should reject and pass custom messages.', () => {
+		const result = validateValue('invalid value', { fail: 'Fail', success: 'Success' });
 
-		expect(createValidationMessage).toBeCalledTimes(1);
-		expect(createValidationMessage).toBeCalledWith('Custom error');
-		expect(createValidatorResult).toBeCalledTimes(1);
-		expect(createValidatorResult).toBeCalledWith(true, { fail: 'Custom error' });
-		expect(result).toEqual({ error: true, message: 'message' });
+		expect(result).toBe(true);
+		expect(createValidatorResult).toBeCalledWith(
+			true,
+			{ fail: 'Fail', success: 'Success' },
+			[{ input: 'invalid value' }],
+		);
 	});
 });
 
 describe('Valid', () => {
-	it('empty string', () => {
-		const result = validateValue('');
-
-		expect(createValidationMessage).toBeCalledTimes(0);
-		expect(createValidatorResult).toBeCalledTimes(1);
-		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
-		expect(result).toEqual({ error: false, message: 'message' });
-	});
-
 	[
-		'http://boonya.info',
-		'http://www.boonya.info',
-		'https://boonya.info',
-		'https://www.boonya.info',
-		'https://boonya.info/any/path/to/something',
-		'www.boonya.info',
-		'boonya.info',
-		'boonya.info/any/path/to/something',
+		undefined,
+		'',
+		'http://example.com',
+		'http://www.example.com',
+		'https://example.com',
+		'https://www.example.com',
+		'https://example.com/any/path/to/something?queryString=a-value',
+		'https://example.com/#main-content',
+		'ftp://user:pwd@example.com',
+		'www.example.com',
+		'example.com',
+		'example.com/any/path/to/something',
 	].forEach((value) => {
-		it(`"${value}"`, () => {
+		it(`should accept "${value}".`, () => {
 			const result = validateValue(value);
 
-			expect(createValidationMessage).toBeCalledTimes(0);
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
-			expect(result).toEqual({ error: false, message: 'message' });
+			expect(result).toBe(false);
+			expect(createValidatorResult).toBeCalledWith(
+				false,
+				{ fail: VALIDATION_MESSAGES.url },
+				[{ input: value }],
+			);
 		});
+	});
+
+	it('should accept and pass custom messages.', () => {
+		const result = validateValue('example.com', { fail: 'Fail', success: 'Success' });
+
+		expect(result).toBe(false);
+		expect(createValidatorResult).toBeCalledWith(
+			false,
+			{ fail: 'Fail', success: 'Success' },
+			[{ input: 'example.com' }],
+		);
 	});
 });
 

@@ -1,72 +1,76 @@
 import validateValue from './email';
-import { createValidationMessage, createValidatorResult } from '../helpers';
+import { createValidatorResult } from '../helpers';
 import { VALIDATION_MESSAGES } from '../types';
-
 
 jest.mock('../helpers');
 
 beforeEach(() => {
-	jest.mocked(createValidationMessage).mockName('createValidationMessage')
-		.mockImplementation((message) => message);
-	jest.mocked(createValidatorResult).mockName('createValidatorResult')
-		.mockImplementation((error) => ({ error, message: 'message' }));
+	jest.mocked(createValidatorResult)
+		.mockName('createValidatorResult')
+		.mockImplementation((error) => error);
 });
 
 describe('Error', () => {
-	it('email is spaces', () => {
+	it('should reject a bunch of spaces.', () => {
 		const result = validateValue('   ');
 
-		expect(createValidationMessage).toBeCalledTimes(0);
-		expect(createValidatorResult).toBeCalledTimes(1);
-		expect(createValidatorResult).toBeCalledWith(true, { fail: VALIDATION_MESSAGES.email });
-		expect(result).toEqual({ error: true, message: 'message' });
+		expect(result).toBe(true);
+		expect(createValidatorResult).toBeCalledWith(
+			true,
+			{ fail: VALIDATION_MESSAGES.email },
+			[{ input: '   ' }],
+		);
 	});
 
-	it('invalid email', () => {
+	it('should reject an invalid email.', () => {
 		const result = validateValue('invalid');
 
-		expect(createValidationMessage).toBeCalledTimes(0);
-		expect(createValidatorResult).toBeCalledTimes(1);
-		expect(createValidatorResult).toBeCalledWith(true, { fail: VALIDATION_MESSAGES.email });
-		expect(result).toEqual({ error: true, message: 'message' });
+		expect(result).toBe(true);
+		expect(createValidatorResult).toBeCalledWith(
+			true,
+			{ fail: VALIDATION_MESSAGES.email },
+			[{ input: 'invalid' }],
+		);
 	});
 
-	it('Custom message', () => {
-		const result = validateValue('invalid', { fail: 'Custom error' });
+	it('should reject and pass custom messages.', () => {
+		const result = validateValue('invalid', { fail: 'Fail', success: 'Success' });
 
-		expect(createValidationMessage).toBeCalledTimes(1);
-		expect(createValidationMessage).toBeCalledWith('Custom error');
-		expect(createValidatorResult).toBeCalledTimes(1);
-		expect(createValidatorResult).toBeCalledWith(true, { fail: 'Custom error' });
-		expect(result).toEqual({ error: true, message: 'message' });
+		expect(result).toBe(true);
+		expect(createValidatorResult).toBeCalledWith(
+			true,
+			{ fail: 'Fail', success: 'Success' },
+			[{ input: 'invalid' }],
+		);
 	});
 });
 
 describe('Valid', () => {
-	it('email is undefined', () => {
-		const result = validateValue(undefined);
+	[
+		undefined,
+		'',
+		'anyone@gmail.com',
+	].forEach((value) => {
+		it(`should accept "${value}".`, () => {
+			const result = validateValue(value);
 
-		expect(createValidationMessage).toBeCalledTimes(0);
-		expect(createValidatorResult).toBeCalledTimes(1);
-		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
-		expect(result).toEqual({ error: false, message: 'message' });
+			expect(result).toBe(false);
+			expect(createValidatorResult).toBeCalledWith(
+				false,
+				{ fail: VALIDATION_MESSAGES.email },
+				[{ input: value }],
+			);
+		});
 	});
 
-	it('email is empty', () => {
-		const result = validateValue('');
+	it('should accept and pass custom messages.', () => {
+		const result = validateValue('anyone@gmail.com', { fail: 'Fail', success: 'Success' });
 
-		expect(createValidationMessage).toBeCalledTimes(0);
-		expect(createValidatorResult).toBeCalledTimes(1);
-		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
-		expect(result).toEqual({ error: false, message: 'message' });
-	});
-
-	it('valid email', () => {
-		const result = validateValue('anyone@gmail.com');
-
-		expect(createValidationMessage).toBeCalledTimes(0);
-		expect(createValidatorResult).toBeCalledTimes(1);
-		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
-		expect(result).toEqual({ error: false, message: 'message' });
+		expect(result).toBe(false);
+		expect(createValidatorResult).toBeCalledWith(
+			false,
+			{ fail: 'Fail', success: 'Success' },
+			[{ input: 'anyone@gmail.com' }],
+		);
 	});
 });

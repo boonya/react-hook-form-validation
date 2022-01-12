@@ -1,7 +1,8 @@
 #### Here you can check how validators chain works.
 
 - The first is to check for the presence of a value. "Required" in other words.
-- The second and third validators are "min" and "max".
+- The second validates that the value is a number
+- The third and fourth validators are "min" and "max".
 
 ```js
 import {useMemo, useCallback} from 'react';
@@ -9,24 +10,26 @@ import useValidation, {VALIDATORS} from 'react-hook-form-validation';
 
 const FIELD_NAME = 'number';
 
+function isNumber(input) {
+    const value = input.trim();
+    if (value === '') {
+        return false;
+    }
+    return Number.isSafeInteger(Number(value));
+}
+
 const {validity, validateForm, resetForm} = useValidation([{
     // The name of a field we want to validate by validators chain defined below
     field: FIELD_NAME,
     rules: [
         // Here we defined required validator with custom onFail message.
-        {validator: VALIDATORS.required, fail: 'A value required.'},
+        {validator: VALIDATORS.required, fail: 'The field is required'},
+        // We want to check that a value is an integer (number)
+        {validator: VALIDATORS.func, func: isNumber, fail: 'Not a number'},
         // Validate that a value not less than 5
-        {
-            validator: VALIDATORS.min,
-            expected: 5,
-            fail: ({expected, actual}) => `The value is less than ${expected}. You've passed ${actual}.`,
-        },
-        // Validate that a value not greater than 150
-        {
-            validator: VALIDATORS.max,
-            expected: 150,
-            fail: ({expected, actual}) => `The value is greater than ${expected}. You've passed ${actual}.`
-        },
+        {validator: VALIDATORS.min, expected: 5, castType: Number, fail: ({expected}) => `The value is less than ${expected}`},
+        // Validate that a value not greater than 41
+        {validator: VALIDATORS.max, expected: 41, castType: Number, fail: ({expected}) => `The value is more than ${expected}`},
     ],
 }]);
 
@@ -34,7 +37,7 @@ const onSubmit = useCallback(async (event) => {
     // Preventing default event to not reload a page
     event.preventDefault();
     try {
-        const {value} = event.target[FIELD_NAME];
+        const {value} = event.target.number;
         /**
          * validateForm & validateField functions always return a Promise,
          * so if you need to wait result you have to use `await` or `then`.
