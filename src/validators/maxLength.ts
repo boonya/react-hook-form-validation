@@ -1,20 +1,24 @@
-import {VALIDATION_MESSAGES, ValidatorLengthParams, LengthValue, ValidatorResult} from '../types';
-import {createValidatorResult} from '../helpers';
+import { VALIDATION_MESSAGES, ValidatorLengthParams, LengthValue, ValidatorResult, ValidatorCommonParams, VALIDATORS } from '../types';
+import { createValidatorResult } from '../helpers';
 
-export default function maxLength(input: LengthValue, {expected, ...messages}: ValidatorLengthParams): ValidatorResult {
+export default function max(expected: number, props: ValidatorCommonParams = {}) {
+	return { validator: VALIDATORS.maxLength, expected, ...props };
+}
+
+export function isValid(input: LengthValue, { expected, ...messages }: ValidatorLengthParams): ValidatorResult {
 	let actual;
-	let error;
+	let valid;
 	try {
 		actual = [...input].length;
-		error = actual > expected;
+		valid = actual <= expected;
 	}
 	catch {
-		error = true;
+		valid = false;
 	}
 
 	return createValidatorResult(
-		error,
-		{fail: VALIDATION_MESSAGES.maxLength, ...messages},
+		valid,
+		{ fail: VALIDATION_MESSAGES.maxLength, ...messages },
 		[{ expected, actual }]
 	);
 }

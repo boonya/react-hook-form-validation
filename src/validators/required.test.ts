@@ -1,6 +1,6 @@
-import validateValue from './required';
+import create, { isValid } from './required';
 import { createValidatorResult } from '../helpers';
-import { VALIDATION_MESSAGES } from '../types';
+import { VALIDATION_MESSAGES, VALIDATORS } from '../types';
 
 jest.mock('../helpers');
 
@@ -21,11 +21,11 @@ describe('Error', () => {
 	].forEach((value) => {
 		const label = `${JSON.stringify(value)} (${typeof value})`;
 		it(`should reject ${label}.`, () => {
-			const result = validateValue(value);
+			const result = isValid(value);
 
-			expect(result).toBe(true);
+			expect(result).toBe(false);
 			expect(createValidatorResult).toBeCalledWith(
-				true,
+				false,
 				{ fail: VALIDATION_MESSAGES.required },
 				[{ input: value }]
 			);
@@ -33,11 +33,11 @@ describe('Error', () => {
 	});
 
 	it('should reject and pass custom messages.', () => {
-		const result = validateValue('', { fail: 'Fail', success: 'Success' });
+		const result = isValid('', { fail: 'Fail', success: 'Success' });
 
-		expect(result).toBe(true);
+		expect(result).toBe(false);
 		expect(createValidatorResult).toBeCalledWith(
-			true,
+			false,
 			{ fail: 'Fail', success: 'Success' },
 			[{ input: '' }]
 		);
@@ -47,6 +47,7 @@ describe('Error', () => {
 describe('Valid', () => {
 	[
 		0,
+		'0',
 		23,
 		23.23,
 		-41,
@@ -58,11 +59,11 @@ describe('Valid', () => {
 	].forEach((value) => {
 		const label = `${JSON.stringify(value)} (${typeof value})`;
 		it(`should accept ${label}.`, () => {
-			const result = validateValue(value);
+			const result = isValid(value);
 
-			expect(result).toBe(false);
+			expect(result).toBe(true);
 			expect(createValidatorResult).toBeCalledWith(
-				false,
+				true,
 				{ fail: VALIDATION_MESSAGES.required },
 				[{ input: value }]
 			);
@@ -70,13 +71,29 @@ describe('Valid', () => {
 	});
 
 	it('should accept and pass custom messages.', () => {
-		const result = validateValue('any', { fail: 'Fail', success: 'Success' });
+		const result = isValid('any', { fail: 'Fail', success: 'Success' });
 
-		expect(result).toBe(false);
+		expect(result).toBe(true);
 		expect(createValidatorResult).toBeCalledWith(
-			false,
+			true,
 			{ fail: 'Fail', success: 'Success' },
 			[{ input: 'any' }],
 		);
+	});
+});
+
+describe('definition object creator', () => {
+	const validator = VALIDATORS.required;
+
+	it('should return basic validator definition object.', () => {
+		const object = create();
+
+		expect(object).toEqual({ validator });
+	});
+
+	it('should return extended validator definition object.', () => {
+		const object = create({ fail: 'Fail', success: 'Success' });
+
+		expect(object).toEqual({ validator, fail: 'Fail', success: 'Success' });
 	});
 });

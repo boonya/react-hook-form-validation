@@ -1,6 +1,6 @@
-import validateValue from './url';
+import create, { isValid } from './url';
 import { createValidatorResult } from '../helpers';
-import { VALIDATION_MESSAGES } from '../types';
+import { VALIDATION_MESSAGES, VALIDATORS } from '../types';
 
 jest.mock('../helpers');
 
@@ -20,11 +20,11 @@ describe('Error', () => {
 		// '\\www.example.com',
 	].forEach((value) => {
 		it(`should reject "${value}".`, () => {
-			const result = validateValue(value);
+			const result = isValid(value);
 
-			expect(result).toBe(true);
+			expect(result).toBe(false);
 			expect(createValidatorResult).toBeCalledWith(
-				true,
+				false,
 				{ fail: VALIDATION_MESSAGES.url },
 				[{ input: value }],
 			);
@@ -32,11 +32,11 @@ describe('Error', () => {
 	});
 
 	it('should reject and pass custom messages.', () => {
-		const result = validateValue('invalid value', { fail: 'Fail', success: 'Success' });
+		const result = isValid('invalid value', { fail: 'Fail', success: 'Success' });
 
-		expect(result).toBe(true);
+		expect(result).toBe(false);
 		expect(createValidatorResult).toBeCalledWith(
-			true,
+			false,
 			{ fail: 'Fail', success: 'Success' },
 			[{ input: 'invalid value' }],
 		);
@@ -59,11 +59,11 @@ describe('Valid', () => {
 		'example.com/any/path/to/something',
 	].forEach((value) => {
 		it(`should accept "${value}".`, () => {
-			const result = validateValue(value);
+			const result = isValid(value);
 
-			expect(result).toBe(false);
+			expect(result).toBe(true);
 			expect(createValidatorResult).toBeCalledWith(
-				false,
+				true,
 				{ fail: VALIDATION_MESSAGES.url },
 				[{ input: value }],
 			);
@@ -71,19 +71,29 @@ describe('Valid', () => {
 	});
 
 	it('should accept and pass custom messages.', () => {
-		const result = validateValue('example.com', { fail: 'Fail', success: 'Success' });
+		const result = isValid('example.com', { fail: 'Fail', success: 'Success' });
 
-		expect(result).toBe(false);
+		expect(result).toBe(true);
 		expect(createValidatorResult).toBeCalledWith(
-			false,
+			true,
 			{ fail: 'Fail', success: 'Success' },
 			[{ input: 'example.com' }],
 		);
 	});
 });
 
+describe('definition object creator', () => {
+	const validator = VALIDATORS.url;
 
+	it('should return basic validator definition object.', () => {
+		const object = create();
 
+		expect(object).toEqual({ validator });
+	});
 
+	it('should return extended validator definition object.', () => {
+		const object = create({ fail: 'Fail', success: 'Success' });
 
-
+		expect(object).toEqual({ validator, fail: 'Fail', success: 'Success' });
+	});
+});

@@ -36,8 +36,10 @@ export type ValidatorLengthParams = ValidatorCommonParams & { expected: number};
 export type ValidatorPatternParams = ValidatorCommonParams & { pattern: RegExp };
 
 type ValidatorFuncResult = boolean | [boolean, ...unknown[]];
-export type ValidatorFuncParams = ValidatorCommonParams & { func: (...args: unknown[]) => ValidatorFuncResult };
-export type ValidatorAsyncFuncParams = ValidatorCommonParams & { func: (...args: unknown[]) => Promise<ValidatorFuncResult> };
+export type Func = (...args: unknown[]) => ValidatorFuncResult;
+export type AsyncFunc = (...args: unknown[]) => Promise<ValidatorFuncResult>;
+export type ValidatorFuncParams = ValidatorCommonParams & { func: Func };
+export type ValidatorAsyncFuncParams = ValidatorCommonParams & { func: AsyncFunc };
 
 export type FormPayload = { [key: string]: unknown[] };
 

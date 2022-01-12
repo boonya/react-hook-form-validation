@@ -64,7 +64,7 @@ export async function processFormValidity(processor: Processor, currentValidity:
 	const promises = currentValidity
 		.values()
 		.reduce((acc: Promise<FieldState>[], fieldState: FieldState) => {
-			const {name, index} = fieldState;
+			const { name, index } = fieldState;
 			const result = processor(payload, name, index);
 			return [...acc, result];
 		}, []);
@@ -87,19 +87,20 @@ export function createValidationMessage(message: ValidationMessage, ...props: un
 	return message;
 }
 
-export function createValidatorResult(error: boolean, messages: ValidatorCommonParams = {}, payload: unknown[] = []): ValidatorResult {
+export function createValidatorResult(valid: boolean, messages: ValidatorCommonParams = {}, payload: unknown[] = []): ValidatorResult {
 	let message = null;
 
-	if (error) {
+	if (valid) {
+		message = messages.success
+			? createValidationMessage(messages.success, ...payload)
+			: VALIDATION_MESSAGES.success;
+
+	}
+	else {
 		message = messages.fail
 			? createValidationMessage(messages.fail, ...payload)
 			: VALIDATION_MESSAGES.fail;
 	}
-	else {
-		message = messages.success
-			? createValidationMessage(messages.success, ...payload)
-			: VALIDATION_MESSAGES.success;
-	}
 
-	return {error, message};
+	return { error: !valid, message };
 }
