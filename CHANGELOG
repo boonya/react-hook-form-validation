@@ -1,11 +1,10 @@
 # What's changed
 
-## [2.1.0] - 2021-12-23
+## [3.0.0] - 2022-01-12
 
 ### Added
 
 - [styleguidist](https://react-styleguidist.js.org/) based documentation
-- `castType` function as an argument added to `min` & `max`
 
 This is done to be able to check number passed from form directly. Html forms pass values as strings. So, to cast type of these values to numbers we can use castType function.
 
@@ -21,12 +20,12 @@ This is done to be able to check number passed from form directly. Html forms pa
 - `postalCodeCA` & `sinCA` validators
 
 I don't want to keep special logic within this library.
-If you need something like that you may integrate it with any other projects
+If you need something like that you may integrate it with any other projects.
 e.g. [validator.js](https://github.com/validatorjs/validator.js) trough the `func` validator.
 
 - sources of example application removed
 
-**Full Changelog**: [2.0.0...2.1.0](https://github.com/boonya/react-hook-form-validation/compare/2.0.0...2.1.0)
+**Full Changelog**: [2.0.0...3.0.0](https://github.com/boonya/react-hook-form-validation/compare/2.0.0...3.0.0)
 
 ## [2.0.0] - 2021-10-23
 

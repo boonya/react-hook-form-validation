@@ -27,101 +27,133 @@ yarn add react-hook-form-validation
 
 ## The hook currently supports the following validators
 
-- [`required` -- Required value](#required)
-- [`min` -- Min value of a number](#min)
-- [`max` -- Max value of a number](#max)
-- [`minLength` -- Min length of a string or an array](#min-length)
-- [`maxLength` -- Max length of a string or an array](#max-length)
-- [`email` -- Email address](#email)
-- [`url` -- URL](#url)
-- [`pattern` -- RegEx pattern based](#pattern)
-- [`func` -- function based](#func)
-
-You can import enum of them:
-
-```js static
-import {VALIDATORS} from 'react-hook-form-validation';
-```
+- [Required value](#required)
+- [Min value of a number](#min-number)
+- [Max value of a number](#max-number)
+- [Min length of a string or an array](#min-length)
+- [Max length of a string or an array](#max-length)
+- [Email address](#email)
+- [URL](#url)
+- [RegEx pattern](#pattern)
+- [Custom function](#func)
 
 ### Required
 
-This validator can be useful if you need to be sure that your input value is defined,
-is not an empty string, array or object, is not a null.
+This validator can be useful if you want to be sure that your input value is defined, is not an empty string, array or object and is not a null.
+
 _Note that_ other validators do not perform their logic if empty value passed to them. So, make sure you use `required` validator if needed.
 
 ```js static
-{validator: VALIDATORS.required, fail: 'The field is required'}
+import useValidation, {validateRequired} from 'react-hook-form-validation';
+
+useValidation([{
+    field: 'field-name',
+    rules: [
+        validateRequired(),
+    ],
+}]);
 ```
 
-[verify test cases](https://github.com/boonya/react-hook-form-validation/blob/main/src/validators/required.test.ts)
+### Min Number
 
-### Min
-
-If you need to ensure your input value not less than expected. It can compare numbers or string like numbers.
+If you need to ensure your input value not less than expected. It can compare numbers or strings like numbers.
 
 ```js static
-{validator: VALIDATORS.min, expected: 5, fail: ({expected}) => `The value is less than ${expected}`}
+import useValidation, {validateMinNumber} from 'react-hook-form-validation';
+
+useValidation([{
+    field: 'field-name',
+    rules: [
+        validateMinNumber(5),
+    ],
+}]);
 ```
 
-[verify test cases](https://github.com/boonya/react-hook-form-validation/blob/main/src/validators/min.test.ts)
-
-### Max
+### Max Number
 
 If you need to ensure your input value not more than expected. It can compare numbers or string like numbers.
 
 ```js static
-{validator: VALIDATORS.max, expected: 5, fail: ({expected}) => `The value is more than ${expected}`}
-```
+import useValidation, {validateMaxNumber} from 'react-hook-form-validation';
 
-[verify test cases](https://github.com/boonya/react-hook-form-validation/blob/main/src/validators/max.test.ts)
+useValidation([{
+    field: 'field-name',
+    rules: [
+        validateMaxNumber(5),
+    ],
+}]);
+```
 
 ### Min Length
 
 If you need to ensure your input contains not less characters or items than expected. It can compare length of a string or an array.
 
 ```js static
-{validator: VALIDATORS.minLength, expected: 5, fail: ({expected}) => `The value is shorter than ${expected}`}
-```
+import useValidation, {validateMinLength} from 'react-hook-form-validation';
 
-[verify test cases](https://github.com/boonya/react-hook-form-validation/blob/main/src/validators/minLength.test.ts)
+useValidation([{
+    field: 'field-name',
+    rules: [
+        validateMinLength(5),
+    ],
+}]);
+```
 
 ### Max Length
 
 If you need to ensure your input contains not more characters or items than expected. It can compare length of a string or an array.
 
 ```js static
-{validator: VALIDATORS.maxLength, expected: 5, fail: ({expected}) => `The value is longer than ${expected}`}
-```
+import useValidation, {validateMaxLength} from 'react-hook-form-validation';
 
-[verify test cases](https://github.com/boonya/react-hook-form-validation/blob/main/src/validators/maxLength.test.ts)
+useValidation([{
+    field: 'field-name',
+    rules: [
+        validateMaxLength(5),
+    ],
+}]);
+```
 
 ### Email
 
 ```js static
-{validator: VALIDATORS.email, fail: 'The value is not an email address'}
-```
+import useValidation, {validateEmail} from 'react-hook-form-validation';
 
-[verify test cases](https://github.com/boonya/react-hook-form-validation/blob/main/src/validators/email.test.ts)
+useValidation([{
+    field: 'field-name',
+    rules: [
+        validateEmail(),
+    ],
+}]);
+```
 
 ### URL
 
 ```js static
-{validator: VALIDATORS.url, fail: 'The value is not a URL'}
-```
+import useValidation, {validateUrl} from 'react-hook-form-validation';
 
-[verify test cases](https://github.com/boonya/react-hook-form-validation/blob/main/src/validators/url.test.ts)
+useValidation([{
+    field: 'field-name',
+    rules: [
+        validateUrl(),
+    ],
+}]);
+```
 
 ### Pattern
 
-In case you need to validate your input based on any random RegEx pattern you interested in, you can do it by `pattern` validator.
+In case you need to validate your input based on any random RegEx pattern you interested in
 
 ```js static
-const pattern = /^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,})\S$/u;
+import useValidation, {validatePattern} from 'react-hook-form-validation';
 
-{validator: VALIDATORS.pattern, pattern, fail: 'Password must contain minimum of 6 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number with no spaces.'}
+useValidation([{
+    field: 'field-name',
+    rules: [
+        validatePattern(/^[abc]+$/ui),
+    ],
+}]);
 ```
-
-[verify test cases](https://github.com/boonya/react-hook-form-validation/blob/main/src/validators/pattern.test.ts)
 
 ### Func
 
@@ -131,27 +163,43 @@ It allows you to implement any validation logic you need. Even based on asynchro
 A function has to return `true` in case of you value is valid and vice versa.
 
 ```js static
+import useValidation, {validateFunc} from 'react-hook-form-validation';
+
 function isEven(input) {
     const value = Number(input);
     return !Number.isNaN(value) && value % 2 === 0;
 }
 
-{validator: VALIDATORS.func, func: isEven, fail: 'The number is not even.'}
+useValidation([{
+    field: 'field-name',
+    rules: [
+        validateFunc(isEven),
+    ],
+}]);
 ```
 
 It can be useful if you need to compare your value with result of asynchronous query:
 
 ```js static
+import useValidation, {validateFunc} from 'react-hook-form-validation';
+
 function asyncFunction(value) {
     return new Promise(() => setTimeout(() => false, 1000));
 }
 
-{validator: VALIDATORS.func, func: asyncFunction, fail: 'You received error messages'}
+useValidation([{
+    field: 'field-name',
+    rules: [
+        validateFunc(asyncFunction),
+    ],
+}]);
 ```
 
 Sometimes you may need to print something more specific rather than just "valid" or "invalid". For that purpose you may return an array from your function. Where the first element should be a sign of validity, and the rest will be proxied into the message builder function.
 
 ```js static
+import useValidation, {validateFunc} from 'react-hook-form-validation';
+
 function guessFruit(input) {
     if (typeof input !== 'string') {
         return false;
@@ -163,7 +211,10 @@ function guessFruit(input) {
     return [false, ...FRUITS];
 }
 
-{validator: VALIDATORS.func, func: guessFruit, fail: (...fruits) => `Guessed wrong. It should have been ${fruits.join(', ')}.`,}
+useValidation([{
+    field: 'field-name',
+    rules: [
+        validateFunc(asyncFunction, {fail: ({payload}) => `Guessed wrong. It should have been ${payload.join(', ')}.`})
+    ],
+}]);
 ```
-
-[verify test cases](https://github.com/boonya/react-hook-form-validation/blob/main/src/validators/func.test.ts)
