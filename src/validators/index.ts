@@ -1,9 +1,17 @@
 import { VALIDATORS, ValidatorResult, AsyncValidatorResult } from '../types';
+
+// @FIXME: Export within a namespace maybe
+import validateEmail from './email';
+import validateFunc from './func';
+import validateMaxNumber from './max';
+import validateMinNumber from './min';
+import validatePattern from './pattern';
+import validateRequired from './required';
+import validateUrl from './url';
+
 import {isValid as required} from './required';
 import {isValid as min} from './min';
 import {isValid as max} from './max';
-import {isValid as minLength} from './minLength';
-import {isValid as maxLength} from './maxLength';
 import {isValid as email} from './email';
 import {isValid as url} from './url';
 import {isValid as pattern} from './pattern';

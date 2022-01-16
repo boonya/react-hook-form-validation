@@ -1,7 +1,7 @@
 module.exports = {
 	preset: 'ts-jest',
 	testEnvironment: 'node',
-	roots: ['src'],
+	roots: ['src', 'tests'],
 	coverageDirectory: 'coverage',
 	coverageReporters: ['text-summary', 'html', 'lcov'],
 	resetMocks: true,

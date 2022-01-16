@@ -18,6 +18,7 @@ export default function useValidation(ruleset: ValidationRuleSet): HookResult {
 
 	const processor = React.useMemo<Processor>(() => createProcessor(ruleset), [ruleset]);
 	const defaultValidity = React.useMemo<FormValidity>(() => createDefaultValidity(ruleset), [ruleset]);
+	const fields = ruleset.map(({field}) => field);
 
 	const [currentValidity, setValidity] = React.useState<FormValidity>(defaultValidity);
 
@@ -25,10 +26,10 @@ export default function useValidation(ruleset: ValidationRuleSet): HookResult {
 		if (!isPlainObject(payload)) {
 			throw new Error('You have to pass a form payload object to validate the form.');
 		}
-		const validity = await processFormValidity(processor, currentValidity, payload);
+		const validity = await processFormValidity(processor, fields, payload);
 		setValidity(validity);
 		return validity;
-	}, [currentValidity, processor]);
+	}, [processor, fields]);
 
 	const validateField = React.useCallback<ValidateFieldFunction>(async (payload: FormPayload, name: string, index = 0) => {
 		if (!isPlainObject(payload)) {

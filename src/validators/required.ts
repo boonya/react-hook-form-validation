@@ -14,10 +14,10 @@ function check(input: unknown) {
 	return !isEmpty(value);
 }
 
-export function isValid(input: unknown, messages: ValidatorCommonParams = {}): ValidatorResult {
+export function isValid(input: unknown, rest: ValidatorCommonParams = {}): ValidatorResult {
 	return createValidatorResult(
 		check(input),
-		{ fail: VALIDATION_MESSAGES.required, ...messages },
+		{ fail: VALIDATION_MESSAGES.required, ...rest },
 		[{ input }],
 	);
 }

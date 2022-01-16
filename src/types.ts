@@ -2,8 +2,6 @@ export enum VALIDATORS {
 	required = 'required',
 	min = 'min',
 	max = 'max',
-	minLength = 'minLength',
-	maxLength = 'maxLength',
 	email = 'email',
 	url = 'url',
 	pattern = 'pattern',
@@ -14,8 +12,6 @@ export enum VALIDATION_MESSAGES {
 	required = 'required',
 	min = 'min',
 	max = 'max',
-	minLength = 'minLength',
-	maxLength = 'maxLength',
 	email = 'email',
 	url = 'url',
 	pattern = 'pattern',
@@ -23,16 +19,23 @@ export enum VALIDATION_MESSAGES {
 	success = 'success',
 }
 
+export type Condition = [(...args: unknown[]) => boolean, ...string[]];
+
+export type FieldRule = {
+	validator: VALIDATORS;
+	condition?: Condition;
+};
+
 export type ValidationMessage = string | ((...args: unknown[]) => string);
 
-export type ValidatorResult = {error: boolean, message: string};
+export type ValidatorResult = { error: boolean, message: string };
 export type AsyncValidatorResult = Promise<ValidatorResult>;
 
-export type NumberValue = number | string;
-export type LengthValue = string | Array<unknown>;
+export type MinMaxValue = number | string | Array<unknown>;
+export type MinMaxMode = 'number' | 'length';
 
-export type ValidatorCommonParams = {fail?: ValidationMessage, success?: ValidationMessage};
-export type ValidatorLengthParams = ValidatorCommonParams & { expected: number};
+export type ValidatorCommonParams = { fail?: ValidationMessage, success?: ValidationMessage, condition?: Condition };
+export type ValidatorLengthParams = ValidatorCommonParams & { expected: number, mode: MinMaxMode };
 export type ValidatorPatternParams = ValidatorCommonParams & { pattern: RegExp };
 
 type ValidatorFuncResult = boolean | [boolean, ...unknown[]];
@@ -56,13 +59,6 @@ export const DEFAULT_FIELD_STATE: Omit<FieldState, 'name'> = {
 	pristine: true,
 	error: false,
 	message: undefined,
-};
-
-export type Condition = [(...args: unknown[]) => boolean, ...string[]];
-
-export type FieldRule = {
-	validator: VALIDATORS;
-	condition?: Condition;
 };
 
 export type FieldRuleSet = FieldRule[];

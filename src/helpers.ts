@@ -4,7 +4,6 @@ import {
 	FormPayload,
 	FormValidity,
 	Processor,
-	FieldState,
 	ValidationMessage,
 	Condition,
 	ValidatorCommonParams,
@@ -57,17 +56,33 @@ export function createDefaultValidity(rules: ValidationRuleSet): FormValidity {
 }
 
 export function extractFieldValue(payload: FormPayload, name: string, index: number): unknown {
-	return payload[name][index];
+	try {
+		return payload[name][index];
+	} catch {
+		return undefined;
+	}
 }
 
-export async function processFormValidity(processor: Processor, currentValidity: FormValidity, payload: FormPayload): Promise<FormValidity> {
-	const promises = currentValidity
-		.values()
-		.reduce((acc: Promise<FieldState>[], fieldState: FieldState) => {
-			const { name, index } = fieldState;
-			const result = processor(payload, name, index);
-			return [...acc, result];
-		}, []);
+type FieldPayload = { field: string, index: number, value: unknown };
+
+function flattenField(field: string, payload: FormPayload) {
+	const fieldPayload = payload[field];
+	if (fieldPayload === undefined || !fieldPayload.length) {
+		return [{ field, index: 0, value: undefined }];
+	}
+	return fieldPayload.map((value, index) => ({ field, index, value }));
+}
+
+function flattenForm(fields: string[], payload: FormPayload) {
+	function reducer(acc: FieldPayload[], field: string) {
+		return [...acc, ...flattenField(field, payload)];
+	}
+	return fields.reduce(reducer, []);
+}
+
+export async function processFormValidity(processor: Processor, fields: string[], payload: FormPayload): Promise<FormValidity> {
+	const promises = flattenForm(fields, payload)
+		.map(({ field, index }) => processor(payload, field, index));
 	const validity = await Promise.all(promises);
 	return new Validity(validity);
 }

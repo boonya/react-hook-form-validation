@@ -7,12 +7,12 @@ export default function required(props: ValidatorCommonParams = {}) {
 
 const PATTERN = (/^(?!\/).+?\.[a-z]{2,}(?:\/.*)?$/ui);
 
-export function isValid(input: string, messages: ValidatorCommonParams = {}): ValidatorResult {
+export function isValid(input: string, rest: ValidatorCommonParams = {}): ValidatorResult {
 	const valid = input === undefined || input === '' || PATTERN.test(input);
 
 	return createValidatorResult(
 		valid,
-		{ fail: VALIDATION_MESSAGES.url, ...messages },
+		{ fail: VALIDATION_MESSAGES.url, ...rest },
 		[{ input }],
 	);
 }
