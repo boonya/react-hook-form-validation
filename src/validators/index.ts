@@ -29,12 +29,6 @@ function getValidator(name: string): (...args: unknown[]) => ValidatorResult | A
 	case VALIDATORS.max:
 		// @ts-ignore
 		return max;
-	case VALIDATORS.minLength:
-		// @ts-ignore
-		return minLength;
-	case VALIDATORS.maxLength:
-		// @ts-ignore
-		return maxLength;
 	case VALIDATORS.email:
 		// @ts-ignore
 		return email;
