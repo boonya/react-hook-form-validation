@@ -35,92 +35,92 @@ it('Several fields form with their own validators set.', async () => {
 	 * By default validator does contain default validity object.
 	 * The object describes every registered field as pristine and have no errors.
 	 */
-	// expect(hook.current.validity).toEqual(new Validity([{
-	// 	name: MASTER_FIELD,
-	// 	index: 0,
-	// 	pristine: true,
-	// 	error: false,
-	// }, {
-	// 	name: DEPENDENT_FIELD,
-	// 	index: 0,
-	// 	pristine: true,
-	// 	error: false,
-	// }]));
+	expect(hook.current.validity).toEqual(new Validity([{
+		name: MASTER_FIELD,
+		index: 0,
+		pristine: true,
+		error: false,
+	}, {
+		name: DEPENDENT_FIELD,
+		index: 0,
+		pristine: true,
+		error: false,
+	}]));
 
-	// /**
-	//  * What if we didn't pass a payload for all fields.
-	//  */
-	// await act(async () => {
-	// 	const result = await hook.current.validateForm({});
+	/**
+	 * What if we didn't pass a payload for all fields.
+	 */
+	await act(async () => {
+		const result = await hook.current.validateForm({});
 
-	// 	expect(result).toEqual(new Validity([{
-	// 		name: MASTER_FIELD,
-	// 		index: 0,
-	// 		pristine: true,
-	// 		error: true,
-	// 		message: 'fail',
-	// 	}, {
-	// 		name: DEPENDENT_FIELD,
-	// 		index: 0,
-	// 		pristine: true,
-	// 		error: true,
-	// 		message: 'required',
-	// 	}]));
-	// 	/**
-	// 	 * Validator state is equal to the function result.
-	// 	 */
-	// 	expect(hook.current.validity).toEqual(result);
-	// });
+		expect(result).toEqual(new Validity([{
+			name: MASTER_FIELD,
+			index: 0,
+			pristine: true,
+			error: true,
+			message: 'fail',
+		}, {
+			name: DEPENDENT_FIELD,
+			index: 0,
+			pristine: true,
+			error: true,
+			message: 'required',
+		}]));
+		/**
+		 * Validator state is equal to the function result.
+		 */
+		expect(hook.current.validity).toEqual(result);
+	});
 
-	// /**
-	//  * What if we passed unacceptable value to both fields.
-	//  */
-	// await act(async () => {
-	// 	const result = await hook.current.validateForm({ [MASTER_FIELD]: ['unacceptable'], [DEPENDENT_FIELD]: ['unacceptable'] });
+	/**
+	 * What if we passed unacceptable value to both fields.
+	 */
+	await act(async () => {
+		const result = await hook.current.validateForm({ [MASTER_FIELD]: ['unacceptable'], [DEPENDENT_FIELD]: ['unacceptable'] });
 
-	// 	expect(result).toEqual(new Validity([{
-	// 		name: MASTER_FIELD,
-	// 		index: 0,
-	// 		pristine: false,
-	// 		error: true,
-	// 		message: 'fail',
-	// 	}, {
-	// 		name: DEPENDENT_FIELD,
-	// 		index: 0,
-	// 		pristine: false,
-	// 		error: true,
-	// 		message: 'fail',
-	// 	}]));
-	// 	/**
-	// 	 * Validator state is equal to the function result.
-	// 	 */
-	// 	expect(hook.current.validity).toEqual(result);
-	// });
+		expect(result).toEqual(new Validity([{
+			name: MASTER_FIELD,
+			index: 0,
+			pristine: false,
+			error: true,
+			message: 'fail',
+		}, {
+			name: DEPENDENT_FIELD,
+			index: 0,
+			pristine: false,
+			error: true,
+			message: 'fail',
+		}]));
+		/**
+		 * Validator state is equal to the function result.
+		 */
+		expect(hook.current.validity).toEqual(result);
+	});
 
-	// /**
-	//  * What if we passed a valid value to the first and dependent field shouldn't be validated then.
-	//  */
-	// await act(async () => {
-	// 	const result = await hook.current.validateForm({ [MASTER_FIELD]: ['don\'t validate'], [DEPENDENT_FIELD]: [''] });
+	/**
+	 * What if we passed a valid value to the first and dependent field shouldn't be validated then.
+	 */
+	await act(async () => {
+		const result = await hook.current.validateForm({ [MASTER_FIELD]: ['don\'t validate'], [DEPENDENT_FIELD]: [''] });
 
-	// 	expect(result).toEqual(new Validity([{
-	// 		name: MASTER_FIELD,
-	// 		index: 0,
-	// 		pristine: false,
-	// 		error: false,
-	// 		message: 'success',
-	// 	}, {
-	// 		name: DEPENDENT_FIELD,
-	// 		index: 0,
-	// 		pristine: false,
-	// 		error: false,
-	// 		// message: 'success', // FIXME: I don't know yet
-	// 	}]));
-	// 	/**
-	// 	 * Validator state is equal to the function result.
-	// 	 */
-	// 	expect(hook.current.validity).toEqual(result);
-	// });
+		expect(result).toEqual(new Validity([{
+			name: MASTER_FIELD,
+			index: 0,
+			pristine: false,
+			error: false,
+			message: 'success',
+		}, {
+			name: DEPENDENT_FIELD,
+			index: 0,
+			pristine: false,
+			error: false,
+			message: 'success', // FIXME: I don't know yet
+		}]));
+		/**
+		 * Validator state is equal to the function result.
+		 */
+		expect(hook.current.validity).toEqual(result);
+	});
 
 	/**
 	 * What if we passed a valid value to the first and dependent field validated successfully.
@@ -140,6 +140,31 @@ it('Several fields form with their own validators set.', async () => {
 			pristine: false,
 			error: false,
 			message: 'success', // FIXME: I don't know yet
+		}]));
+		/**
+		 * Validator state is equal to the function result.
+		 */
+		expect(hook.current.validity).toEqual(result);
+	});
+
+	/**
+	 * What if we passed a valid value to the first and dependent field validated successfully.
+	 */
+	await act(async () => {
+		const result = await hook.current.validateForm({ [MASTER_FIELD]: ['validate as url'], [DEPENDENT_FIELD]: ['http:invalid'] });
+
+		expect(result).toEqual(new Validity([{
+			name: MASTER_FIELD,
+			index: 0,
+			pristine: false,
+			error: false,
+			message: 'success',
+		}, {
+			name: DEPENDENT_FIELD,
+			index: 0,
+			pristine: false,
+			error: true,
+			message: 'url',
 		}]));
 		/**
 		 * Validator state is equal to the function result.
