@@ -10,4 +10,7 @@ module.exports = {
 			isolatedModules: true,
 		},
 	},
+	'testPathIgnorePatterns' : [
+		'<rootDir>/tests'
+	]
 };
