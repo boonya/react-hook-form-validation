@@ -8,7 +8,7 @@ import {
 	processFieldValidity,
 	validateRuleSet,
 } from './helpers';
-import { renderHook, act } from '@testing-library/react-hooks';
+import renderHook, {act} from '../tests/render-hook';
 
 jest.mock('./processor');
 jest.mock('./helpers');
@@ -42,12 +42,6 @@ beforeEach(() => {
 	jest.mocked(validateRuleSet).mockName('validateRuleSet').mockReturnValue();
 });
 
-function runHook() {
-	// eslint-disable-next-line react-hooks/rules-of-hooks
-	const { result } = renderHook(() => useValidation(validRuleSet));
-	return result;
-}
-
 describe('Hook throws an error', () => {
 	test('no ruleset', () => {
 		jest.mocked(validateRuleSet).mockName('validateRuleSet').mockImplementation(() => {
@@ -58,7 +52,7 @@ describe('Hook throws an error', () => {
 });
 
 test('Keeps default validity initially as a state', () => {
-	const hook = runHook();
+	const hook = renderHook(validRuleSet);
 
 	expect(hook.current.validity).toBe(defaultValidity);
 
@@ -70,7 +64,7 @@ test('Keeps default validity initially as a state', () => {
 
 describe('validateForm', () => {
 	test('Throws an exception if no payload', async () => {
-		const hook = runHook();
+		const hook = renderHook(validRuleSet);
 
 		await act(async () => {
 			await expect(hook.current.validateForm()).rejects.toThrow(
@@ -85,7 +79,7 @@ describe('validateForm', () => {
 	});
 
 	test('Returns new validity and changes state', async () => {
-		const hook = runHook();
+		const hook = renderHook(validRuleSet);
 
 		await act(async () => {
 			const result = await hook.current.validateForm({});
@@ -105,7 +99,7 @@ describe('validateForm', () => {
 
 describe('validateField', () => {
 	test('Throws an exception if no payload', async () => {
-		const hook = runHook();
+		const hook = renderHook(validRuleSet);
 
 		await act(async () => {
 			await expect(hook.current.validateField()).rejects.toThrow(
@@ -120,7 +114,7 @@ describe('validateField', () => {
 	});
 
 	test('Throws an exception if no field name', async () => {
-		const hook = runHook();
+		const hook = renderHook(validRuleSet);
 
 		await act(async () => {
 			await expect(hook.current.validateField({})).rejects.toThrow(
@@ -135,7 +129,7 @@ describe('validateField', () => {
 	});
 
 	test('Throws an exception if field name is not a string', async () => {
-		const hook = runHook();
+		const hook = renderHook(validRuleSet);
 
 		await act(async () => {
 			await expect(hook.current.validateField({}, [])).rejects.toThrow(
@@ -150,7 +144,7 @@ describe('validateField', () => {
 	});
 
 	test('Throws an exception if field name is an empty string', async () => {
-		const hook = runHook();
+		const hook = renderHook(validRuleSet);
 
 		await act(async () => {
 			await expect(hook.current.validateField({}, '  ')).rejects.toThrow(
@@ -165,7 +159,7 @@ describe('validateField', () => {
 	});
 
 	test('Returns new validity and changes state', async () => {
-		const hook = runHook();
+		const hook = renderHook(validRuleSet);
 
 		await act(async () => {
 			const result = await hook.current.validateField({}, 'field');
@@ -184,7 +178,7 @@ describe('validateField', () => {
 });
 
 test('resetForm', async () => {
-	const hook = runHook();
+	const hook = renderHook(validRuleSet);
 
 	await act(async () => {
 		const validity = await hook.current.validateForm({ fieldname: [''] });
