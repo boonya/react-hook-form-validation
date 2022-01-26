@@ -1,30 +1,31 @@
 {
   "name": "react-hook-form-validation",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "React Hook for Form Validation",
   "repository": "https://github.com/boonya/react-hook-form-validation",
   "homepage": "https://boonya.info/react-hook-form-validation/",
   "main": "dist/index.js",
-  "files": [
-    "dist/*"
-  ],
   "engines": {
     "npm": ">=7",
     "node": ">=14"
   },
   "scripts": {
+    "start": "styleguidist server",
     "lint": "eslint .",
     "test": "jest",
     "test:ci": "jest --coverage --coverageReporters=text --verbose",
     "build": "tsc",
-    "site:run": "(cd example && npm start)",
-    "site:build": "(cd example && npm run build)"
+    "build:docs": "styleguidist build"
   },
   "keywords": [
     "react",
     "hook",
     "validation",
+    "validator",
     "form",
+    "forms",
+    "form-validation",
+    "validity",
     "useValidation"
   ],
   "author": "Serhii [boonya] Buinytskyi",
@@ -37,17 +38,24 @@
     "lodash.isplainobject": "^4.0.6"
   },
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.16.10",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
     "@testing-library/react-hooks": "^7.0.2",
-    "@types/jest": "^27.0.2",
-    "@types/lodash": "^4.14.176",
-    "@types/react": "^17.0.31",
-    "@typescript-eslint/eslint-plugin": "^5.1.0",
-    "@typescript-eslint/parser": "^5.1.0",
+    "@types/jest": "^27.4.0",
+    "@types/lodash": "^4.14.178",
+    "@types/react": "^17.0.38",
+    "@typescript-eslint/eslint-plugin": "^5.10.1",
+    "@typescript-eslint/parser": "^5.10.1",
+    "babel-loader": "^8.2.3",
     "eslint": "^7.32.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "jest": "^27.3.1",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "jest": "^27.4.7",
+    "react-styleguidist": "^11.1.8",
     "react-test-renderer": "^17.0.2",
-    "ts-jest": "^27.0.7",
-    "typescript": "^4.4.4"
+    "ts-jest": "^27.1.3",
+    "ts-loader": "^8.3.0",
+    "typescript": "^4.5.5",
+    "webpack": "^5.67.0"
   }
 }
