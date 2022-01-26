@@ -1,15 +1,17 @@
+The validator does completely the same as [`min`](#section-min) but opposit.
+
 ```js
 import {useMemo, useCallback} from 'react';
-import useValidation, {validateEmail} from 'react-hook-form-validation';
+import useValidation, {validateMax} from 'react-hook-form-validation';
 
-const FIELD_NAME = 'email';
+const FIELD_NAME = 'number';
 
 const {validity, validateForm, resetForm} = useValidation([{
     field: FIELD_NAME,
     rules: [
-        validateEmail({
-            fail: 'The value is not similar to an email address',
-            success: 'All good',
+        validateMax(7, 'number', {
+            fail: ({expected}) => `Should'n be greater then ${expected}.`,
+            success: 'All good.',
         }),
     ],
 }]);
@@ -22,10 +24,10 @@ const onSubmit = useCallback(async (event) => {
 
 <Form onSubmit={onSubmit} onReset={resetForm}>
     <Input
-        id="email-string"
+        id="max-number"
+        label="Enter a number"
+        type="number"
         name={FIELD_NAME}
-        label="Enter an email"
-        required
         aria-invalid={validity.isPristine(FIELD_NAME) ? undefined : validity.isError(FIELD_NAME)}
         description={validity.getMessage(FIELD_NAME)}
     />

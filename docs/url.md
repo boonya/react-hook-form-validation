@@ -1,17 +1,16 @@
 ```js
 import {useMemo, useCallback} from 'react';
-import useValidation, {VALIDATORS} from 'react-hook-form-validation';
+import useValidation, {validateUrl} from 'react-hook-form-validation';
 
 const FIELD_NAME = 'url';
 
 const {validity, validateForm, resetForm} = useValidation([{
     field: FIELD_NAME,
     rules: [
-        {
-            validator: VALIDATORS.url,
+        validateUrl({
             fail: 'The value is not similar to a URL',
             success: 'All good',
-        }
+        }),
     ],
 }]);
 
@@ -21,16 +20,16 @@ const onSubmit = useCallback(async (event) => {
     await validateForm({[FIELD_NAME]: [value]});
 }, [validateForm]);
 
-<form noValidate onSubmit={onSubmit} onReset={resetForm}>
-    <label htmlFor="required-string">Enter a URL *</label>
-    <input
+<Form onSubmit={onSubmit} onReset={resetForm}>
+    <Input
         id="url-string"
         name={FIELD_NAME}
+        label="Enter a URL"
         required
-        aria-invalid={validity.isError(FIELD_NAME)}
+        aria-invalid={validity.isPristine(FIELD_NAME) ? undefined : validity.isError(FIELD_NAME)}
+        description={validity.getMessage(FIELD_NAME)}
     />
-    <p>{validity.getMessage(FIELD_NAME)}</p>
-    <button type="submit">Validate</button>
-    <button type="reset">Reset</button>
-</form>
+    <Button type="submit">Validate</Button>
+    <Button type="reset">Reset</Button>
+</Form>
 ```

@@ -1,14 +1,23 @@
 ```js
 import {useMemo, useCallback} from 'react';
-import useValidation, {validateEmail} from 'react-hook-form-validation';
+import useValidation, {validateFunc} from 'react-hook-form-validation';
 
-const FIELD_NAME = 'email';
+const FIELD_NAME = 'even-number';
+
+function awaitSuccess(value) {
+    if (!value.trim()) {
+        return false;
+    }
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(true), 1000);
+    });
+}
 
 const {validity, validateForm, resetForm} = useValidation([{
     field: FIELD_NAME,
     rules: [
-        validateEmail({
-            fail: 'The value is not similar to an email address',
+        validateFunc(awaitSuccess, {
+            fail: 'Enter at least something',
             success: 'All good',
         }),
     ],
@@ -22,9 +31,9 @@ const onSubmit = useCallback(async (event) => {
 
 <Form onSubmit={onSubmit} onReset={resetForm}>
     <Input
-        id="email-string"
+        id="even-number"
         name={FIELD_NAME}
-        label="Enter an email"
+        label="Enter anything an wait result for a second"
         required
         aria-invalid={validity.isPristine(FIELD_NAME) ? undefined : validity.isError(FIELD_NAME)}
         description={validity.getMessage(FIELD_NAME)}

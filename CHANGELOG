@@ -1,12 +1,10 @@
 # What's changed
 
-## [3.0.0] - 2022-01-12
+## [3.0.0] - 2022-01-26
 
 ### Added
 
 - [styleguidist](https://react-styleguidist.js.org/) based documentation
-
-This is done to be able to check number passed from form directly. Html forms pass values as strings. So, to cast type of these values to numbers we can use castType function.
 
 ### Changed
 

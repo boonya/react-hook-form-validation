@@ -9,7 +9,6 @@ import {
 	ValidatorCommonParams,
 	VALIDATION_MESSAGES,
 	ValidatorResult,
-	FieldState,
 } from './types';
 import Validity from './validity';
 

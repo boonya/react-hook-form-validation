@@ -8,6 +8,9 @@ const path = require('path');
 module.exports = {
 	title: packageName,
 	version,
+	require: [
+		path.resolve(__dirname, './.styleguidist/setup'),
+	],
 	template: {
 		head: {
 			links: [
@@ -24,6 +27,12 @@ module.exports = {
 					rel: 'stylesheet',
 					href: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Sans&display=swap',
 				},
+				{
+					rel: 'stylesheet',
+					href: 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css',
+					integrity: 'sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3',
+					crossorigin: 'anonymous',
+				},
 			],
 		},
 	},
@@ -34,7 +43,7 @@ module.exports = {
 		url: 'https://github.com/boonya/react-hook-form-validation',
 	},
 	contextDependencies: [
-		path.resolve(__dirname, 'docs'),
+		path.resolve(__dirname, './docs'),
 	],
 	sections: [
 		{
@@ -59,22 +68,21 @@ module.exports = {
 					content: 'docs/required.md',
 				},
 				{
-					name: 'Min',
-					content: 'docs/min.md',
+					name: 'Min Number',
+					content: 'docs/minNumber.md',
 				},
 				{
-					name: 'Max',
-					content: 'docs/max.md',
+					name: 'Max Number',
+					content: 'docs/maxNumber.md',
 				},
-				// TODO: Describe minLength and maxLength validators
-				// {
-				// 	name: 'Min Length',
-				// 	content: 'docs/minLength.md',
-				// },
-				// {
-				// 	name: 'Max Length',
-				// 	content: 'docs/maxLength.md',
-				// },
+				{
+					name: 'Min Length',
+					content: 'docs/minLength.md',
+				},
+				{
+					name: 'Max Length',
+					content: 'docs/maxLength.md',
+				},
 				{
 					name: 'Email',
 					content: 'docs/email.md',
@@ -92,8 +100,8 @@ module.exports = {
 					content: 'docs/func.md',
 				},
 				{
-					name: 'Chain',
-					content: 'docs/chain.md',
+					name: 'Async Function',
+					content: 'docs/asyncFunction.md',
 				},
 			],
 		},
@@ -108,6 +116,11 @@ module.exports = {
 					test: /\.ts$/u,
 					exclude: /node_modules/u,
 					loader: 'ts-loader',
+				},
+				{
+					test: /\.js?$/u,
+					exclude: /node_modules/u,
+					loader: 'babel-loader',
 				},
 			],
 		},

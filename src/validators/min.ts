@@ -17,6 +17,8 @@ function verifyNumber(input: MinMaxValue, expected: number) {
 
 function verifyLength(input: MinMaxValue, expected: number) {
 	try {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
 		const length = [...input].length;
 		const valid = length >= expected;
 		return { valid, actual: length };

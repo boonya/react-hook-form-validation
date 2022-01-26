@@ -2,19 +2,17 @@
 
 ```js
 import {useMemo, useCallback} from 'react';
-import useValidation, {VALIDATORS} from 'react-hook-form-validation';
+import useValidation, {validateMax} from 'react-hook-form-validation';
 
 const FIELD_NAME = 'string';
 
 const {validity, validateForm, resetForm} = useValidation([{
     field: FIELD_NAME,
     rules: [
-        {
-            validator: VALIDATORS.max,
-            expected: 7,
+        validateMax(7, 'length', {
             fail: ({expected}) => `Should be shorter then ${expected} characters`,
             success: 'All good'
-        },
+        }),
     ],
 }]);
 
@@ -35,38 +33,34 @@ const onSubmit = useCallback(async (event) => {
     await validateForm({[FIELD_NAME]: [value]});
 }, [validateForm]);
 
-<form noValidate onSubmit={onSubmit} onReset={resetForm}>
-    <label htmlFor="max-string">Enter a string *</label>
-    <input
-        id="max-string"
+<Form onSubmit={onSubmit} onReset={resetForm}>
+    <Input
+        id="max-length-string"
+        label="Enter a string"
         name={FIELD_NAME}
-        required
-        aria-describedby="max-string-helper-text"
-        aria-invalid={validity.isError(FIELD_NAME)}
+        aria-invalid={validity.isPristine(FIELD_NAME) ? undefined : validity.isError(FIELD_NAME)}
+        description={validity.getMessage(FIELD_NAME)}
     />
-    <p id="max-string-helper-text">{validity.getMessage(FIELD_NAME)}</p>
-    <button type="submit">Validate</button>
-    <button type="reset">Reset</button>
-</form>
+    <Button type="submit">Validate</Button>
+    <Button type="reset">Reset</Button>
+</Form>
 ```
 
 #### Array
 
 ```js
 import {useMemo, useCallback} from 'react';
-import useValidation, {VALIDATORS} from 'react-hook-form-validation';
+import useValidation, {validateMax} from 'react-hook-form-validation';
 
 const FIELD_NAME = 'array';
 
 const {validity, validateForm, resetForm} = useValidation([{
     field: FIELD_NAME,
     rules: [
-        {
-            validator: VALIDATORS.max,
-            expected: 2,
+        validateMax(2, 'length', {
             fail: ({expected}) => `Choose not more than ${expected}`,
             success: 'All good'
-        },
+        }),
     ],
 }]);
 
@@ -87,22 +81,23 @@ const onSubmit = useCallback(async (event) => {
     await validateForm({[FIELD_NAME]: [value]});
 }, [validateForm]);
 
-<form noValidate onSubmit={onSubmit} onReset={resetForm}>
-    <fieldset>
-        <legend>Choose at least something *</legend>
-        <input type="checkbox" id="max-array-1" name={FIELD_NAME} value="1" />
-        <label htmlFor="max-array-1">Something #1</label>
-        <input type="checkbox" id="max-array-2" name={FIELD_NAME} value="2" />
-        <label htmlFor="max-array-2">Something #2</label>
-        <input type="checkbox" id="max-array-3" name={FIELD_NAME} value="3" />
-        <label htmlFor="max-array-3">Something #3</label>
-        <input type="checkbox" id="max-array-4" name={FIELD_NAME} value="4" />
-        <label htmlFor="max-array-4">Something #4</label>
-        <input type="checkbox" id="max-array-5" name={FIELD_NAME} value="5" />
-        <label htmlFor="max-array-5">Something #5</label>
-    </fieldset>
-    <p id="helper-text">{validity.getMessage(FIELD_NAME)}</p>
-    <button type="submit">Validate</button>
-    <button type="reset">Reset</button>
-</form>
+<Form onSubmit={onSubmit} onReset={resetForm}>
+    <Checks
+        id="max-length-array"
+        label="Choose at least something"
+        required
+        name={FIELD_NAME}
+        items={[
+            ['Something #1', 1],
+            ['Something #2', 2],
+            ['Something #3', 3],
+            ['Something #4', 4],
+            ['Something #5', 5],
+        ]}
+        aria-invalid={validity.isPristine(FIELD_NAME) ? undefined : validity.isError(FIELD_NAME)}
+        description={validity.getMessage(FIELD_NAME)}
+    />
+    <Button type="submit">Validate</Button>
+    <Button type="reset">Reset</Button>
+</Form>
 ```

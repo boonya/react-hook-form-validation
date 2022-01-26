@@ -59,12 +59,12 @@ useValidation([{
 If you need to ensure your input value not less than expected. It can compare numbers or strings like numbers.
 
 ```js static
-import useValidation, {validateMinNumber} from 'react-hook-form-validation';
+import useValidation, {validateMin} from 'react-hook-form-validation';
 
 useValidation([{
     field: 'field-name',
     rules: [
-        validateMinNumber(5),
+        validateMin(5),
     ],
 }]);
 ```
@@ -74,12 +74,12 @@ useValidation([{
 If you need to ensure your input value not more than expected. It can compare numbers or string like numbers.
 
 ```js static
-import useValidation, {validateMaxNumber} from 'react-hook-form-validation';
+import useValidation, {validateMax} from 'react-hook-form-validation';
 
 useValidation([{
     field: 'field-name',
     rules: [
-        validateMaxNumber(5),
+        validateMax(5),
     ],
 }]);
 ```
@@ -89,12 +89,12 @@ useValidation([{
 If you need to ensure your input contains not less characters or items than expected. It can compare length of a string or an array.
 
 ```js static
-import useValidation, {validateMinLength} from 'react-hook-form-validation';
+import useValidation, {validateMin} from 'react-hook-form-validation';
 
 useValidation([{
     field: 'field-name',
     rules: [
-        validateMinLength(5),
+        validateMin(5, 'length'),
     ],
 }]);
 ```
@@ -104,12 +104,12 @@ useValidation([{
 If you need to ensure your input contains not more characters or items than expected. It can compare length of a string or an array.
 
 ```js static
-import useValidation, {validateMaxLength} from 'react-hook-form-validation';
+import useValidation, {validateMax} from 'react-hook-form-validation';
 
 useValidation([{
     field: 'field-name',
     rules: [
-        validateMaxLength(5),
+        validateMax(5, 'length'),
     ],
 }]);
 ```
@@ -157,6 +157,8 @@ useValidation([{
 
 ### Func
 
+#### Sync
+
 In case you need to implement much more complex validation you can use `func` validator.
 It allows you to implement any validation logic you need. Even based on asynchronous logic.
 
@@ -178,6 +180,8 @@ useValidation([{
 }]);
 ```
 
+#### Async
+
 It can be useful if you need to compare your value with result of asynchronous query:
 
 ```js static
@@ -194,6 +198,8 @@ useValidation([{
     ],
 }]);
 ```
+
+#### Misc
 
 Sometimes you may need to print something more specific rather than just "valid" or "invalid". For that purpose you may return an array from your function. Where the first element should be a sign of validity, and the rest will be proxied into the message builder function.
 
@@ -214,7 +220,9 @@ function guessFruit(input) {
 useValidation([{
     field: 'field-name',
     rules: [
-        validateFunc(asyncFunction, {fail: ({payload}) => `Guessed wrong. It should have been ${payload.join(', ')}.`})
+        validateFunc(asyncFunction, {
+            fail: ({payload}) => `Guessed wrong. It should have been ${payload.join(', ')}.`
+        })
     ],
 }]);
 ```

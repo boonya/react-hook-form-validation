@@ -13,14 +13,14 @@ If it is not a number or a string, the validator will use the [lodash/isEmpty](h
 
 ```js
 import {useMemo, useCallback} from 'react';
-import useValidation, {VALIDATORS} from 'react-hook-form-validation';
+import useValidation, {validateRequired} from 'react-hook-form-validation';
 
 const FIELD_NAME = 'number';
 
 const {validity, validateForm, resetForm} = useValidation([{
     field: FIELD_NAME,
     rules: [
-        {validator: VALIDATORS.required, fail: 'The field is required', success: 'All good'},
+        validateRequired({fail: 'The field is required', success: 'All good'}),
     ],
 }]);
 
@@ -31,7 +31,7 @@ const onSubmit = useCallback(async (event) => {
      * Extract filed's value and cast it's type to a number.
      * HTML forms always produce a strings.
      */
-    const value = Number(event.target[FIELD_NAME].value);
+    const value = Number(event.target[FIELD_NAME].value) || null;
     /**
      * Validate a form.
      * - The value always should be passed as array. It's needed to be able to validate dynamic fields.
@@ -41,34 +41,33 @@ const onSubmit = useCallback(async (event) => {
     await validateForm({[FIELD_NAME]: [value]});
 }, [validateForm]);
 
-<form noValidate onSubmit={onSubmit} onReset={resetForm}>
-    <label htmlFor="required-number">Enter a number *</label>
-    <input
+<Form onSubmit={onSubmit} onReset={resetForm}>
+    <Input
         id="required-number"
         name={FIELD_NAME}
-        required
+        label="Enter a number"
         type="number"
-        aria-describedby="required-number-helper-text"
-        aria-invalid={validity.isError(FIELD_NAME)}
+        required
+        aria-invalid={validity.isPristine(FIELD_NAME) ? undefined : validity.isError(FIELD_NAME)}
+        description={validity.getMessage(FIELD_NAME)}
     />
-    <p id="required-number-helper-text">{validity.getMessage(FIELD_NAME)}</p>
-    <button type="submit">Validate</button>
-    <button type="reset">Reset</button>
-</form>
+    <Button type="submit">Validate</Button>
+    <Button type="reset">Reset</Button>
+</Form>
 ```
 
 #### String
 
 ```js
 import {useMemo, useCallback} from 'react';
-import useValidation, {VALIDATORS} from 'react-hook-form-validation';
+import useValidation, {validateRequired} from 'react-hook-form-validation';
 
 const FIELD_NAME = 'string';
 
 const {validity, validateForm, resetForm} = useValidation([{
     field: FIELD_NAME,
     rules: [
-        {validator: VALIDATORS.required, fail: 'The field is required', success: 'All good'},
+        validateRequired({fail: 'The field is required', success: 'All good'}),
     ],
 }]);
 
@@ -86,33 +85,32 @@ const onSubmit = useCallback(async (event) => {
     await validateForm({[FIELD_NAME]: [value]});
 }, [validateForm]);
 
-<form noValidate onSubmit={onSubmit} onReset={resetForm}>
-    <label htmlFor="required-string">Enter a string *</label>
-    <input
+<Form onSubmit={onSubmit} onReset={resetForm}>
+    <Input
         id="required-string"
         name={FIELD_NAME}
+        label="Enter a string"
         required
-        aria-describedby="required-string-helper-text"
-        aria-invalid={validity.isError(FIELD_NAME)}
+        aria-invalid={validity.isPristine(FIELD_NAME) ? undefined : validity.isError(FIELD_NAME)}
+        description={validity.getMessage(FIELD_NAME)}
     />
-    <p id="required-string-helper-text">{validity.getMessage(FIELD_NAME)}</p>
-    <button type="submit">Validate</button>
-    <button type="reset">Reset</button>
-</form>
+    <Button type="submit">Validate</Button>
+    <Button type="reset">Reset</Button>
+</Form>
 ```
 
 #### Array
 
 ```js
 import {useMemo, useCallback} from 'react';
-import useValidation, {VALIDATORS} from 'react-hook-form-validation';
+import useValidation, {validateRequired} from 'react-hook-form-validation';
 
 const FIELD_NAME = 'array';
 
 const {validity, validateForm, resetForm} = useValidation([{
     field: FIELD_NAME,
     rules: [
-        {validator: VALIDATORS.required, fail: 'The field is required', success: 'All good'},
+        validateRequired({fail: 'The field is required', success: 'All good'}),
     ],
 }]);
 
@@ -133,18 +131,20 @@ const onSubmit = useCallback(async (event) => {
     await validateForm({[FIELD_NAME]: [value]});
 }, [validateForm]);
 
-<form noValidate onSubmit={onSubmit} onReset={resetForm}>
-    <fieldset>
-        <legend>Choose at least something *</legend>
-        <input type="checkbox" id="required-array-1" name={FIELD_NAME} value="1" />
-        <label htmlFor="required-array-1">Something #1</label>
-        <input type="checkbox" id="required-array-2" name={FIELD_NAME} value="2" />
-        <label htmlFor="required-array-2">Something #2</label>
-        <input type="checkbox" id="required-array-3" name={FIELD_NAME} value="3" />
-        <label htmlFor="required-array-3">Something #3</label>
-    </fieldset>
-    <p>{validity.getMessage(FIELD_NAME)}</p>
-    <button type="submit">Validate</button>
-    <button type="reset">Reset</button>
-</form>
+<Form onSubmit={onSubmit} onReset={resetForm}>
+    <Checks
+        label="Choose at least something"
+        required
+        name={FIELD_NAME}
+        items={[
+            ['Something #1', 1],
+            ['Something #2', 2],
+            ['Something #3', 3],
+        ]}
+        aria-invalid={validity.isPristine(FIELD_NAME) ? undefined : validity.isError(FIELD_NAME)}
+        description={validity.getMessage(FIELD_NAME)}
+    />
+    <Button type="submit">Validate</Button>
+    <Button type="reset">Reset</Button>
+</Form>
 ```
