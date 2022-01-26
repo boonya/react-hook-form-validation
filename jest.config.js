@@ -1,7 +1,10 @@
 module.exports = {
 	preset: 'ts-jest',
 	testEnvironment: 'node',
-	roots: ['src', 'tests'],
+	roots: [
+		'src',
+		'tests'
+	],
 	coverageDirectory: 'coverage',
 	coverageReporters: ['text-summary', 'html', 'lcov'],
 	resetMocks: true,
@@ -11,6 +14,6 @@ module.exports = {
 		},
 	},
 	'collectCoverageFrom' : [
-		'<rootDir>/tests'
+		'src/**/*.ts'
 	]
 };
