@@ -1,15 +1,13 @@
-import validateValue from './pattern';
-import { createValidationMessage, createValidatorResult } from '../helpers';
-import { VALIDATION_MESSAGES } from '../types';
-import { mocked } from 'ts-jest/utils';
+import create, { isValid } from './pattern';
+import { createValidatorResult } from '../helpers';
+import { VALIDATION_MESSAGES, VALIDATORS } from '../types';
 
 jest.mock('../helpers');
 
 beforeEach(() => {
-	mocked(createValidationMessage).mockName('createValidationMessage')
-		.mockImplementation((message) => message);
-	mocked(createValidatorResult).mockName('createValidatorResult')
-		.mockImplementation((error) => ({ error, message: 'message' }));
+	jest.mocked(createValidatorResult)
+		.mockName('createValidatorResult')
+		.mockImplementation((error) => error);
 });
 
 /**
@@ -29,59 +27,83 @@ describe('Error', () => {
 		'3rd-password',
 		'Pass1',
 		'12345678',
+		false,
+		true,
+		NaN,
+		0,
+		1,
 	].forEach((value) => {
-		it(`"${value}"`, () => {
-			const result = validateValue(value, { pattern });
+		it(`should reject "${value}".`, () => {
+			const result = isValid(value, { pattern });
 
-			expect(createValidationMessage).toBeCalledTimes(0);
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(true, { fail: VALIDATION_MESSAGES.pattern });
-			expect(result).toEqual({ error: true, message: 'message' });
+			expect(result).toBe(false);
+			expect(createValidatorResult).toBeCalledWith(
+				false,
+				{ fail: VALIDATION_MESSAGES.pattern },
+				[{ input: value }],
+			);
 		});
 	});
 
-	it('Custom message', () => {
-		const result = validateValue('    ', { pattern, fail: 'Custom error' });
+	it('should reject and pass custom messages.', () => {
+		const input = '    ';
+		const result = isValid(input, { pattern, fail: 'Fail', success: 'Success' });
 
-		expect(createValidationMessage).toBeCalledTimes(1);
-		expect(createValidationMessage).toBeCalledWith('Custom error');
-		expect(createValidatorResult).toBeCalledTimes(1);
-		expect(createValidatorResult).toBeCalledWith(true, { fail: 'Custom error' });
-		expect(result).toEqual({ error: true, message: 'message' });
+		expect(result).toBe(false);
+		expect(createValidatorResult).toBeCalledWith(
+			false,
+			{ fail: 'Fail', success: 'Success' },
+			[{ input }],
+		);
 	});
 });
 
 describe('Valid', () => {
-	it('undefined', () => {
-		const result = validateValue(undefined, { pattern });
-
-		expect(createValidationMessage).toBeCalledTimes(0);
-		expect(createValidatorResult).toBeCalledTimes(1);
-		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
-		expect(result).toEqual({ error: false, message: 'message' });
-	});
-
-	it('empty string', () => {
-		const result = validateValue('', { pattern });
-
-		expect(createValidationMessage).toBeCalledTimes(0);
-		expect(createValidatorResult).toBeCalledTimes(1);
-		expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
-		expect(result).toEqual({ error: false, message: 'message' });
-	});
-
 	[
+		undefined,
+		'',
 		'1stPassword',
 		'2ndPassword',
 		'3rd-Password',
 	].forEach((value) => {
-		it(`"${value}"`, () => {
-			const result = validateValue(value, { pattern });
+		it(`should accept "${value}".`, () => {
+			const result = isValid(value, { pattern });
 
-			expect(createValidationMessage).toBeCalledTimes(0);
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
-			expect(result).toEqual({ error: false, message: 'message' });
+			expect(result).toBe(true);
+			expect(createValidatorResult).toBeCalledWith(
+				true,
+				{ fail: VALIDATION_MESSAGES.pattern },
+				[{ input: value }],
+			);
 		});
+	});
+
+	it('should accept and pass custom messages.', () => {
+		const input = '1stPassword';
+		const result = isValid(input, { pattern, fail: 'Fail', success: 'Success' });
+
+		expect(result).toBe(true);
+		expect(createValidatorResult).toBeCalledWith(
+			true,
+			{ fail: 'Fail', success: 'Success' },
+			[{ input }],
+		);
+	});
+});
+
+describe('definition object creator', () => {
+	const validator = VALIDATORS.pattern;
+	const pattern = /[abc]/ui;
+
+	it('should return basic validator definition object.', () => {
+		const object = create(pattern);
+
+		expect(object).toEqual({ validator, pattern });
+	});
+
+	it('should return extended validator definition object.', () => {
+		const object = create(pattern, { fail: 'Fail', success: 'Success' });
+
+		expect(object).toEqual({ validator, pattern, fail: 'Fail', success: 'Success' });
 	});
 });

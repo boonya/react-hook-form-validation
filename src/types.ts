@@ -4,8 +4,6 @@ export enum VALIDATORS {
 	max = 'max',
 	email = 'email',
 	url = 'url',
-	postalCodeCA = 'postalCodeCA',
-	sinCA = 'sinCA',
 	pattern = 'pattern',
 	func = 'func',
 }
@@ -16,27 +14,35 @@ export enum VALIDATION_MESSAGES {
 	max = 'max',
 	email = 'email',
 	url = 'url',
-	postalCodeCA = 'postal-code-CA',
-	sinCA = 'SIN-CA',
 	pattern = 'pattern',
 	fail = 'fail',
 	success = 'success',
 }
 
+export type Condition = [(...args: unknown[]) => boolean, ...string[]];
+
+export type FieldRule = {
+	validator: VALIDATORS;
+	condition?: Condition;
+};
+
 export type ValidationMessage = string | ((...args: unknown[]) => string);
 
-export type ValidatorResult = {error: boolean, message: string};
+export type ValidatorResult = { error: boolean, message: string };
 export type AsyncValidatorResult = Promise<ValidatorResult>;
 
-export type ValidatorCommonParams = {fail?: ValidationMessage, success?: ValidationMessage};
-export type ValidatorLengthParams = ValidatorCommonParams & { expected: number };
+export type MinMaxValue = number | string | Array<unknown>;
+export type MinMaxMode = 'number' | 'length';
+
+export type ValidatorCommonParams = { fail?: ValidationMessage, success?: ValidationMessage, condition?: Condition };
+export type ValidatorLengthParams = ValidatorCommonParams & { expected: number, mode: MinMaxMode };
 export type ValidatorPatternParams = ValidatorCommonParams & { pattern: RegExp };
 
 type ValidatorFuncResult = boolean | [boolean, ...unknown[]];
-export type ValidatorFuncParams = ValidatorCommonParams & { func: (...args: unknown[]) => ValidatorFuncResult };
-export type ValidatorAsyncFuncParams = ValidatorCommonParams & { func: (...args: unknown[]) => Promise<ValidatorFuncResult> };
-
-export type LengthValue = string | number | Array<unknown>;
+export type Func = (...args: unknown[]) => ValidatorFuncResult;
+export type AsyncFunc = (...args: unknown[]) => Promise<ValidatorFuncResult>;
+export type ValidatorFuncParams = ValidatorCommonParams & { func: Func };
+export type ValidatorAsyncFuncParams = ValidatorCommonParams & { func: AsyncFunc };
 
 export type FormPayload = { [key: string]: unknown[] };
 
@@ -53,13 +59,6 @@ export const DEFAULT_FIELD_STATE: Omit<FieldState, 'name'> = {
 	pristine: true,
 	error: false,
 	message: undefined,
-};
-
-export type Condition = [(...args: unknown[]) => boolean, ...string[]];
-
-export type FieldRule = {
-	validator: VALIDATORS;
-	condition?: Condition;
 };
 
 export type FieldRuleSet = FieldRule[];

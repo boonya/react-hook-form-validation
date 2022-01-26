@@ -2,7 +2,7 @@ import { FieldRule, FormPayload, FieldState, VALIDATORS } from '../types';
 import validateValue from '../validators';
 import { extractFieldValue } from '../helpers';
 import validityReducerCreator from './validityReducerCreator';
-import { mocked } from 'ts-jest/utils';
+
 
 jest.mock('../validators');
 jest.mock('../helpers');
@@ -13,8 +13,8 @@ const FIELDS = {
 };
 
 beforeEach(() => {
-	mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: false, message: 'success' });
-	mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue(undefined);
+	jest.mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: false, message: 'success' });
+	jest.mocked(extractFieldValue).mockName('extractFieldValue').mockReturnValue(undefined);
 });
 
 const INDEX = 0;
@@ -27,7 +27,7 @@ describe('Check condition if passed', () => {
 	test('Returns null if the condition is not met. Condition selector receives no args.', async () => {
 		const conditionSelector = jest.fn(() => false).mockName('conditionSelector');
 		const FIELD_RULE: FieldRule = { validator: VALIDATORS.required, condition: [conditionSelector] };
-		mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, message: 'fail' });
+		jest.mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, message: 'fail' });
 
 		const reducer = validityReducerCreator(PAYLOAD, FIELD, VALUE, INDEX);
 		const result = await reducer(Promise.resolve(null), FIELD_RULE);
@@ -44,10 +44,10 @@ describe('Check condition if passed', () => {
 		const conditionSelector = jest.fn(() => false).mockName('conditionSelector');
 		const FIELD_NAMES = [FIELDS._1, FIELDS._1];
 		const FIELD_RULE: FieldRule = { validator: VALIDATORS.required, condition: [conditionSelector, ...FIELD_NAMES] };
-		mocked(extractFieldValue).mockName('extractFieldValue')
+		jest.mocked(extractFieldValue).mockName('extractFieldValue')
 			.mockReturnValueOnce(`${FIELDS._1} value`)
 			.mockReturnValueOnce(`${FIELDS._2} value`);
-		mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, message: 'fail' });
+		jest.mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, message: 'fail' });
 
 		const reducer = validityReducerCreator(PAYLOAD, FIELD, VALUE, INDEX);
 		const result = await reducer(Promise.resolve(null), FIELD_RULE);
@@ -66,7 +66,7 @@ describe('Check condition if passed', () => {
 		const conditionSelector = jest.fn(() => true).mockName('conditionSelector');
 		const FIELD_NAMES = [FIELDS._1, FIELDS._1];
 		const FIELD_RULE: FieldRule = { validator: VALIDATORS.required, condition: [conditionSelector, ...FIELD_NAMES] };
-		mocked(extractFieldValue).mockName('extractFieldValue')
+		jest.mocked(extractFieldValue).mockName('extractFieldValue')
 			.mockReturnValueOnce(`${FIELDS._1} value`)
 			.mockReturnValueOnce(`${FIELDS._2} value`);
 
@@ -106,7 +106,7 @@ describe('Returns FieldState object if validation produces any error.', () => {
 
 	async function executeTest(value: unknown) {
 		const FIELD_RULE: FieldRule = { validator: VALIDATORS.required };
-		mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, message: 'fail' });
+		jest.mocked(validateValue).mockName('validateValue').mockResolvedValue({ error: true, message: 'fail' });
 
 		const reducer = validityReducerCreator(PAYLOAD, FIELD, value, INDEX);
 		const result = await reducer(Promise.resolve(null), FIELD_RULE);

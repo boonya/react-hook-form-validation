@@ -1,122 +1,173 @@
-import validateValue from './func';
+import create, {isValid} from './func';
 import { createValidatorResult } from '../helpers';
-import { mocked } from 'ts-jest/utils';
+import { VALIDATORS } from '../types';
 
 jest.mock('../helpers');
 
 beforeEach(() => {
-	mocked(createValidatorResult).mockName('createValidatorResult')
-		.mockImplementation((error) => ({ error, message: 'message' }));
+	jest.mocked(createValidatorResult)
+		.mockName('createValidatorResult')
+		.mockImplementation((error) => error);
 });
 
 describe('Error', () => {
 	describe('Sync function', () => {
-		it('function returns false', async () => {
+		it('should reject "false".', async () => {
 			const func = jest.fn().mockName('func').mockReturnValueOnce(false);
 
-			const result = await validateValue('value', { func });
+			const result = await isValid('value', { func });
 
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(true, {}, []);
-			expect(result).toEqual({ error: true, message: 'message' });
+			expect(result).toBe(false);
+			expect(createValidatorResult).toBeCalledWith(
+				false,
+				{},
+				[{ input: 'value', payload: [] }],
+			);
+			expect(func).toBeCalledTimes(1);
+			expect(func).toBeCalledWith('value');
 		});
 
-		it('function returns [false, "value 1", "value 2"]', async () => {
+		it('should reject and pass response.', async () => {
 			const func = jest.fn().mockName('func').mockReturnValue([false, 'value 1', 'value 2']);
 
-			const result = await validateValue('value', { func });
+			const result = await isValid('value', { func });
 
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(true, {}, ['value 1', 'value 2']);
-			expect(result).toEqual({ error: true, message: 'message' });
+			expect(result).toBe(false);
+			expect(createValidatorResult).toBeCalledWith(
+				false,
+				{},
+				[{ input: 'value', payload: ['value 1', 'value 2'] }],
+			);
+			expect(func).toBeCalledTimes(1);
+			expect(func).toBeCalledWith('value');
 		});
 
-		it('custom error message', async () => {
+		it('should rejects and pass custom messages.', async () => {
 			const func = jest.fn().mockName('func').mockReturnValueOnce(false);
 
-			const result = await validateValue('value', { func, fail: 'Custom error' });
+			const result = await isValid('value', { func, fail: 'Fail', success: 'Success' });
 
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(true, { fail: 'Custom error' }, []);
-			expect(result).toEqual({ error: true, message: 'message' });
+			expect(result).toBe(false);
+			expect(createValidatorResult).toBeCalledWith(
+				false,
+				{ fail: 'Fail', success: 'Success' },
+				[{ input: 'value', payload: [] }],
+			);
+			expect(func).toBeCalledTimes(1);
+			expect(func).toBeCalledWith('value');
 		});
 	});
 
 	describe('Async function', () => {
-		it('function resolves false', async () => {
+		it('should reject "Promise.resolved(false)".', async () => {
 			const func = jest.fn().mockName('func').mockResolvedValue(false);
 
-			const result = await validateValue('value', { func });
+			const result = await isValid('value', { func });
 
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(true, {}, []);
-			expect(result).toEqual({ error: true, message: 'message' });
+			expect(result).toBe(false);
+			expect(createValidatorResult).toBeCalledWith(
+				false,
+				{},
+				[{ input: 'value', payload: [] }],
+			);
+			expect(func).toBeCalledTimes(1);
+			expect(func).toBeCalledWith('value');
 		});
 
-		it('function resolves [false, "value 1", "value 2"]', async () => {
+		it('should reject and pass response.', async () => {
 			const func = jest.fn().mockName('func').mockResolvedValue([false, 'value 1', 'value 2']);
 
-			const result = await validateValue('value', { func });
+			const result = await isValid('value', { func });
 
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(true, {}, ['value 1', 'value 2']);
-			expect(result).toEqual({ error: true, message: 'message' });
+			expect(result).toBe(false);
+			expect(createValidatorResult).toBeCalledWith(
+				false,
+				{},
+				[{ input: 'value', payload: ['value 1', 'value 2'] }],
+			);
+			expect(func).toBeCalledTimes(1);
+			expect(func).toBeCalledWith('value');
 		});
 
-		it('custom error message', async () => {
+		it('should rejects and pass custom messages.', async () => {
 			const func = jest.fn().mockName('func').mockResolvedValue(false);
 
-			const result = await validateValue('value', { func, fail: 'Custom error' });
+			const result = await isValid('value', { func, fail: 'Fail', success: 'Success' });
 
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(true, { fail: 'Custom error' }, []);
-			expect(result).toEqual({ error: true, message: 'message' });
+			expect(result).toBe(false);
+			expect(createValidatorResult).toBeCalledWith(
+				false,
+				{ fail: 'Fail', success: 'Success' },
+				[{ input: 'value', payload: [] }],
+			);
+			expect(func).toBeCalledTimes(1);
+			expect(func).toBeCalledWith('value');
 		});
 	});
 });
 
 describe('Valid', () => {
 	describe('Sync function', () => {
-		it('function returns true', async () => {
-			const func = jest.fn().mockName('func').mockReturnValueOnce(true);
+		it('should accept "true".', async () => {
+			const func = jest.fn().mockName('func').mockReturnValue(true);
 
-			const result = await validateValue('value', { func });
+			const result = await isValid('value', { func });
 
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(false, {}, []);
-			expect(result).toEqual({ error: false, message: 'message' });
+			expect(result).toBe(true);
+			expect(createValidatorResult).toBeCalledWith(
+				true,
+				{},
+				[{ input: 'value', payload: [] }]
+			);
+			expect(func).toBeCalledTimes(1);
+			expect(func).toBeCalledWith('value');
 		});
 
-		it('function returns [true, "value 1", "value 2"]', async () => {
+		it('should accept and pass response.', async () => {
 			const func = jest.fn().mockName('func').mockReturnValue([true, 'value 1', 'value 2']);
 
-			const result = await validateValue('value', { func });
+			const result = await isValid('value', { func });
 
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(false, {}, ['value 1', 'value 2']);
-			expect(result).toEqual({ error: false, message: 'message' });
+			expect(result).toBe(true);
+			expect(createValidatorResult).toBeCalledWith(
+				true,
+				{},
+				[{ input: 'value', payload: ['value 1', 'value 2'] }]
+			);
+			expect(func).toBeCalledTimes(1);
+			expect(func).toBeCalledWith('value');
 		});
 	});
 
 	describe('Async function', () => {
-		it('function resolves true', async () => {
+		it('should accept "Promise.resolved(true)".', async () => {
 			const func = jest.fn().mockName('func').mockResolvedValue(true);
 
-			const result = await validateValue('value', { func });
+			const result = await isValid('value', { func });
 
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(false, {}, []);
-			expect(result).toEqual({ error: false, message: 'message' });
+			expect(result).toBe(true);
+			expect(createValidatorResult).toBeCalledWith(
+				true,
+				{},
+				[{ input: 'value', payload: [] }],
+			);
+			expect(func).toBeCalledTimes(1);
+			expect(func).toBeCalledWith('value');
 		});
 
-		it('function resolves [true, "value 1", "value 2"]', async () => {
+		it('should accept and pass response.', async () => {
 			const func = jest.fn().mockName('func').mockResolvedValue([true, 'value 1', 'value 2']);
 
-			const result = await validateValue('value', { func });
+			const result = await isValid('value', { func });
 
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(false, {}, ['value 1', 'value 2']);
-			expect(result).toEqual({ error: false, message: 'message' });
+			expect(result).toBe(true);
+			expect(createValidatorResult).toBeCalledWith(
+				true,
+				{},
+				[{ input: 'value', payload: ['value 1', 'value 2'] }],
+			);
+			expect(func).toBeCalledTimes(1);
+			expect(func).toBeCalledWith('value');
 		});
 	});
 });
@@ -128,13 +179,13 @@ describe('Exception', () => {
 				throw new Error('An error');
 			}).mockName('func');
 
-			await expect(validateValue('value', { func })).rejects.toThrowError(new Error('An error'));
+			await expect(isValid('value', { func })).rejects.toThrowError(new Error('An error'));
 		});
 
 		it('function returns unexpected value', async () => {
 			const func = jest.fn().mockName('func').mockReturnValue('unexpected value');
 
-			await expect(validateValue('value', { func })).rejects.toThrowError(new TypeError('Your function returned unexpected value'));
+			await expect(isValid('value', { func })).rejects.toThrowError(new TypeError('Your function returned unexpected value'));
 			expect(createValidatorResult).toBeCalledTimes(0);
 		});
 	});
@@ -143,14 +194,30 @@ describe('Exception', () => {
 		it('function rejects promise', async () => {
 			const func = jest.fn().mockName('func').mockRejectedValue(new Error('An error'));
 
-			await expect(validateValue('value', { func })).rejects.toThrowError(new Error('An error'));
+			await expect(isValid('value', { func })).rejects.toThrowError(new Error('An error'));
 		});
 
 		it('function resolves unexpected value', async () => {
 			const func = jest.fn().mockName('func').mockResolvedValue('unexpected value');
 
-			await expect(validateValue('value', { func })).rejects.toThrowError(new TypeError('Your function returned unexpected value'));
+			await expect(isValid('value', { func })).rejects.toThrowError(new TypeError('Your function returned unexpected value'));
 			expect(createValidatorResult).toBeCalledTimes(0);
 		});
+	});
+});
+
+describe('validator definition object creator', () => {
+	it('should return basic validator definition object.', () => {
+		const myFunc = () => true;
+		const object = create(myFunc);
+
+		expect(object).toEqual({validator: VALIDATORS.func, func: myFunc});
+	});
+
+	it('should return extended validator definition object.', () => {
+		const myFunc = () => true;
+		const object = create(myFunc, {fail: 'Fail', success: 'Success'});
+
+		expect(object).toEqual({validator: VALIDATORS.func, func: myFunc, fail: 'Fail', success: 'Success'});
 	});
 });

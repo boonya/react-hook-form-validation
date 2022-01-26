@@ -4,7 +4,6 @@ import {
 	FormPayload,
 	FormValidity,
 	Processor,
-	FieldState,
 	ValidationMessage,
 	Condition,
 	ValidatorCommonParams,
@@ -57,17 +56,37 @@ export function createDefaultValidity(rules: ValidationRuleSet): FormValidity {
 }
 
 export function extractFieldValue(payload: FormPayload, name: string, index: number): unknown {
-	return payload[name][index];
+	try {
+		return payload[name][index];
+	} catch {
+		return undefined;
+	}
+}
+
+type FieldPayload = { field: string, index: number, value: unknown };
+
+function flattenField(field: string, payload: FormPayload) {
+	const fieldPayload = payload[field];
+	if (fieldPayload === undefined || !fieldPayload.length) {
+		return [{ field, index: 0, value: undefined }];
+	}
+	return fieldPayload.map((value, index) => ({ field, index, value }));
+}
+
+function flattenForm(fields: string[], payload: FormPayload) {
+	function reducer(acc: FieldPayload[], field: string) {
+		return [...acc, ...flattenField(field, payload)];
+	}
+	return fields.reduce(reducer, []);
 }
 
 export async function processFormValidity(processor: Processor, currentValidity: FormValidity, payload: FormPayload): Promise<FormValidity> {
-	const promises = currentValidity
+	const fields = currentValidity
 		.values()
-		.reduce((acc: Promise<FieldState>[], fieldState: FieldState) => {
-			const {name, index} = fieldState;
-			const result = processor(payload, name, index);
-			return [...acc, result];
-		}, []);
+		.map(({ name }) => name)
+		.filter((value, index, self) => self.indexOf(value) === index);
+	const flatPayload = flattenForm(fields, payload);
+	const promises = flatPayload.map(({ field, index }) => processor(payload, field, index));
 	const validity = await Promise.all(promises);
 	return new Validity(validity);
 }
@@ -87,19 +106,20 @@ export function createValidationMessage(message: ValidationMessage, ...props: un
 	return message;
 }
 
-export function createValidatorResult(error: boolean, messages: ValidatorCommonParams = {}, payload: unknown[] = []): ValidatorResult {
+export function createValidatorResult(valid: boolean, {fail, success}: ValidatorCommonParams = {}, payload: unknown[] = []): ValidatorResult {
 	let message = null;
 
-	if (error) {
-		message = messages.fail
-			? createValidationMessage(messages.fail, ...payload)
-			: VALIDATION_MESSAGES.fail;
+	if (valid) {
+		message = success
+			? createValidationMessage(success, ...payload)
+			: VALIDATION_MESSAGES.success;
+
 	}
 	else {
-		message = messages.success
-			? createValidationMessage(messages.success, ...payload)
-			: VALIDATION_MESSAGES.success;
+		message = fail
+			? createValidationMessage(fail, ...payload)
+			: VALIDATION_MESSAGES.fail;
 	}
 
-	return {error, message};
+	return { error: !valid, message };
 }

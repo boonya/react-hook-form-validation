@@ -28,7 +28,7 @@ export default function useValidation(ruleset: ValidationRuleSet): HookResult {
 		const validity = await processFormValidity(processor, currentValidity, payload);
 		setValidity(validity);
 		return validity;
-	}, [currentValidity, processor]);
+	}, [processor, currentValidity]);
 
 	const validateField = React.useCallback<ValidateFieldFunction>(async (payload: FormPayload, name: string, index = 0) => {
 		if (!isPlainObject(payload)) {

@@ -15,5 +15,5 @@ node_modules/
 .npm
 
 dist/
-
+styleguide/
 *.code-workspace

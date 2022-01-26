@@ -1,24 +1,23 @@
-import { VALIDATION_MESSAGES, ValidatorCommonParams, ValidatorResult } from '../types';
-import { createValidationMessage, createValidatorResult } from '../helpers';
+import { VALIDATION_MESSAGES, ValidatorCommonParams, ValidatorResult, VALIDATORS } from '../types';
+import { createValidatorResult } from '../helpers';
 import isEmpty from 'lodash/isEmpty';
 
-function isValid(input: unknown) {
+export default function create(props: ValidatorCommonParams = {}) {
+	return { validator: VALIDATORS.required, ...props };
+}
+
+function check(input: unknown) {
 	if (typeof input === 'number') {
 		return true;
 	}
 	const value = typeof input === 'string' ? input.trim() : input;
-	if (!isEmpty(value)) {
-		return true;
-	}
-	return false;
+	return !isEmpty(value);
 }
 
-export default function required(input: unknown, messages: ValidatorCommonParams = {}): ValidatorResult {
-	let fail;
-	if (!isValid(input)) {
-		fail = messages.fail
-			? createValidationMessage(messages.fail)
-			: VALIDATION_MESSAGES.required;
-	}
-	return createValidatorResult(Boolean(fail), { ...messages, fail });
+export function isValid(input: unknown, rest: ValidatorCommonParams = {}): ValidatorResult {
+	return createValidatorResult(
+		check(input),
+		{ fail: VALIDATION_MESSAGES.required, ...rest },
+		[{ input }],
+	);
 }

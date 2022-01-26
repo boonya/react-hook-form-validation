@@ -1,13 +1,12 @@
 import { VALIDATORS, ValidatorResult, AsyncValidatorResult } from '../types';
-import required from './required';
-import min from './min';
-import max from './max';
-import email from './email';
-import url from './url';
-import postalCodeCA from './postalCode-CA';
-import sinCA from './sin-CA';
-import pattern from './pattern';
-import func from './func';
+
+import {isValid as required} from './required';
+import {isValid as min} from './min';
+import {isValid as max} from './max';
+import {isValid as email} from './email';
+import {isValid as url} from './url';
+import {isValid as pattern} from './pattern';
+import {isValid as func} from './func';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 function getValidator(name: string): (...args: unknown[]) => ValidatorResult | AsyncValidatorResult {
@@ -27,12 +26,6 @@ function getValidator(name: string): (...args: unknown[]) => ValidatorResult | A
 	case VALIDATORS.url:
 		// @ts-ignore
 		return url;
-	case VALIDATORS.postalCodeCA:
-		// @ts-ignore
-		return postalCodeCA;
-	case VALIDATORS.sinCA:
-		// @ts-ignore
-		return sinCA;
 	case VALIDATORS.pattern:
 		// @ts-ignore
 		return pattern;
@@ -47,7 +40,7 @@ function getValidator(name: string): (...args: unknown[]) => ValidatorResult | A
 }
 
 export default async function validators(name: VALIDATORS, ...args: unknown[]): AsyncValidatorResult {
-	const validator = getValidator(name);
-	return await validator(...args);
+	const isValid = getValidator(name);
+	return await isValid(...args);
 }
 /* eslint-enable @typescript-eslint/ban-ts-comment */

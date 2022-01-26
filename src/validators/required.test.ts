@@ -1,15 +1,13 @@
-import validateValue from './required';
-import { createValidationMessage, createValidatorResult } from '../helpers';
-import { VALIDATION_MESSAGES } from '../types';
-import { mocked } from 'ts-jest/utils';
+import create, { isValid } from './required';
+import { createValidatorResult } from '../helpers';
+import { VALIDATION_MESSAGES, VALIDATORS } from '../types';
 
 jest.mock('../helpers');
 
 beforeEach(() => {
-	mocked(createValidationMessage).mockName('createValidationMessage')
-		.mockImplementation((message) => message);
-	mocked(createValidatorResult).mockName('createValidatorResult')
-		.mockImplementation((error) => ({ error, message: 'message' }));
+	jest.mocked(createValidatorResult)
+		.mockName('createValidatorResult')
+		.mockImplementation((error) => error);
 });
 
 describe('Error', () => {
@@ -21,31 +19,35 @@ describe('Error', () => {
 		[],
 		null,
 	].forEach((value) => {
-		const label = `${typeof value} -> ${JSON.stringify(value)}`;
-		it(label, () => {
-			const result = validateValue(value);
+		const label = `${JSON.stringify(value)} (${typeof value})`;
+		it(`should reject ${label}.`, () => {
+			const result = isValid(value);
 
-			expect(createValidationMessage).toBeCalledTimes(0);
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(true, { fail: VALIDATION_MESSAGES.required });
-			expect(result).toEqual({ error: true, message: 'message' });
+			expect(result).toBe(false);
+			expect(createValidatorResult).toBeCalledWith(
+				false,
+				{ fail: VALIDATION_MESSAGES.required },
+				[{ input: value }]
+			);
 		});
 	});
 
-	it('custom error message', () => {
-		const result = validateValue('', { fail: 'Custom error' });
+	it('should reject and pass custom messages.', () => {
+		const result = isValid('', { fail: 'Fail', success: 'Success' });
 
-		expect(createValidationMessage).toBeCalledTimes(1);
-		expect(createValidationMessage).toBeCalledWith('Custom error');
-		expect(createValidatorResult).toBeCalledTimes(1);
-		expect(createValidatorResult).toBeCalledWith(true, { fail: 'Custom error' });
-		expect(result).toEqual({ error: true, message: 'message' });
+		expect(result).toBe(false);
+		expect(createValidatorResult).toBeCalledWith(
+			false,
+			{ fail: 'Fail', success: 'Success' },
+			[{ input: '' }]
+		);
 	});
 });
 
 describe('Valid', () => {
 	[
 		0,
+		'0',
 		23,
 		23.23,
 		-41,
@@ -55,14 +57,43 @@ describe('Valid', () => {
 		[false],
 		[null],
 	].forEach((value) => {
-		const label = `${typeof value} -> ${JSON.stringify(value)}`;
-		it(label, () => {
-			const result = validateValue(value);
+		const label = `${JSON.stringify(value)} (${typeof value})`;
+		it(`should accept ${label}.`, () => {
+			const result = isValid(value);
 
-			expect(createValidationMessage).toBeCalledTimes(0);
-			expect(createValidatorResult).toBeCalledTimes(1);
-			expect(createValidatorResult).toBeCalledWith(false, { fail: undefined });
-			expect(result).toEqual({ error: false, message: 'message' });
+			expect(result).toBe(true);
+			expect(createValidatorResult).toBeCalledWith(
+				true,
+				{ fail: VALIDATION_MESSAGES.required },
+				[{ input: value }]
+			);
 		});
+	});
+
+	it('should accept and pass custom messages.', () => {
+		const result = isValid('any', { fail: 'Fail', success: 'Success' });
+
+		expect(result).toBe(true);
+		expect(createValidatorResult).toBeCalledWith(
+			true,
+			{ fail: 'Fail', success: 'Success' },
+			[{ input: 'any' }],
+		);
+	});
+});
+
+describe('definition object creator', () => {
+	const validator = VALIDATORS.required;
+
+	it('should return basic validator definition object.', () => {
+		const object = create();
+
+		expect(object).toEqual({ validator });
+	});
+
+	it('should return extended validator definition object.', () => {
+		const object = create({ fail: 'Fail', success: 'Success' });
+
+		expect(object).toEqual({ validator, fail: 'Fail', success: 'Success' });
 	});
 });

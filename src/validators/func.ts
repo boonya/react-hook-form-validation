@@ -1,7 +1,11 @@
-import { ValidatorFuncParams, ValidatorAsyncFuncParams, AsyncValidatorResult } from '../types';
+import { ValidatorFuncParams, ValidatorAsyncFuncParams, AsyncValidatorResult, Func, AsyncFunc, ValidatorCommonParams, VALIDATORS } from '../types';
 import { createValidatorResult } from '../helpers';
 
-export default async function func(input: unknown, { func, ...messages }: ValidatorAsyncFuncParams | ValidatorFuncParams): AsyncValidatorResult {
+export default function create(func: Func | AsyncFunc, props: ValidatorCommonParams = {}) {
+	return { validator: VALIDATORS.func, func, ...props };
+}
+
+export async function isValid(input: unknown, { func, ...messages }: ValidatorAsyncFuncParams | ValidatorFuncParams): AsyncValidatorResult {
 	const result = await func(input);
 
 	let valid;
@@ -16,5 +20,5 @@ export default async function func(input: unknown, { func, ...messages }: Valida
 		throw new TypeError('Your function returned unexpected value');
 	}
 
-	return createValidatorResult(!valid, messages, payload);
+	return createValidatorResult(valid, messages, [{ input, payload }]);
 }

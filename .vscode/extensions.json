@@ -1,5 +1,12 @@
 {
 	"recommendations": [
-		"dbaeumer.vscode-eslint"
+		"tyriar.sort-lines",
+		"moppitz.vscode-extension-auto-import",
+		"dbaeumer.vscode-eslint",
+		"davidanson.vscode-markdownlint",
+		"gruntfuggly.todo-tree",
+		"editorconfig.editorconfig",
+		"streetsidesoftware.code-spell-checker",
+		"andys8.jest-snippets",
 	]
 }

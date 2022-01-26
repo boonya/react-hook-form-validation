@@ -10,51 +10,51 @@ import {
 } from './helpers';
 
 describe('validateRuleSet', () => {
-	test('ruleset undefined', () => {
+	it('ruleset undefined', () => {
 		expect(() => validateRuleSet()).toThrow(new Error('No validation rules defined. It doesn\'t make sense to use validator without rules.'));
 	});
 
-	test('ruleset is empty', () => {
+	it('ruleset is empty', () => {
 		expect(() => validateRuleSet([])).toThrow(new Error('No validation rules defined. It doesn\'t make sense to use validator without rules.'));
 	});
 
-	test('Field Rule does not contain a field name', () => {
+	it('Field Rule does not contain a field name', () => {
 		expect(() => validateRuleSet([{}])).toThrow(new Error('Undefined field in a ruleset.'));
 	});
 
-	test('Field Rule contains an empty rules', () => {
+	it('Field Rule contains an empty rules', () => {
 		expect(() => validateRuleSet([{ field: 'fieldname', rules: [] }])).toThrow(new Error('Field "fieldname" does not have validation rules defined.'));
 	});
 
-	test('Rule condition is falsy value', () => {
+	it('Rule condition is falsy value', () => {
 		expect(validateRuleSet([{
 			field: 'fieldname',
 			rules: [{ condition: '' }]
 		}])).toBeUndefined();
 	});
 
-	test('Rule condition is not an array', () => {
+	it('Rule condition is not an array', () => {
 		expect(() => validateRuleSet([{
 			field: 'fieldname',
 			rules: [{ condition: 'not an array' }]
 		}])).toThrow(new Error('Condition property must be an array.'));
 	});
 
-	test('Rule condition selector is not a function', () => {
+	it('Rule condition selector is not a function', () => {
 		expect(() => validateRuleSet([{
 			field: 'fieldname',
 			rules: [{ condition: ['wrong selector'] }]
 		}])).toThrow(new Error('Condition selector must be a function.'));
 	});
 
-	test('Rule condition fieldname is not a string', () => {
+	it('Rule condition fieldname is not a string', () => {
 		expect(() => validateRuleSet([{
 			field: 'fieldname',
 			rules: [{ condition: [() => null, null] }]
 		}])).toThrow(new Error('Defining fields in a condition must be a string only.'));
 	});
 
-	test('Everything okay', () => {
+	it('Everything okay', () => {
 		expect(validateRuleSet([{
 			field: 'fieldname',
 			rules: [{ condition: [() => null, 'fieldname'] }]
@@ -63,12 +63,12 @@ describe('validateRuleSet', () => {
 });
 
 describe('createDefaultValidity', () => {
-	test('Returns an empty Validity object if no ruleset.', () => {
+	it('Returns an empty Validity object if no ruleset.', () => {
 		const result = createDefaultValidity([]);
 		expect(result).toEqual(new Validity([]));
 	});
 
-	test('Returns a Validity object contains every field passed in a ruleset.', () => {
+	it('Returns a Validity object contains every field passed in a ruleset.', () => {
 		const field = 'fieldname';
 
 		const result = createDefaultValidity([{ field }]);
@@ -82,7 +82,7 @@ describe('createDefaultValidity', () => {
 		}]));
 	});
 
-	test('Returns a Validity object with two fields.', () => {
+	it('Returns a Validity object with two fields.', () => {
 		const FIELD_1 = 'field-1';
 		const FIELD_2 = 'field-2';
 
@@ -104,7 +104,7 @@ describe('createDefaultValidity', () => {
 	});
 });
 
-test('extractFieldValue', () => {
+it('extractFieldValue', () => {
 	const result = extractFieldValue({ field: ['value'] }, 'field', 0);
 
 	expect(result).toEqual('value');
@@ -119,7 +119,7 @@ describe('processFormValidity', () => {
 		error: false,
 	};
 
-	test('Returns an empty validity and does not execute processor if initial validity is empty', async () => {
+	it('Returns an empty validity and does not execute processor if initial validity is empty', async () => {
 		const processor = jest.fn().mockName('processor');
 		const initialValidity = new Validity([]);
 
@@ -129,7 +129,7 @@ describe('processFormValidity', () => {
 		expect(result).toEqual(new Validity([]));
 	});
 
-	test('The more initial validity we have the more processor executed times.', async () => {
+	it('The more initial validity we have the more processor executed times.', async () => {
 		const processor = jest.fn().mockName('processor').mockReturnValue(Promise.resolve(PROCESSED));
 		const initialValidity = new Validity([{
 			name: 'field-1',
@@ -147,14 +147,12 @@ describe('processFormValidity', () => {
 			pristine: true,
 			error: false,
 		}]);
-
 		const result = await processFormValidity(processor, initialValidity, PAYLOAD);
 
-		expect(processor).toBeCalledTimes(3);
+		expect(processor).toBeCalledTimes(2);
 		expect(processor).toBeCalledWith(PAYLOAD, 'field-1', 0);
-		expect(processor).toBeCalledWith(PAYLOAD, 'field-1', 1);
 		expect(processor).toBeCalledWith(PAYLOAD, 'field-2', 0);
-		expect(result).toEqual(new Validity([PROCESSED, PROCESSED, PROCESSED]));
+		expect(result).toEqual(new Validity([PROCESSED, PROCESSED]));
 	});
 
 	// TODO: Cover the case if Promise rejected
@@ -185,7 +183,7 @@ describe('processFieldValidity', () => {
 		error: false,
 	}];
 
-	test('Processed field/index entity replaces a similar from the initial validity array.', async () => {
+	it('Processed field/index entity replaces a similar from the initial validity array.', async () => {
 		const processor = jest.fn().mockName('processor').mockReturnValue(Promise.resolve(PROCESSED));
 		const initialValidity = new Validity(INITIAL_VALIDITY);
 		const NAME = INITIAL_VALIDITY[1].name;
@@ -202,11 +200,11 @@ describe('processFieldValidity', () => {
 });
 
 describe('createValidationMessage', () => {
-	test('Should return a string if message is a string', () => {
+	it('Should return a string if message is a string', () => {
 		expect(createValidationMessage('String value')).toBe('String value');
 	});
 
-	test('Should return result of function if message is a function', () => {
+	it('Should return result of function if message is a function', () => {
 		const message = jest.fn().mockName('messageFunction').mockReturnValue('Result of function');
 
 		expect(createValidationMessage(message, { key: 'value' })).toBe('Result of function');

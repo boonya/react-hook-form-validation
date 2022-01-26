@@ -1,0 +1,8 @@
+*
+.*
+!CHANGELOG
+!dist/*/*
+!src/**/*
+**/*.test.ts
+**/*.spec.ts
+**/.*
