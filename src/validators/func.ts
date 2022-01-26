@@ -1,7 +1,7 @@
 import { ValidatorFuncParams, ValidatorAsyncFuncParams, AsyncValidatorResult, Func, AsyncFunc, ValidatorCommonParams, VALIDATORS } from '../types';
 import { createValidatorResult } from '../helpers';
 
-export default function func(func: Func | AsyncFunc, props: ValidatorCommonParams = {}) {
+export default function create(func: Func | AsyncFunc, props: ValidatorCommonParams = {}) {
 	return { validator: VALIDATORS.func, func, ...props };
 }
 

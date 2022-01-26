@@ -9,6 +9,7 @@ import {
 	ValidatorCommonParams,
 	VALIDATION_MESSAGES,
 	ValidatorResult,
+	FieldState,
 } from './types';
 import Validity from './validity';
 
@@ -80,9 +81,13 @@ function flattenForm(fields: string[], payload: FormPayload) {
 	return fields.reduce(reducer, []);
 }
 
-export async function processFormValidity(processor: Processor, fields: string[], payload: FormPayload): Promise<FormValidity> {
-	const promises = flattenForm(fields, payload)
-		.map(({ field, index }) => processor(payload, field, index));
+export async function processFormValidity(processor: Processor, currentValidity: FormValidity, payload: FormPayload): Promise<FormValidity> {
+	const fields = currentValidity
+		.values()
+		.map(({ name }) => name)
+		.filter((value, index, self) => self.indexOf(value) === index);
+	const flatPayload = flattenForm(fields, payload);
+	const promises = flatPayload.map(({ field, index }) => processor(payload, field, index));
 	const validity = await Promise.all(promises);
 	return new Validity(validity);
 }
@@ -102,18 +107,18 @@ export function createValidationMessage(message: ValidationMessage, ...props: un
 	return message;
 }
 
-export function createValidatorResult(valid: boolean, messages: ValidatorCommonParams = {}, payload: unknown[] = []): ValidatorResult {
+export function createValidatorResult(valid: boolean, {fail, success}: ValidatorCommonParams = {}, payload: unknown[] = []): ValidatorResult {
 	let message = null;
 
 	if (valid) {
-		message = messages.success
-			? createValidationMessage(messages.success, ...payload)
+		message = success
+			? createValidationMessage(success, ...payload)
 			: VALIDATION_MESSAGES.success;
 
 	}
 	else {
-		message = messages.fail
-			? createValidationMessage(messages.fail, ...payload)
+		message = fail
+			? createValidationMessage(fail, ...payload)
 			: VALIDATION_MESSAGES.fail;
 	}
 

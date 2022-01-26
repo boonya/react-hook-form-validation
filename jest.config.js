@@ -10,7 +10,7 @@ module.exports = {
 			isolatedModules: true,
 		},
 	},
-	'testPathIgnorePatterns' : [
+	'collectCoverageFrom' : [
 		'<rootDir>/tests'
 	]
 };

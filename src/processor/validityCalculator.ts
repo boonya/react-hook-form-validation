@@ -17,6 +17,7 @@ export default async function validityCalculator(ruleset: FieldRuleSet, payload:
 	}
 
 	const validityReducer = createValidityReducer(payload, name, value, index);
+	// const collect = ruleset.map(() => {});
 	const reducedResult = await ruleset.reduce(validityReducer, Promise.resolve(null));
 	return reducedResult || defaultResult;
 }

@@ -2,9 +2,10 @@ import { validateRequired, validateMin, validateMax } from '../src/index';
 import Validity from '../src/validity';
 import renderHook, { act } from './render-hook';
 
-it('Single mandatory field form that shouldn\'t allow a string shorter than 20 and longer than 35 characters.', async () => {
-	const FIELD_NAME = 'string';
-	const hook = renderHook([{
+const FIELD_NAME = 'string';
+
+function render() {
+	return renderHook([{
 		field: FIELD_NAME,
 		rules: [
 			validateRequired(),
@@ -12,21 +13,22 @@ it('Single mandatory field form that shouldn\'t allow a string shorter than 20 a
 			validateMax(35, 'length'),
 		],
 	}]);
+}
 
-	/**
-	 * By default validator does contain default validity object.
-	 * The object describes every registered field as pristine and have no errors.
-	 */
-	expect(hook.current.validity).toEqual(new Validity([{
+it('should contain default validity object initially.', async () => {
+	const validity = render().current.validity;
+
+	expect(validity).toEqual(new Validity([{
 		name: FIELD_NAME,
 		index: 0,
 		pristine: true,
 		error: false,
 	}]));
+});
 
-	/**
-	 * What if we didn't pass a payload for the field.
-	 */
+it('should validate and fail as mandatory.', async () => {
+	const hook = render();
+
 	await act(async () => {
 		const result = await hook.current.validateForm({ [FIELD_NAME]: [] });
 
@@ -37,17 +39,21 @@ it('Single mandatory field form that shouldn\'t allow a string shorter than 20 a
 			error: true,
 			message: 'required',
 		}]));
+
 		/**
 		 * Validator state is equal to the function result.
 		 */
 		expect(hook.current.validity).toEqual(result);
 	});
+});
 
-	/**
-	 * What if we passed too long string.
-	 */
+it('should validate and fail as longer than max.', async () => {
+	const hook = render();
+
 	await act(async () => {
-		const result = await hook.current.validateForm({ [FIELD_NAME]: ['A sting that longer then 20 characters.'] });
+		const result = await hook.current.validateForm({
+			[FIELD_NAME]: ['A sting that longer then 20 characters.']
+		});
 
 		expect(result).toEqual(new Validity([{
 			name: FIELD_NAME,
@@ -56,17 +62,21 @@ it('Single mandatory field form that shouldn\'t allow a string shorter than 20 a
 			error: true,
 			message: 'max',
 		}]));
+
 		/**
 		 * Validator state is equal to the function result.
 		 */
 		expect(hook.current.validity).toEqual(result);
 	});
+});
 
-	/**
-	 * What if we passed an empty string.
-	 */
+it('should validate and fail as required.', async () => {
+	const hook = render();
+
 	await act(async () => {
-		const result = await hook.current.validateForm({ [FIELD_NAME]: [''] });
+		const result = await hook.current.validateForm({
+			[FIELD_NAME]: ['']
+		});
 
 		expect(result).toEqual(new Validity([{
 			name: FIELD_NAME,
@@ -75,17 +85,21 @@ it('Single mandatory field form that shouldn\'t allow a string shorter than 20 a
 			error: true,
 			message: 'required',
 		}]));
+
 		/**
 		 * Validator state is equal to the function result.
 		 */
 		expect(hook.current.validity).toEqual(result);
 	});
+});
 
-	/**
-	 * What if we passed a valid string.
-	 */
+it('should validate with no errors.', async () => {
+	const hook = render();
+
 	await act(async () => {
-		const result = await hook.current.validateForm({ [FIELD_NAME]: ['A sting that has a valid length.'] });
+		const result = await hook.current.validateForm({
+			[FIELD_NAME]: ['A sting that has a valid length.']
+		});
 
 		expect(result).toEqual(new Validity([{
 			name: FIELD_NAME,
@@ -94,17 +108,21 @@ it('Single mandatory field form that shouldn\'t allow a string shorter than 20 a
 			error: false,
 			message: 'success',
 		}]));
+
 		/**
 		 * Validator state is equal to the function result.
 		 */
 		expect(hook.current.validity).toEqual(result);
 	});
+});
 
-	/**
-	 * What if we passed a too short string.
-	 */
+it('should validate and fail as not enough characters.', async () => {
+	const hook = render();
+
 	await act(async () => {
-		const result = await hook.current.validateForm({ [FIELD_NAME]: ['not enough'] });
+		const result = await hook.current.validateForm({
+			[FIELD_NAME]: ['not enough']
+		});
 
 		expect(result).toEqual(new Validity([{
 			name: FIELD_NAME,
@@ -113,36 +131,47 @@ it('Single mandatory field form that shouldn\'t allow a string shorter than 20 a
 			error: true,
 			message: 'min',
 		}]));
+
 		/**
 		 * Validator state is equal to the function result.
 		 */
 		expect(hook.current.validity).toEqual(result);
 	});
+});
 
+it('should validate with no error even if unregistered field passed.', async () => {
+	const hook = render();
 	/**
 	 * What if we passed more than a single field.
 	 */
 	await act(async () => {
-		const result = await hook.current.validateForm({ [FIELD_NAME]: ['not enough'], 'unregistered-field': ['a payload'] });
+		const result = await hook.current.validateForm({
+			[FIELD_NAME]: ['A sting that has a valid length.'],
+			'unregistered-field': ['a payload']
+		});
 
 		expect(result).toEqual(new Validity([{
 			name: FIELD_NAME,
 			index: 0,
 			pristine: false,
-			error: true,
-			message: 'min',
+			error: false,
+			message: 'success',
 		}]));
+
 		/**
 		 * Validator state is equal to the function result.
 		 */
 		expect(hook.current.validity).toEqual(result);
 	});
+});
 
-	/**
-	 * What if we passed multiple values for the same field.
-	 */
+it('should validate field for the multiple times.', async () => {
+	const hook = render();
+
 	await act(async () => {
-		const result = await hook.current.validateForm({ [FIELD_NAME]: ['not enough', '', 'Good enough to have a success.'] });
+		const result = await hook.current.validateForm({
+			[FIELD_NAME]: ['not enough', '', 'Good enough to have a success.']
+		});
 
 		expect(result).toEqual(new Validity([{
 			name: FIELD_NAME,
@@ -163,6 +192,7 @@ it('Single mandatory field form that shouldn\'t allow a string shorter than 20 a
 			error: false,
 			message: 'success',
 		}]));
+
 		/**
 		 * Validator state is equal to the function result.
 		 */

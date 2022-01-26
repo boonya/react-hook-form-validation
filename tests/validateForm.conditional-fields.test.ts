@@ -1,41 +1,42 @@
-import { validateRequired, validateFunc, validateUrl, validateEmail, validatePattern } from '../src/index';
+import { validateRequired, validateFunc, validateUrl } from '../src/index';
 import Validity from '../src/validity';
 import renderHook, { act } from './render-hook';
 
-it('Several fields form with their own validators set.', async () => {
-	const MASTER_FIELD = 'master';
-	const DEPENDENT_FIELD = 'dependent';
+const MASTER_FIELD = 'master';
+const DEPENDENT_FIELD = 'dependent';
 
-	function isExpectableString(value) {
+const INSTRUCTION = {
+	skip: 'don\'t validate',
+	url: 'validate as url',
+};
+
+function render() {
+	function isInstruction(value: unknown) {
 		return [
-			'validate as url',
-			'validate as email',
-			'validate by pattern',
-			'don\'t validate'
+			INSTRUCTION.url,
+			INSTRUCTION.skip,
 		].includes(value);
 	}
 
-	const hook = renderHook([{
+	return renderHook([{
 		field: MASTER_FIELD,
 		rules: [
-			validateFunc(isExpectableString),
+			validateFunc(isInstruction),
 		],
 	}, {
 		field: DEPENDENT_FIELD,
 		rules: [
-			validateRequired({ condition: [(value) => value !== 'don\'t validate', MASTER_FIELD] }),
-			validateFunc(() => false, { condition: [(value) => !isExpectableString(value), MASTER_FIELD] }),
-			validateUrl({ condition: [(value) => value === 'validate as url', MASTER_FIELD] }),
-			validateEmail({ condition: [(value) => value === 'validate as email', MASTER_FIELD] }),
-			validatePattern(/^(?!.*[DFIOQU])[A-VXY]\d[A-Z]\s?\d[A-Z]\d$/ui, { condition: [(value) => value === 'validate by pattern', MASTER_FIELD] }),
+			validateRequired({ condition: [(value) => value !== INSTRUCTION.skip, MASTER_FIELD] }),
+			validateFunc(() => false, { condition: [(value) => !isInstruction(value), MASTER_FIELD] }),
+			validateUrl({ condition: [(value) => value === INSTRUCTION.url, MASTER_FIELD] }),
 		],
 	}]);
+}
 
-	/**
-	 * By default validator does contain default validity object.
-	 * The object describes every registered field as pristine and have no errors.
-	 */
-	expect(hook.current.validity).toEqual(new Validity([{
+it('should contain default validity object initially.', async () => {
+	const validity = render().current.validity;
+
+	expect(validity).toEqual(new Validity([{
 		name: MASTER_FIELD,
 		index: 0,
 		pristine: true,
@@ -46,10 +47,11 @@ it('Several fields form with their own validators set.', async () => {
 		pristine: true,
 		error: false,
 	}]));
+});
 
-	/**
-	 * What if we didn't pass a payload for all fields.
-	 */
+it('should validate and fail both fields.', async () => {
+	const hook = render();
+
 	await act(async () => {
 		const result = await hook.current.validateForm({});
 
@@ -66,17 +68,22 @@ it('Several fields form with their own validators set.', async () => {
 			error: true,
 			message: 'required',
 		}]));
+
 		/**
 		 * Validator state is equal to the function result.
 		 */
 		expect(hook.current.validity).toEqual(result);
 	});
+});
 
-	/**
-	 * What if we passed unacceptable value to both fields.
-	 */
+it('should validate and fail both fields.', async () => {
+	const hook = render();
+
 	await act(async () => {
-		const result = await hook.current.validateForm({ [MASTER_FIELD]: ['unacceptable'], [DEPENDENT_FIELD]: ['unacceptable'] });
+		const result = await hook.current.validateForm({
+			[MASTER_FIELD]: ['unacceptable'],
+			[DEPENDENT_FIELD]: ['unacceptable']
+		});
 
 		expect(result).toEqual(new Validity([{
 			name: MASTER_FIELD,
@@ -91,17 +98,22 @@ it('Several fields form with their own validators set.', async () => {
 			error: true,
 			message: 'fail',
 		}]));
+
 		/**
 		 * Validator state is equal to the function result.
 		 */
 		expect(hook.current.validity).toEqual(result);
 	});
+});
 
-	/**
-	 * What if we passed a valid value to the first and dependent field shouldn't be validated then.
-	 */
+it('should skip validation of dependent field.', async () => {
+	const hook = render();
+
 	await act(async () => {
-		const result = await hook.current.validateForm({ [MASTER_FIELD]: ['don\'t validate'], [DEPENDENT_FIELD]: [''] });
+		const result = await hook.current.validateForm({
+			[MASTER_FIELD]: ['don\'t validate'],
+			[DEPENDENT_FIELD]: ['']
+		});
 
 		expect(result).toEqual(new Validity([{
 			name: MASTER_FIELD,
@@ -114,19 +126,23 @@ it('Several fields form with their own validators set.', async () => {
 			index: 0,
 			pristine: false,
 			error: false,
-			message: 'success', // FIXME: I don't know yet
 		}]));
+
 		/**
 		 * Validator state is equal to the function result.
 		 */
 		expect(hook.current.validity).toEqual(result);
 	});
+});
 
-	/**
-	 * What if we passed a valid value to the first and dependent field validated successfully.
-	 */
+it('should validate dependent field as an url with no errors.', async () => {
+	const hook = render();
+
 	await act(async () => {
-		const result = await hook.current.validateForm({ [MASTER_FIELD]: ['validate as url'], [DEPENDENT_FIELD]: ['http://example.com'] });
+		const result = await hook.current.validateForm({
+			[MASTER_FIELD]: ['validate as url'],
+			[DEPENDENT_FIELD]: ['http://example.com']
+		});
 
 		expect(result).toEqual(new Validity([{
 			name: MASTER_FIELD,
@@ -139,19 +155,24 @@ it('Several fields form with their own validators set.', async () => {
 			index: 0,
 			pristine: false,
 			error: false,
-			message: 'success', // FIXME: I don't know yet
+			message: 'success',
 		}]));
+
 		/**
 		 * Validator state is equal to the function result.
 		 */
 		expect(hook.current.validity).toEqual(result);
 	});
+});
 
-	/**
-	 * What if we passed a valid value to the first and dependent field validated successfully.
-	 */
+it('should validate dependent field as an url with an error.', async () => {
+	const hook = render();
+
 	await act(async () => {
-		const result = await hook.current.validateForm({ [MASTER_FIELD]: ['validate as url'], [DEPENDENT_FIELD]: ['http:invalid'] });
+		const result = await hook.current.validateForm({
+			[MASTER_FIELD]: ['validate as url'],
+			[DEPENDENT_FIELD]: ['http:invalid']
+		});
 
 		expect(result).toEqual(new Validity([{
 			name: MASTER_FIELD,
@@ -166,6 +187,7 @@ it('Several fields form with their own validators set.', async () => {
 			error: true,
 			message: 'url',
 		}]));
+
 		/**
 		 * Validator state is equal to the function result.
 		 */

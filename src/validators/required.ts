@@ -2,7 +2,7 @@ import { VALIDATION_MESSAGES, ValidatorCommonParams, ValidatorResult, VALIDATORS
 import { createValidatorResult } from '../helpers';
 import isEmpty from 'lodash/isEmpty';
 
-export default function required(props: ValidatorCommonParams = {}) {
+export default function create(props: ValidatorCommonParams = {}) {
 	return { validator: VALIDATORS.required, ...props };
 }
 

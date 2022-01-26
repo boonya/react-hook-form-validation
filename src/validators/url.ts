@@ -1,7 +1,7 @@
 import { VALIDATION_MESSAGES, ValidatorCommonParams, ValidatorResult, VALIDATORS } from '../types';
 import { createValidatorResult } from '../helpers';
 
-export default function required(props: ValidatorCommonParams = {}) {
+export default function create(props: ValidatorCommonParams = {}) {
 	return { validator: VALIDATORS.url, ...props };
 }
 

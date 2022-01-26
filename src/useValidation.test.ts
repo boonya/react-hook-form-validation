@@ -84,6 +84,7 @@ describe('validateForm', () => {
 		await act(async () => {
 			const result = await hook.current.validateForm({});
 			expect(result).toBe(newValidity);
+			expect(hook.current.validity).toBe(result);
 		});
 
 		expect(createProcessor).toBeCalledTimes(1);
@@ -93,7 +94,6 @@ describe('validateForm', () => {
 
 		expect(processFormValidity).toBeCalledTimes(1);
 		expect(processFormValidity).toBeCalledWith(processor, defaultValidity, {});
-		expect(hook.current.validity).toBe(newValidity);
 	});
 });
 

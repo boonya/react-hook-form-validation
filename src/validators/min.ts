@@ -1,7 +1,7 @@
 import { VALIDATION_MESSAGES, ValidatorLengthParams, MinMaxValue, ValidatorResult, ValidatorCommonParams, VALIDATORS, MinMaxMode } from '../types';
 import { createValidatorResult } from '../helpers';
 
-export default function max(expected: number, mode: MinMaxMode = 'number', props: ValidatorCommonParams = {}) {
+export default function create(expected: number, mode: MinMaxMode = 'number', props: ValidatorCommonParams = {}) {
 	return { validator: VALIDATORS.min, expected, mode, ...props };
 }
 
