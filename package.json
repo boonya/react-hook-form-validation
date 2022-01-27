@@ -1,6 +1,6 @@
 {
   "name": "react-hook-form-validation",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "React Hook for Form Validation",
   "repository": "https://github.com/boonya/react-hook-form-validation",
   "homepage": "https://boonya.github.io/react-hook-form-validation/",
@@ -48,7 +48,7 @@
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
     "babel-loader": "^8.2.3",
-    "eslint": "^7.32.0",
+    "eslint": "^8.7.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^27.4.7",
     "react-styleguidist": "^11.2.0",
