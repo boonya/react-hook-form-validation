@@ -47,4 +47,5 @@ jobs:
     name: Build & publish documentation
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - uses: ./.github/workflows/docs.yml

@@ -3,15 +3,6 @@ name: Publish documentation
 on:
   workflow_call:
   workflow_dispatch:
-  push:
-    tags-ignore:
-      - '*'
-    branches:
-      - main
-    path:
-      - 'README.md'
-      - 'styleguide.config.js'
-      - 'docs/*'
 
 jobs:
   docs:
