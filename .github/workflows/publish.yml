@@ -44,8 +44,7 @@ jobs:
 
   docs:
     needs: [ publish ]
+    name: Build & publish documentation
     runs-on: ubuntu-latest
     steps:
       - uses: ./.github/workflows/docs.yml
-        with:
-          targetFolder: docs

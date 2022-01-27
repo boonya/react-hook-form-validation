@@ -2,17 +2,16 @@ name: Publish documentation
 
 on:
   workflow_call:
-    inputs:
-      targetFolder:
-        required: true
-        type: string
-        default: docs
   workflow_dispatch:
-    inputs:
-      targetFolder:
-        required: true
-        type: string
-        default: docs
+  push:
+    tags-ignore:
+      - '*'
+    branches:
+      - main
+    path:
+      - 'README.md'
+      - 'styleguide.config.js'
+      - 'docs/*'
 
 jobs:
   docs:
@@ -29,5 +28,5 @@ jobs:
         with:
           branch: docs
           folder: styleguide
-          target-folder: ${{ inputs.targetFolder }}
+          target-folder: docs
           git-config-name: github-pages-deploy-action
