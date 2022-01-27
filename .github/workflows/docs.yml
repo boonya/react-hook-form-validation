@@ -6,6 +6,13 @@ on:
       targetFolder:
         required: true
         type: string
+        default: docs
+  workflow_dispatch:
+    inputs:
+      targetFolder:
+        required: true
+        type: string
+        default: docs
 
 jobs:
   docs:
