@@ -9,7 +9,7 @@ on:
       - '.github/*'
     branches:
       - master
-  pull_request:
+  # pull_request:
 
 jobs:
   coverage:
