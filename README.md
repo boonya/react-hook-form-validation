@@ -1,3 +1,7 @@
+# [Deprecated] (!!!)
+
+I am not going to suport this library anymore. I don't see a reason of it anymore. Let's use and support [`react-hook-form`](https://www.npmjs.com/package/react-hook-form) instead.
+
 # React Hook Form Validation
 
 [![Verified](https://github.com/boonya/react-hook-form-validation/actions/workflows/verify.yml/badge.svg)](https://github.com/boonya/react-hook-form-validation/actions/workflows/verify.yml?query=event%3Apush+branch%3Amain)
